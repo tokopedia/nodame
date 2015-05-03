@@ -345,8 +345,12 @@ module.exports = (function () {
                     }
                 },
                 elements: (function () {
-                    var bower = function (name) {
-                        var dir  = name;
+                    var bower = function (dir, name) {
+                        if (name === undefined) {
+                            name = dir;
+                        }
+
+                        var dir  = dir;
                         var file = name;
                         var tmp  = name.split('-');
 
