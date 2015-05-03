@@ -1,0 +1,38 @@
+{
+    "LABEL_LANG": {
+        "id": "id",
+        "en": "en"
+    },
+    "LABEL_HOME": {
+        "id": "Home",
+        "en": ""
+    },
+    "LABEL_DRAWER_HOME": {
+        "id": "Beranda",
+        "en": "Dashboard"
+    },
+    "LABEL_DRAWER_FAVORITE": {
+        "id": "Favorit",
+        "en": "Favorite"
+    },
+    "LABEL_DRAWER_LOGIN": {
+        "id": "Masuk",
+        "en": "Login"
+    },
+    "LABEL_DRAWER_LOGOUT": {
+        "id": "Keluar",
+        "en": "Logout"
+    },
+    "LABEL_DRAWER_SWITCH_LANGUAGE": {
+        "id": "Ubah Bahasa",
+        "en": "Switch Language"
+    },
+    "LABEL_DRAWER_GREETING": {
+        "id": "Hai!",
+        "en": "Hi!"
+    },
+    "LABEL_ELEMENT_MY_INPUT_VALUE": {
+        "id": "Nilai",
+        "en": "Value"
+    }
+}

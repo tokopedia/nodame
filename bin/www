@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+var version = '0.1.0';
+var app     = require('../core/app');
+var debug   = require('debug')('desktop-kai:server');
+var http    = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port    = normalizePort(process.env.PORT || '3000');
+
+// overwrite port from config
+if (app.settings.config.server.port != null) {
+  port = normalizePort(app.settings.config.server.port);
+}
+
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+console.log('');
+console.log('88b 88  dP"Yb  8888b.     db    8b    d8 888888 ');
+console.log('88Yb88 dP   Yb  8I  Yb   dPYb   88b  d88 88__   ');
+console.log('88 Y88 Yb   dP  8I  dY  dP__Yb  88YbdP88 88""   ');
+console.log('88  Y8  YbodP  8888Y"  dP""""Yb 88 YY 88 888888 ');
+console.log('');
+
+var date  = new Date();
+var month = date.toString().split(' ')[1];
+var time  = date.toString().split(' ')[4];
+var now   = sprintf('%s %s %s', date.getDate(), month, time);
+
+console.log(sprintf('%s - [nodame] version: %s', now, version));
+console.log(sprintf('%s - [nodame] port: %s', now, port));
+console.log(sprintf('%s - [nodame] environment: %s', now, APP_ENV));
+console.log(sprintf('%s - [nodame] development: %s', now, IS_DEV));
+console.log(sprintf('%s - [nodame] config file: %s', now, app.settings.config.streams.config));
+console.log(sprintf('%s - [nodame] assets file: %s', now, app.settings.config.streams.assets));
+
+var enforceMobileStrings = {
+    false   : 'enforce mobile is disabled',
+    soft    : 'enforced to use mobile views',
+    hard    : 'disabling access from other devices'
+};
+
+console.log(sprintf('%s - [nodame] enforce mobile: %s, %s', now, ENFORCE_MOBILE, enforceMobileStrings[ENFORCE_MOBILE]));
+console.log('');
+console.log('Hi Nobita! Doraemon is serving you now!');
+console.log(' ');
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
