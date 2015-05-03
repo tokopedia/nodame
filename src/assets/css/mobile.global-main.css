@@ -1,0 +1,51 @@
+html,body {
+    height: 100%;
+    margin: 0;
+    background-color: #ffffff;
+    font-family: 'RobotoDraft', sans-serif;
+}
+core-header-panel {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+core-toolbar {
+    background: #03a9f4;
+    color: white;
+}
+[drawer] {
+    background-color: #ffffff;
+}
+#tabs {
+    width: 100%;
+    margin: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-transform: uppercase;
+}
+#main-container {
+    padding: 20px 10px;
+}
+.container {
+
+}
+@media (min-width: 481px) {
+    #tabs {
+        width: 200px;
+    }
+    .container {
+        width: 100%;
+    }
+}
+#add-button {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+.icon-button {
+    height: 16px;
+    width: 16px;
+    margin-right: 10px;
+}
