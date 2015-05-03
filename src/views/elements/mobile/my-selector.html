@@ -1,0 +1,24 @@
+{( helper.elements.bower('polymer') )}
+{( helper.elements.bower('paper-button') )}
+{( helper.elements.bower('paper-input-decorator') )}
+
+<polymer-element name="my-selector" attributes="text">
+    <template>
+        <div>
+            <p>
+                <paper-input-decorator label="Your E-mail" floatingLabel>
+                    <input is="core-input" id="textInput" value="{{text}}">
+                </paper-input-decorator>
+                <paper-button raised on-click="{{setFocus}}" class="blue">Set Focus!</paper-button>
+            </p>       
+        </div>
+    </template>
+    <script>
+        Polymer({
+            text: 'Focus on me!',
+            setFocus: function () {
+                this.$.textInput.focus();
+            }
+        });
+    </script>
+</polymer-element>
