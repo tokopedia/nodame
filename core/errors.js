@@ -1,8 +1,8 @@
 function errors(app) {
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
-        var err = new Error('Not Found');
-        err.status = 404;
+        var err     = new Error('Not Found');
+        err.status  = 404;
         next(err);
     });
     
@@ -10,13 +10,16 @@ function errors(app) {
 }
 
 function errorsHandler(err, req, res, next) {
-    var utilHtml = helper.load.util('html');
-    res.status(err.status || 500);
+    var utilHtml    = helper.load.util('html');
+    var errCode     = err.status || 500;
+    var errCodeView = getErrCodeView(err, req);
+
+    res.status(errCode);
 
     // development error handler
     // will print stacktrace
     var data = {
-        message: getErrMessage(err.message),
+        message: errCode !== 404 ? getErrMessage(err.message) : 'Page Not Found',
         error: err,
         isDev: IS_DEV
     }
@@ -25,11 +28,10 @@ function errorsHandler(err, req, res, next) {
     // no stacktraces leaked to user
     if (!IS_DEV) {
         data.error = {
-            status: err.status
+            status: errCode
         }
     }
 
-    var errCode = getErrCode(err, req);
 
     if (errCode >= 500) {
         log.critical(errCode, data.message);
@@ -37,13 +39,19 @@ function errorsHandler(err, req, res, next) {
         log.info(errCode, data.message);
     }
 
+    //datadog
+    var datadog         = helper.load.util('datadog');
+    var clientStatsD    = datadog.getClient();
+    clientStatsD.increment('errors.kai', ['env:' + APP_ENV, 'status:' + errCode]);
+
+
     html = utilHtml.new(req, res);
     html.stash.set('data', data);
     html.headTitle('Tokopedia');
     html.headDescription('tokopedia');
     html.render({
         module: 'errors',
-        file: errCode
+        file: errCodeView
     });
 
     return;
@@ -60,7 +68,7 @@ function getStackTrace() {
   return obj.stack;
 }
 
-function getErrCode(err, req) {
+function getErrCodeView(err, req) {
     var errors = new Array(404, 500, 503);
     return errors.indexOf(err.status) < 0 ? '500' : String(err.status);
 }
