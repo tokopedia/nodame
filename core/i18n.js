@@ -1,11 +1,11 @@
-var I18n = helper.load.util('i18n');
+var I18n = require(__dirname + '/../helpers/i18n');
 
 function i18n(app) {
     I18n.expressBind(app, {
         locales: ['id', 'en'],
         defaultLocale: 'id',
         cookieName: 'lang',
-        directory: APP_PATH + '/locales/'
+        directory: __dirname + '/../src/locales/'
     });
     app.use(function(req, res, next) {
         req.i18n.setLocaleFromQuery();
