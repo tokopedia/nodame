@@ -9,7 +9,7 @@ var fs              = require('fs');
 // Global variable
 sprintf             = require('sprintf-js').sprintf;
 vsprintf            = require('sprintf-js').vsprintf;
-helper              = require('./helper.js');
+helper              = require(__dirname + '/helper.js');
 
 // Private Modules 
 var toml            = helper.load.util('toml-js');
@@ -63,7 +63,7 @@ app.set('x-powered-by', config.server.enable_powered_by);
 app.use(device.capture());
 
 // Log setup
-var logger        = require('./logger.js');
+var logger        = require(__dirname + '/logger.js');
 app.use(logger.error());
 app.use(logger.access());
 
@@ -107,13 +107,13 @@ app.use(cookieParser());
 app.use(methodOverride());
 
 // Locals setup
-require('./locals')(app);
+require(__dirname + '/locals')(app);
 
 // i18n setup
-require('./i18n')(app);
+require(__dirname + '/i18n')(app);
 
 // Numeral setup
-require('./numeral')(app);
+require(__dirname + '/numeral')(app);
 
 // Enforce mobile setup
 app.use(helper.enforceMobile());
@@ -146,10 +146,10 @@ app.use(function (req, res, next) {
 });
 
 // Routes setup
-require('./routes')(app);
+require(__dirname + '/routes')(app);
 
 // Errors setup
-require('./errors')(app);
+require(__dirname + '/errors')(app);
 
 module.exports = app;
 
