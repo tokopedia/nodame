@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var app = require(path.normalize(__dirname + '/core/app'));
+var app = require(__dirname + '/core/app');
 var debug = require('debug')('desktop-kai:server');
 var http = require('http');
 
