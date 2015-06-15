@@ -30,7 +30,8 @@ app.enable('trust proxy');
 
 // Config
 var configPath      = IS_DEV ? 'config-devel' : 'config';
-var configStream    = path.normalize(__dirname + '/../src/' + configPath + '/main.ini');
+var configDefault   = path.normalize(__dirname + '/../../../' + configPath + '/main.ini');
+var configStream    = path.normalize(process.env.CONFIG) || configDefault;
 var config          = toml.parse(fs.readFileSync(configStream));
 
 // Config constants
@@ -41,10 +42,12 @@ ENFORCE_MOBILE      = config.app.enforce_mobile;
 API_PROTOCOL        = config.app.api_protocol;
 APPNAME             = config.app.appname;
 SYS_PATH            = path.normalize(__dirname + '/..');
-APP_PATH            = path.normalize(SYS_PATH + '/src');
+APP_PATH            = path.normalize(SYS_PATH + '../..');
+CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
-var assetsStream    = IS_DEV ? path.normalize(__dirname + '/../src/config/assets.ini') : path.normalize(__dirname + '/../src/config/.assets');
+var assetsFilename  = IS_DEV ? 'assets.ini' : '.assets';
+var assetsStream    = path.normalize(sprintf('%s/%s', CONFIG_DIR_PATH, assetsFilename));
 config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(assetsStream);
 
 // Store config to app
