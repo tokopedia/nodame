@@ -1,10 +1,10 @@
 var numeral = require('numeral');
-var path = require('path');
+var path    = require('path');
 
 module.exports = (function () {
     var config = (function () {
         var __config = new Object();
-        
+
         var __get = function (obj, params) {
             if (params.length == 0) {
                 return obj;
@@ -19,7 +19,7 @@ module.exports = (function () {
                 return obj;
             }
         };
-        
+
         var set = function (config) {
             __config = config;
         };
@@ -37,17 +37,17 @@ module.exports = (function () {
 
     var load = (function () {
         var util = function (name) {
-            var filepath = path.normalize(SYS_PATH + '/helpers/');
+            var filepath = path.normalize(__dirname + '/../helpers/');
             return require(filepath + name + '.js');
         };
 
         var service = function (name) {
-            var filepath = path.normalize(APP_PATH + '/services/');
+            var filepath = path.normalize(__dirname + '/../../../services/');
             return require(filepath + name + '.js');
         };
 
         var handler = function (name) {
-            var filepath = path.normalize(APP_PATH + '/handlers/');
+            var filepath = path.normalize(__dirname + '/../../../handlers/');
             return require(filepath + name + '.js');
         };
 
@@ -94,8 +94,7 @@ module.exports = (function () {
         var configs = {
             url: this.config.get('server.url'),
             app: this.config.get('app'),
-            assets: this.config.get('assets'),
-            server: this.config.get('server')
+            assets: this.config.get('assets')
         };
 
         return function (req, res, next) {
@@ -177,8 +176,8 @@ module.exports = (function () {
                         switch (format) {
                             case 'normal':
                                 res = weekdays[$1] + ', ' + $3 + ' ' + months[$2].word + ' ' + $4;
-                                break; 
-                            case 'short': 
+                                break;
+                            case 'short':
                                 res = ('0' + $3).slice(-2) + '/' + ('0' + months[$2].num).slice(-2) + '/' + $4;
                                 break;
                         }
@@ -203,7 +202,7 @@ module.exports = (function () {
                         localesData = 'var b=' + JSON.stringify(locales) + ';';
 
                         html += '<script type="text/javascript">';
-                        
+
                         html += 'function __(a){' + localesData + 'return b[a];}';
                         html += '</script>';
                     }
@@ -302,7 +301,7 @@ module.exports = (function () {
                         return this.__getName('global');
                     },
                     __getName: function (module) {
-                        return configs.server.assets.dir + '/min/' + this.__device + '.' + module + '.min.' + this.__type;
+                        return configs.app.assets_dir + '/min/' + this.__device + '.' + module + '.min.' + this.__type;
                     },
                     __html: function (name) {
                         var type = this.__type;
@@ -330,7 +329,7 @@ module.exports = (function () {
                     },
                     __htmlTag: function (type, filepath) {
                         var html = '';
-                        filepath = filepath.replace(configs.server.assets.dir, configs.url.assets);
+                        filepath = filepath.replace(configs.app.assets_dir, configs.url.assets);
 
                         switch (type) {
                             case 'css':
@@ -343,47 +342,7 @@ module.exports = (function () {
 
                         return html;
                     }
-                },
-                elements: (function () {
-                    var bower = function (dir, name) {
-                        if (name === undefined) {
-                            name = dir;
-                        }
-
-                        var dir  = dir;
-                        var file = name;
-                        var tmp  = name.split('-');
-
-                        if (tmp[0] === 'font') {
-                            file = tmp.slice(1);
-                        }
-
-                        return getHtml('bower', dir, file);
-                    };
-
-                    var custom = function (device, name) {
-                        return getHtml('elements', device, name);
-                    };
-
-                    var getHref = function (type, dir, file) {
-                        var baseUrl = configs.url[type];
-                        var suffix  = type === 'bower' ? '.html' : '';
-                        return sprintf('%s/%s/%s%s', baseUrl, dir, file, suffix);
-                    }
-
-                    var getLink = function (href) {
-                        return sprintf('<link rel="import" href="%s">', href);
-                    }
-
-                    var getHtml = function (type, dir, file) {
-                        return getLink(getHref(type, dir, file));
-                    }
-
-                    return {
-                        bower: bower,
-                        custom: custom
-                    }
-                })()
+                }
             };
 
             if (next) return next();
