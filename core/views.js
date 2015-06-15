@@ -3,7 +3,7 @@ var swig = require('swig');
 
 function views(app) {
     app.engine('html', swig.renderFile)
-    app.set('views', APP_PATH + '/views');
+    app.set('views', __dirname + '/../src/views');
     app.set('view engine', 'html');
 
     var swigLocals = {
@@ -18,7 +18,6 @@ function views(app) {
     if(IS_DEV) {
         app.set('view cache', false);
         swig.setDefaults({
-            varControls: ['{(', ')}'],
             locals: swigLocals,
             cache: false
         });
