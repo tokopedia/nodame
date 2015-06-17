@@ -366,6 +366,9 @@ module.exports = (function () {
         config: config,
         load: load,
         enforceMobile: enforceMobile,
-        locals: locals
+        locals: locals,
+        require: require,
+        service: service,
+        handler: handler
     }
 })();
