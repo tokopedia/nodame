@@ -1,10 +1,9 @@
 var npmPath = require('path');
-
-var path = npmPath;
+var path    = npmPath;
 
 path.view = function (req, module, file) {
-    var device = 'desktop';
-    var template = 'default';
+    var device      = 'desktop';
+    var template    = 'default';
 
     if (req && req.device.type == 'phone') {
         device = 'mobile';
