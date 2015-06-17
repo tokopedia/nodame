@@ -40,7 +40,7 @@ function routes(app) {
             }
 
             if (__config.middleware) {
-                var middleware = require(path.normalize(__dirname + '/../src/middlewares/' + module));
+                var middleware = require(path.normalize(__dirname + '/../../../middlewares/' + module));
                 app.use(route, middleware.init);
             }
 			
