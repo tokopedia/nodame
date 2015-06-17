@@ -59,7 +59,7 @@ var path            = helper.load.util('path');
 var app             = express();
 app.env             = APP_ENV;
 SYS_PATH            = path.normalize(__dirname + '/..');
-APP_PATH            = path.normalize(SYS_PATH + '../../..');
+APP_PATH            = path.normalize(SYS_PATH + '/../..');
 
 // Trust proxy setup
 app.set('trust proxy', 'uniquelocal');
@@ -79,7 +79,6 @@ if (argv.config !== undefined) {
     configStream  = path.normalize(sprintf('%s/%s/main.ini', APP_PATH, configDir));
 }
 
-configStream        = configStream.trim();
 var config          = toml.parse(fs.readFileSync(configStream));
 
 // Config constants
