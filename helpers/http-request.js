@@ -49,7 +49,8 @@ var httpRequest = module.exports = (function () {
             port: parsedUrl.port,
             path: parsedUrl.path,
             headers: {
-                'Authorization': token
+                'Authorization': token,
+                'User-Agent': 'TKPD_WS'
             }
         }
 
@@ -91,7 +92,7 @@ var httpRequest = module.exports = (function () {
                 var error = {
                     id: '110101',
                     title: 'Invalid response data',
-                    detail: sprintf('Failed in fetching data from %s://%s:%s%s', protocol, __options.host, String(__options.port), __options.path)
+                    detail: sprintf('Failed in fetching data from %s://%s:%s%s.\n\nResponse Data:\n%s', protocol, __options.host, String(__options.port), __options.path, data)
                 };
 
                 result = {
@@ -203,9 +204,9 @@ var httpRequest = module.exports = (function () {
             var options = rebuild(method, data);
 
             var req = __request.request(options, function (res) {
-
                 var done;
-                if(__metricName != '') {
+
+                if (__metricName !== '') {
                     done = measure.measure('httpRequest');
                 }
                 
@@ -216,7 +217,7 @@ var httpRequest = module.exports = (function () {
                 });
 
                 res.on('end', function () {
-                    if(done) {
+                    if (done) {
                         var datadog = helper.load.util('datadog');
                         var clientStatsD = datadog.getClient();
                         clientStatsD.histogram(__metricName, done(), ['env:'+ APP_ENV]);
@@ -239,7 +240,7 @@ var httpRequest = module.exports = (function () {
 
                 if (!req.socket.destroyed) {
                     log.alert(error.id, sprintf('%s. %s', error.title, error.detail));
-                    callback(result);
+                    // callback(result);
                 }
             });
 
@@ -251,7 +252,7 @@ var httpRequest = module.exports = (function () {
                 var error = {
                     id: '110102',
                     title: 'Request timeout',
-                    detail: sprintf('Can\'t reach server at %s://%s:%s%s', protocol, options.host, String(options.port), options.path)
+                    detail: sprintf('Can\'t reach server at %s://%s:%s%s with data: %s', protocol, options.host, String(options.port), options.path, options.body)
                 };
 
                 var result = {
