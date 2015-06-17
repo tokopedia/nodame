@@ -1,5 +1,12 @@
-var express         = require('express');
+var argv            = require('commander');
 
+argv
+  .usage('[options] <file ...>')
+  .option('-c, --config <n>', 'Config file location')
+  .option('-e, --env <n>', 'Application environment')
+  .parse(process.argv);
+  
+var express         = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var device          = require('express-device');
