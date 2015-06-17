@@ -92,7 +92,7 @@ CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
 var assetsFilename  = IS_DEV ? 'assets.ini' : '.assets';
-var assetsStream    = path.normalize(sprintf('%s/%s', CONFIG_DIR_PATH, assetsFilename));
+var assetsStream    = path.normalize(sprintf('%s/config/%s', APP_PATH, assetsFilename));
 config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(assetsStream);
 
 // Store config to app
