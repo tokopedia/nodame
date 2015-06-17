@@ -71,10 +71,9 @@ var configStream;
 if (argv.config !== undefined) {
     if (argv.config.substring(0,1) !== '/') {
         configStream = path.normalize(sprintf('%s/%s', APP_PATH, argv.config));
-        return;
+    } else {
+        configPath = path.normalize(argv.config);   
     }
-    
-    configaPath = path.normalize(argv.config);
 } else {
     var configDir = IS_DEV ? 'config-devel' : 'config';    
     configStream  = path.normalize(sprintf('%s/%s/main.ini', APP_PATH, configDir));
