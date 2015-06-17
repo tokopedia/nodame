@@ -1,11 +1,43 @@
 var argv            = require('commander');
 
+// Set argv options
 argv
-  .usage('[options] <file ...>')
-  .option('-c, --config <n>', 'Config file location')
-  .option('-e, --env <n>', 'Application environment')
-  .parse(process.argv);
-  
+    .usage('[options] <file ...>')
+    .option('-c, --config <file>', 'Config file location')
+    .option('-e, --env <env>', 'Application environment')
+    .option('-s, --staging', 'Set staging environment')
+    .option('-p, --production', 'Set production environment')
+    .parse(process.argv);
+
+// Set environment to be excluded as Development
+var productionEnv   = ['production', 'staging'];
+// Set default environment
+APP_ENV             = 'development';
+
+if (argv.staging || argv.production) {
+    // Set priority in case all were called.
+    // Staging > Production
+    if (argv.production) {
+        APP_ENV = 'production';
+    }
+    
+    if (argv.staging) {
+        APP_ENV = 'staging';
+    }
+} else {
+    // Set priority in case both exist
+    // argv.env > process.env.NODE_ENV
+    if (process.env.NODE_ENV !== undefined) {
+        APP_ENV = process.env.NODE_ENV;
+    }
+    
+    if (argv.env !== undefined) {
+        APP_ENV = argv.env;
+    }
+}
+
+IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
+
 var express         = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
@@ -23,22 +55,31 @@ var toml            = helper.load.util('toml-js');
 var file            = helper.load.util('file');
 var path            = helper.load.util('path');
 
-// Environment constants 
-var productionEnv   = ['production', 'staging'];
-APP_ENV             = process.env.NODE_ENV !== undefined ? process.env.NODE_ENV : 'development';
-IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
-
 // Expressjs initialization
 var app             = express();
 app.env             = APP_ENV;
+SYS_PATH            = path.normalize(__dirname + '/..');
+APP_PATH            = path.normalize(SYS_PATH + '../..');
+
 // Trust proxy setup
 app.set('trust proxy', 'uniquelocal');
 app.enable('trust proxy');
 
 // Config
-var configPath      = IS_DEV ? 'config-devel' : 'config';
-var configDefault   = path.normalize(__dirname + '/../../../' + configPath + '/main.ini');
-var configStream    = process.env.NODE_CONFIG ? path.normalize(process.env.NODE_CONFIG) : configDefault;
+var configStream;
+
+if (argv.config !== undefined) {
+    if (argv.config.substring(0,1) !== '/') {
+        configStream = path.normalize(sprintf('%v/%v', APP_PATH, argv.config));
+        return;
+    }
+    
+    configaPath = path.normalize(argv.config);
+} else {
+    var configDir = IS_DEV ? 'config-devel' : 'config';    
+    configStream  = path.normalize(sprintf('%v/%v/main.ini', APP_PATH, configDir));
+}
+
 var config          = toml.parse(fs.readFileSync(configStream));
 
 // Config constants
@@ -48,8 +89,6 @@ MOBILE_TEMPLATE     = config.app.mobile_template;
 ENFORCE_MOBILE      = config.app.enforce_mobile;
 API_PROTOCOL        = config.app.api_protocol;
 APPNAME             = config.app.appname;
-SYS_PATH            = path.normalize(__dirname + '/..');
-APP_PATH            = path.normalize(SYS_PATH + '../..');
 CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
