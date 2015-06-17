@@ -1,13 +1,13 @@
 var mandrill = require('mandrill-api/mandrill');
 
 var mailer = (function () {
-    var key = helper.config.get('email.mandrill_key');
+    var key = nodame.config.get('email.mandrill_key');
     var client = new mandrill.Mandrill(key);
     var body = '';
     var bodyBaseDir = nodame.path.app + '/views/emails/';
 
     var send = function (toAddr, toName, subject, html) {
-        var config = helper.config.get('email');
+        var config = nodame.config.get('email');
         var message = {
             'html'      : html,
             'subject'   : subject,

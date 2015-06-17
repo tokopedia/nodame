@@ -218,7 +218,7 @@ var httpRequest = module.exports = (function () {
 
                 res.on('end', function () {
                     if (done) {
-                        var datadog = helper.load.util('datadog');
+                        var datadog = nodame.import('datadog');
                         var clientStatsD = datadog.getClient();
                         clientStatsD.histogram(__metricName, done(), ['env:'+ APP_ENV]);
                     }

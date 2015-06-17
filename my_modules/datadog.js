@@ -3,7 +3,7 @@ var parent = this;
 var clientStatsD;
 
 exports.getClient = function () {
-    var configDatadog = helper.config.get('datadog');
+    var configDatadog = nodame.config.get('datadog');
     
     // console.log(configDatadog);
 

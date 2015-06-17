@@ -1,4 +1,4 @@
-var path = helper.load.util('path');
+var path = nodame.import('path');
 var uuid = require('node-uuid');
 var md5 = require('MD5');
 var parse = require('parse-duration');
@@ -33,7 +33,7 @@ exports.new = function (req, res) {
     }
 
     var __initHead = function () {
-        var configServer = helper.config.get('server');
+        var configServer = nodame.config.get('server');
 
         //head title
         if(!stash.get('headTitle')) {
@@ -101,12 +101,12 @@ exports.new = function (req, res) {
     }
 
     var setFlashMessages = function (type, text) {
-        var redis = helper.load.util('redis');
+        var redis = nodame.import('redis');
         var fm = req.cookies.fm;
         if(!fm) {
             fm = uuid.v4();
             res.cookie('fm', fm, {
-                domain: '.' + helper.config.get('server.domain'),
+                domain: '.' + nodame.config.get('server.domain'),
                 expires: new Date(Date.now() + 600000),
                 httpOnly: true
             });
@@ -124,7 +124,7 @@ exports.new = function (req, res) {
             var fm = req.cookies.fm;
 
             if(fm) {
-                var redis = helper.load.util('redis');
+                var redis = nodame.import('redis');
                 var redisClient = redis.getClient('session', 'slave', 1);
 
                 var keyFm = 'flashMessages:' + fm;
@@ -140,7 +140,7 @@ exports.new = function (req, res) {
 
                         // console.log('clearCookie start', fm);
                         res.clearCookie('fm', {
-                            domain: '.' + helper.config.get('server.domain')
+                            domain: '.' + nodame.config.get('server.domain')
                         });
                         // console.log('clearCookie end');
 
@@ -170,9 +170,9 @@ exports.new = function (req, res) {
                     res.end();
                 } else {
                     if(args.cache) {
-                        var redis       = helper.load.util('redis');
+                        var redis       = nodame.import('redis');
                         var redisClient = redis.getClient('html', 'master', 1);
-                        var hostname    = helper.config.get('server.url.hostname');
+                        var hostname    = nodame.config.get('server.url.hostname');
                         var uri         = req.originalUrl;
                         var url         = path.normalize(hostname + uri);
                         var keyRedis = 'html:' + md5(url);
@@ -192,14 +192,14 @@ exports.new = function (req, res) {
     }
 
     var renderCache = function (callback) {
-        var redis       = helper.load.util('redis');
+        var redis       = nodame.import('redis');
         var redisClient = redis.getClient('html', 'slave', 1);
-        var hostname    = helper.config.get('server.url.hostname');
+        var hostname    = nodame.config.get('server.url.hostname');
         var uri         = req.originalUrl;
         var url         = path.normalize(hostname + uri);
         var keyRedis    = 'html:' + md5(url);
 
-        if (helper.config.get('app.html_cache')) {
+        if (nodame.config.get('app.html_cache')) {
             redisClient.hget(keyRedis, req.device.type, function (err, reply) {
                 if(reply) {
                     res.send(reply.toString());
