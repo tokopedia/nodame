@@ -2,6 +2,7 @@ var numeral = require('numeral');
 var path    = require('path');
 
 module.exports = (function () {
+    var parent = this;
     var config = (function () {
         var __config = new Object();
 
@@ -34,6 +35,18 @@ module.exports = (function () {
             get: get
         };
     })();
+
+    var require = function (name) {
+        return parent.load.util(name);
+    };
+
+    var service = function (name) {
+        return parent.load.service(name);
+    };
+
+    var handler = function (name) {
+        return parent.load.handler(name);
+    };
 
     var load = (function () {
         var util = function (name) {
