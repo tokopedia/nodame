@@ -1,9 +1,24 @@
 var numeral = require('numeral');
-var path    = require('path');
+var pathMod = require('path');
 
 module.exports = (function () {
-    var parent = this;
-    var config = (function () {
+    var path    = (function () {
+        var system = function () {
+            return pathMod.normalize(__dirname + '/..');
+        }
+
+        var app = function () {
+            return pathMod.normalize(system + '/../..');
+        }
+
+        return {
+            system: system,
+            app: app
+        }
+
+    })();
+
+    var config  = (function () {
         var __config = new Object();
 
         var __get = function (obj, params) {
@@ -37,17 +52,17 @@ module.exports = (function () {
     })();
 
     var require = function (name) {
-        var filepath = path.normalize(sprintf('%s/helpers/%s', SYS_PATH, name));
+        var filepath = pathMod.normalize(sprintf('%s/helpers/%s', path.system, name));
         return require(filepath);
     };
 
     var service = function (name) {
-        var filepath = path.normalize(sprintf('%s/services/%s', APP_PATH, name));
+        var filepath = pathMod.normalize(sprintf('%s/services/%s', path.app, name));
         return require(filepath);
     };
 
     var handler = function (name) {
-        var filepath = path.normalize(sprintf('%s/handlers/%s', APP_PATH, name));
+        var filepath = pathMod.normalize(sprintf('%s/handlers/%s', path.app, name));
         return require(filepath);
     };
 
@@ -77,7 +92,6 @@ module.exports = (function () {
 
     var locals = function (app) {
         var self = this;
-        var path = this.load.util('path');
         var qs = require('query-string');
         var configs = {
             url: this.config.get('server.url'),
@@ -225,12 +239,12 @@ module.exports = (function () {
                 },
                 url: {
                     base: function (uri, params) {
-                        var uri = path.normalize('/' + uri);
+                        var uri = pathMod.normalize('/' + uri);
                         var url = configs.url.base + uri;
                         return this.stringify(url, params);
                     },
                     assets: function (uri, params) {
-                        var uri = path.normalize('/' + uri);
+                        var uri = pathMod.normalize('/' + uri);
                         var url = configs.url.assets + uri;
                         return this.stringify(url, params);
                     },
@@ -338,6 +352,7 @@ module.exports = (function () {
     };
 
     return {
+        path: path,
         config: config,
         enforceMobile: enforceMobile,
         locals: locals,

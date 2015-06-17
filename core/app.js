@@ -58,8 +58,6 @@ var path            = nodame.require('path');
 // Expressjs initialization
 var app             = express();
 app.env             = APP_ENV;
-SYS_PATH            = path.normalize(__dirname + '/..');
-APP_PATH            = path.normalize(SYS_PATH + '/../..');
 
 // Trust proxy setup
 app.set('trust proxy', 'uniquelocal');
@@ -70,13 +68,13 @@ var configStream;
 
 if (argv.config !== undefined) {
     if (argv.config.substring(0,1) !== '/') {
-        configStream = path.normalize(sprintf('%s/%s', APP_PATH, argv.config));
+        configStream = path.normalize(sprintf('%s/%s', nodame.path.app, argv.config));
     } else {
         configPath = path.normalize(argv.config);   
     }
 } else {
     var configDir = IS_DEV ? 'config-devel' : 'config';    
-    configStream  = path.normalize(sprintf('%s/%s/main.ini', APP_PATH, configDir));
+    configStream  = path.normalize(sprintf('%s/%s/main.ini', nodame.path.app, configDir));
 }
 
 var config          = toml.parse(fs.readFileSync(configStream));
@@ -92,7 +90,7 @@ CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
 var assetsFilename  = IS_DEV ? 'assets.ini' : '.assets';
-var assetsStream    = path.normalize(sprintf('%s/config/%s', APP_PATH, assetsFilename));
+var assetsStream    = path.normalize(sprintf('%s/config/%s', nodame.path.app, assetsFilename));
 config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(assetsStream);
 
 // Store config to app
@@ -125,7 +123,7 @@ app.use(function (req, res, next) {
 // Static server setup
 if (config.server.assets.serve_static) {
     var assetsRoute = path.normalize(sprintf('/%s', config.server.assets.route));
-    var assetsDir   = path.normalize(sprintf('%s/%s', SYS_PATH, config.server.assets.dir));
+    var assetsDir   = path.normalize(sprintf('%s/%s', nodame.path.system, config.server.assets.dir));
 
     app.use(assetsRoute, require('serve-static')(assetsDir));
 }

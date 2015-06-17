@@ -4,7 +4,7 @@ var mailer = (function () {
     var key = helper.config.get('email.mandrill_key');
     var client = new mandrill.Mandrill(key);
     var body = '';
-    var bodyBaseDir = APP_PATH + '/views/emails/';
+    var bodyBaseDir = nodame.path.app + '/views/emails/';
 
     var send = function (toAddr, toName, subject, html) {
         var config = helper.config.get('email');
