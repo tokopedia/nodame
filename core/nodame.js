@@ -51,7 +51,7 @@ module.exports = (function () {
         };
     })();
 
-    var require = function (name) {
+    var load = function (name) {
         var filepath = pathMod.normalize(sprintf('%s/helpers/%s', path.system, name));
         return require(filepath);
     };
@@ -76,7 +76,7 @@ module.exports = (function () {
                     break;
                 case 'hard':
                     req.device.type = 'desktop';
-                    html = self.load.util('html').new(req, res);
+                    html = self.import('html').new(req, res);
                     html.headTitle('Tokopedia');
                     html.headDescription('tokopedia');
                     html.render({
@@ -356,7 +356,7 @@ module.exports = (function () {
         config: config,
         enforceMobile: enforceMobile,
         locals: locals,
-        require: require,
+        import: load,
         service: service,
         handler: handler
     }

@@ -2,24 +2,24 @@ var logger = (function () {
     var self = this;
 
     if (IS_DEV) {
-        var colors       = require('colors');    
+        var colors          = require('colors');
     }
 
-    var client        = helper.config.get('logger.client');
-    
+    var client              = nodame.config.get('logger.client');
+
     switch (client) {
         case 'sentry':
             var raven        = require('raven');
-            var sentryClient = new raven.Client(helper.config.get('logger.sentry_dns'));
+            var sentryClient = new raven.Client(nodame.config.get('logger.sentry_dns'));
             break;
 
         default:
             var fs           = require('fs');
-            var path         = helper.load.util('path');        
-            var accessFile   = path.normalize(helper.config.get('logger.access_stream'));
+            var path         = nodame.import('path');        
+            var accessFile   = path.normalize(nodame.config.get('logger.access_stream'));
             var accessStream = fs.createWriteStream(accessFile, {flags: 'a'});
-            var mailer       = helper.load.util('mailer');
-            var logFile      = path.normalize(helper.config.get('logger.error_stream'));
+            var mailer       = nodame.import('mailer');
+            var logFile      = path.normalize(nodame.config.get('logger.error_stream'));
             var logStream    = fs.createWriteStream(logFile, {flags: 'a'});
             var Log          = require('log');
             var Logger       = new Log('debug', logStream);
@@ -131,19 +131,19 @@ var logger = (function () {
                             break;
                     }
 
-                    var hostname = helper.config.get('server.url.hostname');
+                    var hostname = nodame.config.get('server.url.hostname');
 
                     var ua = __useragent();
                     var idDesc = details.split('.')[0];
                     var errorDetails = {
                         id: title,
                         title: idDesc,
-                        detail: details 
+                        detail: details
                     };
                     var message = title;
 
                     if (details) {
-                        message += sprintf(': %s', idDesc); 
+                        message += sprintf(': %s', idDesc);
                     }
 
                     var options = {
@@ -176,12 +176,12 @@ var logger = (function () {
                     if (ua === undefined) {
                         return {os: '', browser: ''}
                     }
-                    
+
                     var re = /[(][^)]+[)]/gi;
                     var found = ua.match(re);
                     var os = found ? found[0] : 'No OS';
-                    os = os.replace(/_/g, '.'); 
-                    os = os.replace(/[()]*/g, ''); 
+                    os = os.replace(/_/g, '.');
+                    os = os.replace(/[()]*/g, '');
                     os = os.replace(/^[a-z0-9 ]+[;][ ]/i, '');
 
                     var browser = ua.replace(/^.*[)] /g, '');
@@ -201,14 +201,14 @@ var logger = (function () {
 
                 var __logger = function (level, title, details) {
                     var message = errString(title, details);
-                    
+
                     if (IS_DEV && title !== 404) {
                         console.log('ERROR:'.bold.underline.red);
                         console.log(sprintf('%s %s', date, message));
                     }
 
                     switch (client) {
-                    case 'sentry': 
+                    case 'sentry':
                         sentry(level, title, details);
                         break;
 
@@ -222,7 +222,7 @@ var logger = (function () {
                         }
 
                         break;
-                    }    
+                    }
                 }
 
                 var errString = function (title, details) {

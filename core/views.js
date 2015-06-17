@@ -9,7 +9,7 @@ function views(app) {
     var swigLocals = {
         'currentYear': (new Date()).getFullYear(),
         'is_dev': IS_DEV,
-        'menu': helper.config.get('menu')
+        'menu': nodame.config.get('menu')
         // 'processTime': function() {
         //     return '0.000000';
         // }
@@ -35,7 +35,7 @@ function views(app) {
 
 function filterPush(arr, val) {
     arr.push(val);
-    return arr; 
+    return arr;
 }
 
 function filterRange(arr, start, end, step) {
@@ -49,7 +49,7 @@ function filterRange(arr, start, end, step) {
 
     if (typeofStart == "undefined" || typeofEnd == "undefined") {
         throw TypeError("Must pass start and end arguments.");
-    } 
+    }
     // else if (typeofStart != typeofEnd) {
     //     console.log(typeofStart);
     //     console.log(typeofEnd);

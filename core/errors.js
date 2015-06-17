@@ -5,12 +5,12 @@ function errors(app) {
         err.status  = 404;
         next(err);
     });
-    
+
     app.use(errorsHandler);
 }
 
 function errorsHandler(err, req, res, next) {
-    var utilHtml    = helper.load.util('html');
+    var utilHtml    = nodame.import('html');
     var errCode     = err.status || 500;
     var errCodeView = getErrCodeView(err, req);
 
@@ -40,7 +40,7 @@ function errorsHandler(err, req, res, next) {
     }
 
     //datadog
-    var datadog         = helper.load.util('datadog');
+    var datadog         = nodame.import('datadog');
     var clientStatsD    = datadog.getClient();
     clientStatsD.increment('errors.kai', ['env:' + APP_ENV, 'status:' + errCode]);
 

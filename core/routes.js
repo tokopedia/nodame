@@ -1,17 +1,17 @@
-var path    = helper.load.util('path');
+var path    = nodame.import('path');
 var redis   = require("redis");
 
 function routes(app) {
-    var appName       = helper.config.get('app.appname');
-    var defaultModule = helper.config.get('app.default_module');
-    var modules       = helper.config.get('modules');
+    var appName       = nodame.config.get('app.appname');
+    var defaultModule = nodame.config.get('app.default_module');
+    var modules       = nodame.config.get('modules');
     var appRoute      = '/' + appName;
     //sesssion
-    var session       = helper.load.util('session');
+    var session       = nodame.import('session');
     app.use(session.initSession);
 
     //set res.locals
-    app.use(function (req, res, next) {        
+    app.use(function (req, res, next) {
         //refback
         var refback;
         if(req.query.refback) {
@@ -32,7 +32,7 @@ function routes(app) {
                 continue;
             }
 
-            var __handler = helper.load.handler(module)
+            var __handler = nodame.handler(module)
             var route = appRoute + '/';
 
             if (module != defaultModule) {
@@ -43,7 +43,7 @@ function routes(app) {
                 var middleware = require(path.normalize(__dirname + '/../../../middlewares/' + module));
                 app.use(route, middleware.init);
             }
-			
+
 			var ajaxOnly = __config.ajax && __config.ajax_only ? true : false;
 
             if (!ajaxOnly) {
@@ -55,12 +55,12 @@ function routes(app) {
                 app.use(ajaxRoute, __handler);
             }
         }
-    } 
+    }
 
     // Redirect '/' to 'home'
-    if (helper.config.get('app.root_redirect')) {
+    if (nodame.config.get('app.root_redirect')) {
         app.use('/', function (req, res) {
-            var hostname = helper.config.get('server.url.hostname');
+            var hostname = nodame.config.get('server.url.hostname');
             var url = hostname + path.normalize('/' + appName);
             res.redirect(url);
         });

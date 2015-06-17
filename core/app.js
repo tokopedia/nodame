@@ -20,7 +20,7 @@ if (argv.staging || argv.production) {
     if (argv.production) {
         APP_ENV = 'production';
     }
-    
+
     if (argv.staging) {
         APP_ENV = 'staging';
     }
@@ -30,7 +30,7 @@ if (argv.staging || argv.production) {
     if (process.env.NODE_ENV !== undefined) {
         APP_ENV = process.env.NODE_ENV;
     }
-    
+
     if (argv.env !== undefined) {
         APP_ENV = argv.env;
     }
@@ -38,7 +38,7 @@ if (argv.staging || argv.production) {
 
 IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
 
-express         = require('express');
+express             = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var device          = require('express-device');
@@ -50,10 +50,10 @@ sprintf             = require('sprintf-js').sprintf;
 vsprintf            = require('sprintf-js').vsprintf;
 nodame              = require(__dirname + '/nodame.js');
 
-// Private Modules 
-var toml            = nodame.require('toml-js');
-var file            = nodame.require('file');
-var path            = nodame.require('path');
+// Private Modules
+var toml            = nodame.import('toml-js');
+var file            = nodame.import('file');
+var path            = nodame.import('path');
 
 // Expressjs initialization
 var app             = express();
@@ -70,10 +70,10 @@ if (argv.config !== undefined) {
     if (argv.config.substring(0,1) !== '/') {
         configStream = path.normalize(sprintf('%s/%s', nodame.path.app, argv.config));
     } else {
-        configPath = path.normalize(argv.config);   
+        configPath = path.normalize(argv.config);
     }
 } else {
-    var configDir = IS_DEV ? 'config-devel' : 'config';    
+    var configDir = IS_DEV ? 'config-devel' : 'config';
     configStream  = path.normalize(sprintf('%s/%s/main.ini', nodame.path.app, configDir));
 }
 
@@ -175,7 +175,7 @@ app.use(function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (MAINTENANCE) {
-        html = nodame.require('html').new(req, res);
+        html = nodame.import('html').new(req, res);
         html.headTitle('Tokopedia');
         html.headDescription('tokopedia');
         res.status(503);
@@ -195,4 +195,3 @@ require(__dirname + '/routes')(app);
 require(__dirname + '/errors')(app);
 
 module.exports = app;
-
