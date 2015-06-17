@@ -37,44 +37,19 @@ module.exports = (function () {
     })();
 
     var require = function (name) {
-        return load.util(name);
+        var filepath = path.normalize(__dirname + '/../helpers/');
+        return require(filepath + name + '.js');
     };
 
     var service = function (name) {
-        return load.service(name);
+        var filepath = path.normalize(__dirname + '/../../../services/');
+        return require(filepath + name + '.js');
     };
 
     var handler = function (name) {
-        return load.handler(name);
+        var filepath = path.normalize(__dirname + '/../../../handlers/');
+        return require(filepath + name + '.js');
     };
-
-    var load = (function () {
-        var util = function (name) {
-            var filepath = path.normalize(__dirname + '/../helpers/');
-            return require(filepath + name + '.js');
-        };
-
-        var service = function (name) {
-            var filepath = path.normalize(__dirname + '/../../../services/');
-            return require(filepath + name + '.js');
-        };
-
-        var handler = function (name) {
-            var filepath = path.normalize(__dirname + '/../../../handlers/');
-            return require(filepath + name + '.js');
-        };
-
-        var config = function (name) {
-
-        }
-
-        return {
-            util: util,
-            service: service,
-            handler: handler,
-            config: config
-        };
-    })();
 
     var enforceMobile = function () {
         var self = this;
@@ -364,7 +339,6 @@ module.exports = (function () {
 
     return {
         config: config,
-        load: load,
         enforceMobile: enforceMobile,
         locals: locals,
         require: require,
