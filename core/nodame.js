@@ -37,15 +37,15 @@ module.exports = (function () {
     })();
 
     var require = function (name) {
-        return parent.load.util(name);
+        return this.load.util(name);
     };
 
     var service = function (name) {
-        return parent.load.service(name);
+        return this.load.service(name);
     };
 
     var handler = function (name) {
-        return parent.load.handler(name);
+        return this.load.handler(name);
     };
 
     var load = (function () {
