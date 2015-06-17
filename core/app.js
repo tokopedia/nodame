@@ -38,7 +38,7 @@ if (argv.staging || argv.production) {
 
 IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
 
-var express         = require('express');
+express         = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var device          = require('express-device');
@@ -48,12 +48,12 @@ var fs              = require('fs');
 // Global variable
 sprintf             = require('sprintf-js').sprintf;
 vsprintf            = require('sprintf-js').vsprintf;
-helper              = require(__dirname + '/helper.js');
+nodame              = require(__dirname + '/nodame.js');
 
 // Private Modules 
-var toml            = helper.load.util('toml-js');
-var file            = helper.load.util('file');
-var path            = helper.load.util('path');
+var toml            = nodame.require('toml-js');
+var file            = nodame.require('file');
+var path            = nodame.require('path');
 
 // Expressjs initialization
 var app             = express();
@@ -97,7 +97,7 @@ config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(asse
 
 // Store config to app
 app.set('config', config);
-helper.config.set(config);
+nodame.config.set(config);
 
 
 
@@ -161,10 +161,10 @@ require(__dirname + '/i18n')(app);
 require(__dirname + '/numeral')(app);
 
 // Enforce mobile setup
-app.use(helper.enforceMobile());
+app.use(nodame.enforceMobile());
 
 // Locals helper setup
-app.use(helper.locals(app));
+app.use(nodame.locals(app));
 
 app.use(function (req, res, next) {
     res.locals.path = new Object();
@@ -177,7 +177,7 @@ app.use(function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (MAINTENANCE) {
-        html = helper.load.util('html').new(req, res);
+        html = nodame.require('html').new(req, res);
         html.headTitle('Tokopedia');
         html.headDescription('tokopedia');
         res.status(503);
