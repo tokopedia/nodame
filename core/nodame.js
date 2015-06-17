@@ -37,18 +37,18 @@ module.exports = (function () {
     })();
 
     var require = function (name) {
-        var filepath = path.normalize(__dirname + '/../helpers/');
-        return require(filepath + name + '.js');
+        var filepath = path.normalize(sprintf('%s/helpers/%s', SYS_PATH, name));
+        return require(filepath);
     };
 
     var service = function (name) {
-        var filepath = path.normalize(__dirname + '/../../../services/');
-        return require(filepath + name + '.js');
+        var filepath = path.normalize(sprintf('%s/services/%s', APP_PATH, name));
+        return require(filepath);
     };
 
     var handler = function (name) {
-        var filepath = path.normalize(__dirname + '/../../../handlers/');
-        return require(filepath + name + '.js');
+        var filepath = path.normalize(sprintf('%s/handlers/%s', APP_PATH, name));
+        return require(filepath);
     };
 
     var enforceMobile = function () {
