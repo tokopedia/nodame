@@ -31,7 +31,7 @@ app.enable('trust proxy');
 // Config
 var configPath      = IS_DEV ? 'config-devel' : 'config';
 var configDefault   = path.normalize(__dirname + '/../../../' + configPath + '/main.ini');
-var configStream    = path.normalize(process.env.CONFIG) || configDefault;
+var configStream    = process.env.CONFIG ? path.normalize(process.env.CONFIG) : configDefault;
 var config          = toml.parse(fs.readFileSync(configStream));
 
 // Config constants
