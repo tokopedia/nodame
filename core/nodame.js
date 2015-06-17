@@ -52,7 +52,7 @@ module.exports = (function () {
     })();
 
     var load = function (name) {
-        var filepath = pathMod.normalize(sprintf('%s/helpers/%s', path.system, name));
+        var filepath = pathMod.normalize(sprintf('%s/my_modules/%s', path.system, name));
         return require(filepath);
     };
 
