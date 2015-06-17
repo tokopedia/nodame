@@ -70,14 +70,14 @@ var configStream;
 
 if (argv.config !== undefined) {
     if (argv.config.substring(0,1) !== '/') {
-        configStream = path.normalize(sprintf('%v/%v', APP_PATH, argv.config));
+        configStream = path.normalize(sprintf('%s/%s', APP_PATH, argv.config));
         return;
     }
     
     configaPath = path.normalize(argv.config);
 } else {
     var configDir = IS_DEV ? 'config-devel' : 'config';    
-    configStream  = path.normalize(sprintf('%v/%v/main.ini', APP_PATH, configDir));
+    configStream  = path.normalize(sprintf('%s/%s/main.ini', APP_PATH, configDir));
 }
 
 var config          = toml.parse(fs.readFileSync(configStream));
