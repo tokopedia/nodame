@@ -37,15 +37,15 @@ module.exports = (function () {
     })();
 
     var require = function (name) {
-        return this.load.util(name);
+        return load.util(name);
     };
 
     var service = function (name) {
-        return this.load.service(name);
+        return load.service(name);
     };
 
     var handler = function (name) {
-        return this.load.handler(name);
+        return load.handler(name);
     };
 
     var load = (function () {
