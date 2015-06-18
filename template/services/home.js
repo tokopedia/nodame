@@ -1,8 +1,8 @@
 var express = require('express');
 var async = require('async');
-var path = nodame.import('path');
-var httpRequest = nodame.import('http-request');
-var jsonapi = nodame.import('jsonapi');
+var path = require('path');
+var httpRequest = require('http-request');
+var jsonapi = require('jsonapi');
 
 module.exports = (function () {
     var self = this;
