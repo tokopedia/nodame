@@ -1,12 +1,10 @@
 # nodame
-====================
-
-latest version: 0.2.0
-latest stable version: 0.2.0
+- latest version: 0.2.0
+- latest stable version: 0.2.0
 
 
 #### Prerequisites
-1. Node.js 0.12.4
+- Node.js (~0.12.4)
 
 #### Installation
 1. Create project directory
@@ -27,6 +25,30 @@ latest stable version: 0.2.0
       }
    }
    ```
+
+4. Run npm install
+   ```bash
+   npm install
+   ```
+
+#### Configuration Files
+Coming soon
+
+#### Run Application
+```bash
+node node_modules/nodame [options]
+```
+|Option                    |Default          |Description                  |
+|--------------------------|-----------------|-----------------------------|
+|`-c`, `--config <file>`   |`./config-devel` |Config file location         |
+|`-e`, `--env <env>`       |`development`    |Application environment      |
+|`-s`, `--staging`         |                 |Set staging environment      |
+|`-p`, `--production`      |                 |Set production environment   |
+
+Example:
+```bash
+node node_modules/nodame --config ~/config/main.ini
+```
 
 #### Packages
 |Name                                                             |Version |
@@ -58,6 +80,3 @@ latest stable version: 0.2.0
 |[sprintf-js](https://www.npmjs.com/package/sprintf-js)           |~1.0.2  |
 |[swig](https://www.npmjs.com/package/swig)                       |~1.4.2  |
 |[validate.js](https://www.npmjs.com/package/validate.js)         |~0.6.1  |
-|[](https://www.npmjs.com/package/)||"sprintf-js": "~1.0.2",
-|[](https://www.npmjs.com/package/)||    "swig": "~1.4.2",
-|[](https://www.npmjs.com/package/)||"validate.js": "~0.6.1"
