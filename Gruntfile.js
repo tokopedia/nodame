@@ -3,7 +3,7 @@ var file = require('./nodame/helpers/file')('production');
 var fs = require('fs');
 var path = require('path');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     // Project Configuration
     process.stdout.write('Reading config ... ');
 
