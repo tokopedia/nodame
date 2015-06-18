@@ -6,7 +6,7 @@
 *.exe
 *.o
 *.so
- 
+
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
@@ -19,13 +19,13 @@
 *.rar
 *.tar
 *.zip
- 
+
 # Logs and databases #
 ######################
 *.log
 *.sql
 *.sqlite
- 
+
 # OS generated files #
 ######################
 .DS_Store
@@ -36,15 +36,12 @@
 ehthumbs.db
 Thumbs.db
 
-# nodemon #
+# nodame #
 ###############
 node_modules
-bower_components
 src/config-devel
 src/assets/min
-src/assets/bower_components
-src/assets/js/polymer
 *.bak
 .dropbox
 .ignore
-src/config/.assets
+config/.assets

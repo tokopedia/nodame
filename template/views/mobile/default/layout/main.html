@@ -1,0 +1,39 @@
+{% spaceless %}
+<!doctype html>
+<head>
+<title>{( headTitle )}</title>
+{% endspaceless %}
+
+{%- block META -%}
+{% include './meta.html' ignore missing %}
+{%- endblock META -%}
+
+{% spaceless %}
+{( nodame.assets.css(assetsName) )}
+{% endspaceless %}
+
+{%- block STYLES -%}
+{% include './styles.html' ignore missing %}
+{%- endblock STYLES -%}
+
+</head>
+<body>
+    {% block HEADER %}
+        {% include './header.html' ignore missing %}
+    {% endblock HEADER %}
+
+
+    {% block CONTENT %}
+        {% include './content.html' ignore missing %}
+    {% endblock CONTENT %}
+
+    {% block FOOTER %}
+        {% include './footer.html' ignore missing %}
+    {% endblock FOOTER %}
+
+    {% block SCRIPTS %}
+        {( nodame.locale(locales) )}
+        {( nodame.assets.js(assetsName) )}
+    {% endblock SCRIPTS %}
+</body>
+</html>
