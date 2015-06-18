@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
@@ -30,8 +28,10 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 console.log('');
+console.log('version', nodame.settings.app.version);
+console.log('');
 console.log('                                 MM                                            ');
-console.log('                                 MM                                        v0.1');
+console.log('                                 MM                                            ');
 console.log('                                 MM                                            ');
 console.log('MM?MMMMMO     MMMMMMM      MMMMMMMM    MMMMMMM,   MMMMMMMM MMMMMM     MMMMMMM  ');
 console.log('MMM   :MM    MM~    MM    MM7    MM          MM   MMM   MMMI   MM:   MM:   :MM ');
@@ -43,7 +43,6 @@ console.log('MM     MM    ,MMMMMMM     +MMMMMMMM    MMMMMMMM   MM    +MM    MMI 
 console.log('');
 console.log(sprintf('Hi Nobita! Doraemon is serving you at %s', port));
 console.log('Running in', APP_ENV, 'with', 'Enforce mobile', ENFORCE_MOBILE != 'false' ? 'enabled in ' + (ENFORCE_MOBILE) + ' mode' : 'disabled');
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

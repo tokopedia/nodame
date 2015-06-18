@@ -3,12 +3,12 @@ var router = express.Router();
 var async = require('async');
 var validate = require("validate.js");
 
-var path = helper.load.util('path');
-var utilHtml = helper.load.util('html');
+var path = nodame.import('path');
+var utilHtml = nodame.import('html');
 
-var service = helper.load.service('home');
+var service = nodame.service('home');
 
-router.get('/', function (req, res, next){
+router.get('/', function (req, res, next) {
     var greets = service.hello('World!');
 
     var html = utilHtml.new(req, res);
