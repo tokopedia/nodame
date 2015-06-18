@@ -103,9 +103,9 @@ module.exports = (function () {
         var self = this;
         var qs = require('query-string');
         var configs = {
-            url: this.config.get('server.url'),
-            app: this.config.get('app'),
-            assets: this.config.get('assets')
+            url: this.config('server.url'),
+            app: this.config('app'),
+            assets: this.config('assets')
         };
 
         return function (req, res, next) {
@@ -227,7 +227,7 @@ module.exports = (function () {
                     if (found !=+ null) {
                         for (var i in found) {
                             var vars = found[i].replace(/[%]*/g, '');
-                            str = str.replace(found[i], self.config.get('server.' + vars));
+                            str = str.replace(found[i], self.config('server.' + vars));
                         }
                     }
 
