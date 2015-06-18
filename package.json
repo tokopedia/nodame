@@ -36,7 +36,6 @@
     "raven": "^0.7.3",
     "redis": "~0.12.1",
     "serve-static": "~1.9.2",
-    "sprintf": ">=0.1.1",
     "sprintf-js": "~1.0.2",
     "swig": "~1.4.2",
     "validate.js": "~0.6.1"
