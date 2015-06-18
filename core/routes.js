@@ -40,7 +40,7 @@ function routes(app) {
             }
 
             if (__config.middleware) {
-                var middleware = require(path.normalize(APP_PATH + '/middlewares/' + module));
+                var middleware = require(path.normalize(__dirname + '/../../../middlewares/' + module));
                 app.use(route, middleware.init);
             }
 			
@@ -55,24 +55,15 @@ function routes(app) {
                 app.use(ajaxRoute, __handler);
             }
         }
-    }
-
-    if (helper.config.get('app.enable_elements')) {
-        app.use(appRoute + '/elements/:device([a-z]+)/:element([a-z-]+)', function (req, res) {
-            var element = req.params.element;
-            var device  = req.params.device;
-
-            res.render(path.join('elements', device, element));
-        });
-    }
+    } 
 
     // Redirect '/' to 'home'
     if (helper.config.get('app.root_redirect')) {
-        // app.use('/', function (req, res) {
-        //     var hostname = helper.config.get('server.url.hostname');
-        //     var url = hostname + path.normalize('/' + appName);
-        //     res.redirect(url);
-        // });
+        app.use('/', function (req, res) {
+            var hostname = helper.config.get('server.url.hostname');
+            var url = hostname + path.normalize('/' + appName);
+            res.redirect(url);
+        });
     }
 }
 

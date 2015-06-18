@@ -1,7 +1,44 @@
-SYS_PATH            = __dirname + '/..';
-APP_PATH            = SYS_PATH + '/../src';
-var express         = require('express');
+var argv            = require('commander');
 
+// Set argv options
+argv
+    .usage('[options] <file ...>')
+    .option('-c, --config <file>', 'Config file location')
+    .option('-e, --env <env>', 'Application environment')
+    .option('-s, --staging', 'Set staging environment')
+    .option('-p, --production', 'Set production environment')
+    .parse(process.argv);
+
+// Set environment to be excluded as Development
+var productionEnv   = ['production', 'staging'];
+// Set default environment
+APP_ENV             = 'development';
+
+if (argv.staging || argv.production) {
+    // Set priority in case all were called.
+    // Staging > Production
+    if (argv.production) {
+        APP_ENV = 'production';
+    }
+    
+    if (argv.staging) {
+        APP_ENV = 'staging';
+    }
+} else {
+    // Set priority in case both exist
+    // argv.env > process.env.NODE_ENV
+    if (process.env.NODE_ENV !== undefined) {
+        APP_ENV = process.env.NODE_ENV;
+    }
+    
+    if (argv.env !== undefined) {
+        APP_ENV = argv.env;
+    }
+}
+
+IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
+
+express         = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var device          = require('express-device');
@@ -11,28 +48,37 @@ var fs              = require('fs');
 // Global variable
 sprintf             = require('sprintf-js').sprintf;
 vsprintf            = require('sprintf-js').vsprintf;
-helper              = require('./helper.js');
+nodame              = require(__dirname + '/nodame.js');
 
 // Private Modules 
-var toml            = helper.load.util('toml-js');
-var path            = helper.load.util('path');
-
-// Environment constants 
-APP_ENV             = process.env.NODE_ENV !== undefined ? process.env.NODE_ENV : 'development';
-IS_DEV              = APP_ENV !== 'production' && APP_ENV !== 'staging';
-
-var file            = helper.load.util('file')(APP_ENV);
+var toml            = nodame.require('toml-js');
+var file            = nodame.require('file');
+var path            = nodame.require('path');
 
 // Expressjs initialization
 var app             = express();
 app.env             = APP_ENV;
+SYS_PATH            = path.normalize(__dirname + '/..');
+APP_PATH            = path.normalize(SYS_PATH + '/../..');
+
 // Trust proxy setup
 app.set('trust proxy', 'uniquelocal');
 app.enable('trust proxy');
 
 // Config
-var configPath      = IS_DEV ? 'config-devel' : 'config';
-var configStream    = path.normalize(APP_PATH + '/' + configPath + '/main.ini');
+var configStream;
+
+if (argv.config !== undefined) {
+    if (argv.config.substring(0,1) !== '/') {
+        configStream = path.normalize(sprintf('%s/%s', APP_PATH, argv.config));
+    } else {
+        configPath = path.normalize(argv.config);   
+    }
+} else {
+    var configDir = IS_DEV ? 'config-devel' : 'config';    
+    configStream  = path.normalize(sprintf('%s/%s/main.ini', APP_PATH, configDir));
+}
+
 var config          = toml.parse(fs.readFileSync(configStream));
 
 // Config constants
@@ -42,78 +88,83 @@ MOBILE_TEMPLATE     = config.app.mobile_template;
 ENFORCE_MOBILE      = config.app.enforce_mobile;
 API_PROTOCOL        = config.app.api_protocol;
 APPNAME             = config.app.appname;
+CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
-var assetsStream    = IS_DEV ? path.normalize(APP_PATH + '/config/assets.ini') : path.normalize(APP_PATH + '/config/.assets');
+var assetsFilename  = IS_DEV ? 'assets.ini' : '.assets';
+var assetsStream    = path.normalize(sprintf('%s/config/%s', APP_PATH, assetsFilename));
 config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(assetsStream);
 
 // Store config to app
-config.streams      = {config: configStream, assets: assetsStream};
 app.set('config', config);
-helper.config.set(config);
+nodame.config.set(config);
 
 
 
 // X-Powered-By header
 app.set('x-powered-by', config.server.enable_powered_by);
 
+// Device capture
+app.use(device.capture());
+
 // Log setup
-var logger        = require('./logger.js');
+var logger        = require(__dirname + '/logger.js');
 app.use(logger.error());
 app.use(logger.access());
+
+// Block favicon
+app.use(function (req, res, next) {
+    if (req.url === '/favicon.ico') {
+        res.writeHead(200, {'Content-Type': 'image/x-icon'});
+        res.end();
+    } else {
+        next();
+    }
+});
+
+// Static server setup
+if (config.server.assets.serve_static) {
+    var assetsRoute = path.normalize(sprintf('/%s', config.server.assets.route));
+    var assetsDir   = path.normalize(sprintf('%s/%s', SYS_PATH, config.server.assets.dir));
+
+    app.use(assetsRoute, require('serve-static')(assetsDir));
+}
 
 // View engine setup
 require('./views')(app);
 
 // Redirect non-https on production
-if (config.server.enforce_secure_connection) {
-    app.use(function (req, res, next) {
-        if (!IS_DEV) {
-            if (!req.secure) {
-                res.redirect(config.server.url.hostname + req.originalUrl);
-                next = false;
-            }
+app.use(function (req, res, next) {
+    if (!IS_DEV) {
+        if (!req.secure) {
+            res.redirect(config.server.url.hostname + req.originalUrl);
+            next = false;
         }
+    }
 
-        if (next) return next();
-    });
-}
+    if (next) return next();
+});
 
 // Middlewares Setups
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(methodOverride());
-app.use(device.capture());
-
-// Favicon setup
-if (config.server.assets.serve_favicon) {
-    var faviconPath = path.normalize(sprintf('%s/%s/%s', APP_PATH, config.server.assets.dir, config.server.assets.favicon));
-    app.use(require('serve-favicon')(faviconPath));
-}
-
-// Static server setup
-if (config.server.assets.serve_static) {
-    var assetsRoute = path.normalize(sprintf('/%s', config.server.assets.route));
-    var assetsDir   = path.normalize(sprintf('%s/%s', APP_PATH, config.server.assets.dir));
-
-    app.use(assetsRoute, require('serve-static')(assetsDir));
-}
 
 // Locals setup
-require('./locals')(app);
+require(__dirname + '/locals')(app);
 
 // i18n setup
-require('./i18n')(app);
+require(__dirname + '/i18n')(app);
 
 // Numeral setup
-require('./numeral')(app);
+require(__dirname + '/numeral')(app);
 
 // Enforce mobile setup
-app.use(helper.enforceMobile());
+app.use(nodame.enforceMobile());
 
 // Locals helper setup
-app.use(helper.locals(app));
+app.use(nodame.locals(app));
 
 app.use(function (req, res, next) {
     res.locals.path = new Object();
@@ -126,7 +177,7 @@ app.use(function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (MAINTENANCE) {
-        html = helper.load.util('html').new(req, res);
+        html = nodame.require('html').new(req, res);
         html.headTitle('Tokopedia');
         html.headDescription('tokopedia');
         res.status(503);
@@ -140,10 +191,10 @@ app.use(function (req, res, next) {
 });
 
 // Routes setup
-require('./routes')(app);
+require(__dirname + '/routes')(app);
 
 // Errors setup
-require('./errors')(app);
+require(__dirname + '/errors')(app);
 
 module.exports = app;
 

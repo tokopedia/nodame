@@ -1,9 +1,9 @@
 var assetmanager = require('assetmanager');
-var path         = helper.load.util('path');
 
 function assets(app) {
+    var configDir = CONFIG_DIR_PATH || __dirname _ + '/../../../config';
     return assetmanager.process({
-            assets: require(APP_PATH + '/config/assets.json'),
+            assets: require(configDir + '/assets.json'),
             debug: IS_DEV,
             webroot: 'public/kai'
         });

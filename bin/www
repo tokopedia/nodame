@@ -3,16 +3,15 @@
 /**
  * Module dependencies.
  */
-var version = '0.1.0';
-var app     = require('../core/app');
-var debug   = require('debug')('desktop-kai:server');
-var http    = require('http');
+var app = require(__dirname + '/../core/app');
+var debug = require('debug')('desktop-kai:server');
+var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port    = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3000');
 
 // overwrite port from config
 if (app.settings.config.server.port != null) {
@@ -31,34 +30,19 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 console.log('');
-console.log('88b 88  dP"Yb  8888b.     db    8b    d8 888888 ');
-console.log('88Yb88 dP   Yb  8I  Yb   dPYb   88b  d88 88__   ');
-console.log('88 Y88 Yb   dP  8I  dY  dP__Yb  88YbdP88 88""   ');
-console.log('88  Y8  YbodP  8888Y"  dP""""Yb 88 YY 88 888888 ');
+console.log('                                 MM                                            ');
+console.log('                                 MM                                        v0.1');
+console.log('                                 MM                                            ');
+console.log('MM?MMMMMO     MMMMMMM      MMMMMMMM    MMMMMMM,   MMMMMMMM MMMMMM     MMMMMMM  ');
+console.log('MMM   :MM    MM~    MM    MM7    MM          MM   MMM   MMMI   MM:   MM:   :MM ');
+console.log('MM     MM   MMZ     8MD  MMM     MM       ,,,MM   MM    IMM    MMI  MMM     MM+');
+console.log('MM     MM   MM+     ~MM  MM:     MM    ZMMMMMMM   MM    +MM    MMI  MMMMMMMMMM$');
+console.log('MM     MM   MM7     7MM  MMI     MM   8MM    MM   MM    +MM    MMI  MMM        ');
+console.log('MM     MM    MM     MM,  $MM     MM   DM7    MM   MM    +MM    MMI   MM        ');
+console.log('MM     MM    ,MMMMMMM     +MMMMMMMM    MMMMMMMM   MM    +MM    MMI    MMMMMMM$ ');
 console.log('');
-
-var date  = new Date();
-var month = date.toString().split(' ')[1];
-var time  = date.toString().split(' ')[4];
-var now   = sprintf('%s %s %s', date.getDate(), month, time);
-
-console.log(sprintf('%s - [nodame] version: %s', now, version));
-console.log(sprintf('%s - [nodame] port: %s', now, port));
-console.log(sprintf('%s - [nodame] environment: %s', now, APP_ENV));
-console.log(sprintf('%s - [nodame] development: %s', now, IS_DEV));
-console.log(sprintf('%s - [nodame] config file: %s', now, app.settings.config.streams.config));
-console.log(sprintf('%s - [nodame] assets file: %s', now, app.settings.config.streams.assets));
-
-var enforceMobileStrings = {
-    false   : 'enforce mobile is disabled',
-    soft    : 'enforced to use mobile views',
-    hard    : 'disabling access from other devices'
-};
-
-console.log(sprintf('%s - [nodame] enforce mobile: %s, %s', now, ENFORCE_MOBILE, enforceMobileStrings[ENFORCE_MOBILE]));
-console.log('');
-console.log('Hi Nobita! Doraemon is serving you now!');
-console.log(' ');
+console.log(sprintf('Hi Nobita! Doraemon is serving you at %s', port));
+console.log('Running in', APP_ENV, 'with', 'Enforce mobile', ENFORCE_MOBILE != 'false' ? 'enabled in ' + (ENFORCE_MOBILE) + ' mode' : 'disabled');
 
 server.listen(port);
 server.on('error', onError);

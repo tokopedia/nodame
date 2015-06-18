@@ -5,10 +5,6 @@ var parse = require('parse-duration');
 
 var parent = this;
 exports.new = function (req, res) {
-    var settings = {
-        assetsName: 'global'
-    };
-
     var stash = {
         __stash: new Object(),
         __get: function (obj, params) {
@@ -28,7 +24,6 @@ exports.new = function (req, res) {
         set: function (key, value) {
             if(key) {
                 this.__stash[key] = value;
-                // console.log('__stash', this.__stash);
             }
         },
         get: function (params) {
@@ -39,24 +34,24 @@ exports.new = function (req, res) {
 
     var __initHead = function () {
         var configServer = helper.config.get('server');
-        var configApp    = helper.config.get('app');
+
         //head title
         if(!stash.get('headTitle')) {
-            stash.set('headTitle', configApp.meta.title);
+            stash.set('headTitle', 'Pesan Tiket Kereta Api Online, Harga Promo dan Murah - Tokopedia');
         }
 
-        //head description
+        //head desctiption
         if(!stash.get('headDescription')) {
-            stash.set('headDescription', configApp.meta.description);
+            stash.set('headDescription', 'Cari dan Beli Tiket Kereta Api menjadi lebih mudah di Tokopedia. Pesan dan Reservasi tiket KAI langsung secara online. Praktis, aman dan nyaman, semua ada di Tokopedia.');
         }
 
         //refback
         if(res && res.locals.refback) {
             stash.set('refback', res.locals.refback);
-        } 
+        }
         if(!stash.get('refback')) {
             stash.set('refback', configServer.url.base)
-        }    
+        }
     }
 
     var assetsName = function (assetsName) {
@@ -64,8 +59,8 @@ exports.new = function (req, res) {
     }
 
     var showDrawer = function (activeMenu) {
-        stash.set('showDrawer', {
-            activeMenu: activeMenu
+        stash.set('showMenu', {
+            active: activeMenu
         });
     }
 
@@ -127,73 +122,95 @@ exports.new = function (req, res) {
         //flash messages
         if(req && req.cookies) {
             var fm = req.cookies.fm;
-            var redis = helper.load.util('redis');
-            var redisClient = redis.getClient('session', 'slave', 1);
 
-            var keyFm = 'flashMessages:' + fm;
-            // console.log(keyFm);
-            redisClient.lrange(keyFm, 0, -1, function (err, reply) {
-                if(reply) {
-                    // console.log(reply);
-                    for (var i in reply) {
-                        var msg = JSON.parse(reply[i]);
-                        setMessages(msg.type, msg.text)
+            if(fm) {
+                var redis = helper.load.util('redis');
+                var redisClient = redis.getClient('session', 'slave', 1);
+
+                var keyFm = 'flashMessages:' + fm;
+                // console.log(keyFm);
+                redisClient.lrange(keyFm, 0, -1, function (err, reply) {
+                    if(reply) {
+                        // console.log(reply);
+                        for (var i in reply) {
+                            var msg = JSON.parse(reply[i]);
+                            setMessages(msg.type, msg.text)
+                        }
+                        redisClient.del(keyFm);
+
+                        // console.log('clearCookie start', fm);
+                        res.clearCookie('fm', {
+                            domain: '.' + helper.config.get('server.domain')
+                        });
+                        // console.log('clearCookie end');
+
+                        callback();
+                    } else {
+                        callback();
                     }
-                    redisClient.del(keyFm);
-                    res.clearCookie('fm', {
-                        domain: '.' + helper.config.get('server.domain')
-                    });
-
-                    callback();
-                } else {
-                    callback();
-                }
-            });
+                });
+            } else {
+                callback();
+            }
         } else {
             callback();
-        } 
+        }
     }
 
     var render = function (args) {
+        // console.log('Render html');
         __initFlashMessages(function() {
+            // console.log('callback __initFlashMessages');
             __initHead();
-
-            if (!stash.__stash.assetsName) {
-                stash.__stash.assetsName = settings.assetsName;
-            }
-
+            // console.log('__initHead');
             res.render(path.view(req, args.module, args.file), stash.__stash, function(err, html) {
+                // console.log('callback html', err);
 
-                if(args.cache) {
-                    var redis = helper.load.util('redis');
-                    var redisClient = redis.getClient('html', 'slave', 1);
-
-                    var keyRedis = 'html:' + md5(req.originalUrl);
-                    redisClient.hset(keyRedis, req.device.type, html);
-
-                    redisClient.expire(keyRedis, parse(args.cache) / 1000);
-                }                
-
-                res.send(html);
-            });    
+                if(err) {
+                    res.end();
+                } else {
+                    if(args.cache) {
+                        var redis       = helper.load.util('redis');
+                        var redisClient = redis.getClient('html', 'master', 1);
+                        var hostname    = helper.config.get('server.url.hostname');
+                        var uri         = req.originalUrl;
+                        var url         = path.normalize(hostname + uri);
+                        var keyRedis = 'html:' + md5(url);
+                        redisClient.hset(keyRedis, req.device.type, html, function(err, reply){
+                                if(err) {
+                                    console.log('hset render err', err);
+                                } else {
+                                    redisClient.expire(keyRedis, parse(args.cache) / 1000);
+                                }
+                        });
+                    }
+                    res.send(html);
+                }
+            });
         });
-       
+
     }
 
     var renderCache = function (callback) {
-        var redis = helper.load.util('redis');
+        var redis       = helper.load.util('redis');
         var redisClient = redis.getClient('html', 'slave', 1);
+        var hostname    = helper.config.get('server.url.hostname');
+        var uri         = req.originalUrl;
+        var url         = path.normalize(hostname + uri);
+        var keyRedis    = 'html:' + md5(url);
 
-        var keyRedis = 'html:' + md5(req.hostname + req.originalUrl);
-        
-        redisClient.hget(keyRedis, req.device.type, function (err, reply) {
-            if(reply) {
-                res.send(reply.toString());
-                callback(true);
-            } else {
-                callback(false);
-            }
-        });
+        if (helper.config.get('app.html_cache')) {
+            redisClient.hget(keyRedis, req.device.type, function (err, reply) {
+                if(reply) {
+                    res.send(reply.toString());
+                    callback(true);
+                } else {
+                    callback(false);
+                }
+            });
+        } else {
+            callback(false);
+        }
     }
 
     var locales = function (locales) {

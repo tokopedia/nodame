@@ -10,7 +10,7 @@ var logger = (function () {
     switch (client) {
         case 'sentry':
             var raven        = require('raven');
-            var sentryClient = new raven.Client('https://3453886672ef43feb89b2cd91520039e:97e43c27326b4d3aa135791baf77b2c7@app.getsentry.com/41828');
+            var sentryClient = new raven.Client(helper.config.get('logger.sentry_dns'));
             break;
 
         default:
@@ -131,16 +131,20 @@ var logger = (function () {
                             break;
                     }
 
+                    var hostname = helper.config.get('server.url.hostname');
+
+                    var ua = __useragent();
+                    var idDesc = details.split('.')[0];
+                    var errorDetails = {
+                        id: title,
+                        title: idDesc,
+                        detail: details 
+                    };
                     var message = title;
 
                     if (details) {
-                        message += sprintf(': %s', details); 
+                        message += sprintf(': %s', idDesc); 
                     }
-
-                    var hostnameVar = req.secure ? 'secure_hostname' : 'hostname';
-                    var hostname = helper.config.get('server.url.' + hostnameVar);
-
-                    var ua = __useragent();
 
                     var options = {
                         level: __level,
@@ -154,7 +158,8 @@ var logger = (function () {
                             os: ua.os
                         },
                         extra: {
-                            Headers: req.headers         
+                            Headers: req.headers,
+                            Body: errorDetails
                         }
                     };
 
@@ -174,7 +179,7 @@ var logger = (function () {
                     
                     var re = /[(][^)]+[)]/gi;
                     var found = ua.match(re);
-                    var os = found[0];
+                    var os = found ? found[0] : 'No OS';
                     os = os.replace(/_/g, '.'); 
                     os = os.replace(/[()]*/g, ''); 
                     os = os.replace(/^[a-z0-9 ]+[;][ ]/i, '');
@@ -197,7 +202,7 @@ var logger = (function () {
                 var __logger = function (level, title, details) {
                     var message = errString(title, details);
                     
-                    if (IS_DEV) {
+                    if (IS_DEV && title !== 404) {
                         console.log('ERROR:'.bold.underline.red);
                         console.log(sprintf('%s %s', date, message));
                     }
