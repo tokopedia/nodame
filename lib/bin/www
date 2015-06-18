@@ -27,6 +27,7 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+console.log('');
 console.log('version', nodame.settings.app.version);
 console.log('');
 console.log('                                 MM                                            ');
