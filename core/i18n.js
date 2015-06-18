@@ -7,7 +7,7 @@ function i18n(app) {
         cookieName: 'lang',
         directory: __dirname + '/../src/locales/'
     });
-    app.use(function(req, res, next) {
+    app.use(function (req, res, next) {
         req.i18n.setLocaleFromQuery();
         req.i18n.setLocaleFromCookie();
         next();

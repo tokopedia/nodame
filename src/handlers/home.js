@@ -8,7 +8,7 @@ var utilHtml = nodame.import('html');
 
 var service = nodame.service('home');
 
-router.get('/', function (req, res, next){
+router.get('/', function (req, res, next) {
     var greets = service.hello('World!');
 
     var html = utilHtml.new(req, res);

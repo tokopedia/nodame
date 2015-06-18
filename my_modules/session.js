@@ -1,6 +1,6 @@
-var async       = require('async');
+var async       = nodame.import('async');
 var httpRequest = nodame.import('http-request');
-var sha384      = require('js-sha512').sha384;
+var sha384      = nodame.import('js-sha512').sha384;
 var parent      = this;
 
 var clientRedisSession = {};

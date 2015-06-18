@@ -1,6 +1,6 @@
-var redis       = require("redis");
-var md5         = require('MD5');
-var jumphash    = require('jumphash');
+var redis       = nodame.import("redis");
+var md5         = nodame.import('MD5');
+var jumphash    = nodame.import('jumphash');
 var parent      = this;
 var redisPool   = {};
 
@@ -12,7 +12,7 @@ exports.getClient = function (mapShard, replication, key) {
         if (!replication) {
             replication = 'master';
         }
-        
+
         if (!key) {
             key = 1;
         }
@@ -22,7 +22,7 @@ exports.getClient = function (mapShard, replication, key) {
         var connectionId        = md5(connectionString);
         var redisGroup          = configRedis[conn[indexShard]];
         var redisConTemp        = redisGroup[replication].split(':');
-        
+
         if (!redisPool[connectionId]) {
             redisPool[connectionId] = redis.createClient(redisConTemp[1], redisConTemp[0], {});
 

@@ -1,4 +1,3 @@
-//data: result API
 exports.parse = function (data) {
     var result = {};
     try {

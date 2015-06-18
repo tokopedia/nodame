@@ -1,21 +1,21 @@
-var path = require('path');
-var swig = require('swig');
+var path = nodame.import('path');
+var swig = nodame.import('swig');
 
 function views(app) {
     app.engine('html', swig.renderFile)
-    app.set('views', __dirname + '/../src/views');
+    app.set('views', nodame.path.app + '/views');
     app.set('view engine', 'html');
 
     var swigLocals = {
         'currentYear': (new Date()).getFullYear(),
         'is_dev': IS_DEV,
         'menu': nodame.config.get('menu')
-        // 'processTime': function() {
+        // 'processTime': function () {
         //     return '0.000000';
         // }
     };
 
-    if(IS_DEV) {
+    if (IS_DEV) {
         app.set('view cache', false);
         swig.setDefaults({
             locals: swigLocals,
@@ -91,8 +91,8 @@ function filterRange(arr, start, end, step) {
 
 }
 
-function filterEven(input){
-    if(input % 2 == 0){
+function filterEven(input) {
+    if (input % 2 == 0) {
         return true;
     }
     else{

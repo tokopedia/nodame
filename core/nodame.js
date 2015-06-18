@@ -57,27 +57,30 @@ module.exports = (function () {
         };
     })();
 
+    var getFilePath = function (module, name) {
+        var dirname = module === 'my_modules' ? path.system : path.app;
+        return pathMod.normalize(sprintf('%s/%s/%s', dirname, module, name));
+    }
+
     var load = function (name) {
-        var filepath = pathMod.normalize(sprintf('%s/my_modules/%s', path.system, name));
-
         try {
-            return require(filepath);
-        }
-
-        catch (e) {
+            return require(getFilePath('my_modules', name));
+        } catch (e) {
             return require(name);
         }
     };
 
     var service = function (name) {
-        var filepath = pathMod.normalize(sprintf('%s/services/%s', path.app, name));
-        return require(filepath);
+        return require(getFilePath('services', name));
     };
 
     var handler = function (name) {
-        var filepath = pathMod.normalize(sprintf('%s/handlers/%s', path.app, name));
-        return require(filepath);
+        return require(getFilePath('handlers', name));
     };
+
+    var middleware = function (name) {
+        return require(getFilePath('middleware', name));
+    }
 
     var enforceMobile = function () {
         var self = this;
@@ -184,7 +187,7 @@ module.exports = (function () {
                         }
                     }
 
-                    return date.toString().replace(/^([a-z]{1,3}) ([a-z]{1,3}) ([0-9]{1,2}) ([0-9]{1,4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}) GMT([-+][0-9]{1,4}) (\([a-z ]+\))$/i, function(match, $1, $2, $3, $4, offset, original) {
+                    return date.toString().replace(/^([a-z]{1,3}) ([a-z]{1,3}) ([0-9]{1,2}) ([0-9]{1,4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}) GMT([-+][0-9]{1,4}) (\([a-z ]+\))$/i, function (match, $1, $2, $3, $4, offset, original) {
 
                         var res = '';
 
@@ -218,7 +221,7 @@ module.exports = (function () {
 
                         html += '<script type="text/javascript">';
 
-                        html += 'function __(a){' + localesData + 'return b[a];}';
+                        html += 'function __(a) {' + localesData + 'return b[a];}';
                         html += '</script>';
                     }
 
@@ -368,11 +371,12 @@ module.exports = (function () {
         express: express,
         router: router,
         path: path,
-        config: config,
-        enforceMobile: enforceMobile,
-        locals: locals,
         import: load,
         service: service,
-        handler: handler
+        handler: handler,
+        middleware: middleware,
+        config: config,
+        enforceMobile: enforceMobile,
+        locals: locals
     }
 })();

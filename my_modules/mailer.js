@@ -1,13 +1,13 @@
-var mandrill = require('mandrill-api/mandrill');
+var mandrill = nodame.import('mandrill-api/mandrill');
 
 var mailer = (function () {
-    var key = nodame.config.get('email.mandrill_key');
-    var client = new mandrill.Mandrill(key);
-    var body = '';
+    var key         = nodame.config.get('email.mandrill_key');
+    var client      = new mandrill.Mandrill(key);
+    var body        = '';
     var bodyBaseDir = nodame.path.app + '/views/emails/';
 
-    var send = function (toAddr, toName, subject, html) {
-        var config = nodame.config.get('email');
+    var send        = function (toAddr, toName, subject, html) {
+        var config  = nodame.config.get('email');
         var message = {
             'html'      : html,
             'subject'   : subject,
@@ -41,7 +41,7 @@ var mailer = (function () {
             var __message = 'A mandrill error occurred: ' + e.name + ' - ' + e.message;
             log.alert(__message);
             console.log(__message);
-        });    
+        });
     };
 
     var alert = function (subject, err) {
@@ -76,7 +76,7 @@ var mailer = (function () {
             console.log(result);
         }, function (e) {
             console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
-        });        
+        });
     };
 
     return {

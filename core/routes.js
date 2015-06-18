@@ -1,5 +1,5 @@
 var path    = nodame.import('path');
-var redis   = require("redis");
+var redis   = nodame.middleware(redis);
 
 function routes(app) {
     var appName       = nodame.config.get('app.appname');
@@ -14,7 +14,7 @@ function routes(app) {
     app.use(function (req, res, next) {
         //refback
         var refback;
-        if(req.query.refback) {
+        if (req.query.refback) {
             refback = req.query.refback;
             res.locals.refback = refback;
         }
@@ -40,7 +40,7 @@ function routes(app) {
             }
 
             if (__config.middleware) {
-                var middleware = require(path.normalize(__dirname + '/../../../middlewares/' + module));
+                var middleware = nodame.middleware(module);
                 app.use(route, middleware.init);
             }
 

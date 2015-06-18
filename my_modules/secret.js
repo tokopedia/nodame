@@ -1,4 +1,4 @@
-var sha384 = require('js-sha512').sha384;
+var sha384 = nodame.import('js-sha512').sha384;
 
 exports.getHash = function (type, id) {
     var secretKey = nodame.config.get('secret_key');

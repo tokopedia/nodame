@@ -1,7 +1,7 @@
-var validate = require("validate.js");
+var validate = nodame.import("validate.js");
 
 exports.__trim = function (str, middle) {
-    if(middle) {
+    if (middle) {
         re = /[ ]+/g;
         str = str.replace(re, ' ');
     }
@@ -11,12 +11,12 @@ exports.__trim = function (str, middle) {
 }
 
 exports.trim = function (data, middle) {
-    if(validate.isObject(data)) {
-        if(validate.isArray(data)) {
+    if (validate.isObject(data)) {
+        if (validate.isArray(data)) {
             var temp = [];
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
-                    if(validate.isString(data[key])) {
+                    if (validate.isString(data[key])) {
                         temp.push(this.__trim(data[key], middle));
                     } else {
                         temp.push(data[key]);
@@ -28,7 +28,7 @@ exports.trim = function (data, middle) {
             var temp = {};
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
-                    if(validate.isString(data[key])) {
+                    if (validate.isString(data[key])) {
                         temp[key] = this.__trim(data[key], middle);
                     } else {
                         temp[key] = data[key];
@@ -38,14 +38,9 @@ exports.trim = function (data, middle) {
             return temp;
         }
     } else {
-        if(validate.isString(data)) {
+        if (validate.isString(data)) {
             return this.__trim(data, middle);
         }
     }
     return data;
 };
-
-
-
-
-

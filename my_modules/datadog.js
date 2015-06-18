@@ -1,19 +1,13 @@
-var StatsD = require('node-dogstatsd').StatsD;
+var StatsD = nodame.import('node-dogstatsd').StatsD;
 var parent = this;
 var clientStatsD;
 
 exports.getClient = function () {
     var configDatadog = nodame.config.get('datadog');
-    
-    // console.log(configDatadog);
 
-    if(!clientStatsD) {
+    if (!clientStatsD) {
         clientStatsD = new StatsD(configDatadog.host, configDatadog.port);
     }
-
-    // clientStatsD.socket.on('error', function (exception) {
-    //     console.log ("error event in socket.send(): " + exception);
-    // });
 
     return clientStatsD;
 }

@@ -1,9 +1,8 @@
-var path = nodame.import('path');
-var uuid = require('node-uuid');
-var md5 = require('MD5');
-var parse = require('parse-duration');
+var path    = nodame.import('path');
+var uuid    = nodame.import('node-uuid');
+var md5     = nodame.import('MD5');
+var parse   = nodame.import('parse-duration');
 
-var parent = this;
 exports.new = function (req, res) {
     var stash = {
         __stash: new Object(),
@@ -22,7 +21,7 @@ exports.new = function (req, res) {
             }
         },
         set: function (key, value) {
-            if(key) {
+            if (key) {
                 this.__stash[key] = value;
             }
         },
@@ -36,20 +35,20 @@ exports.new = function (req, res) {
         var configServer = nodame.config.get('server');
 
         //head title
-        if(!stash.get('headTitle')) {
+        if (!stash.get('headTitle')) {
             stash.set('headTitle', 'Pesan Tiket Kereta Api Online, Harga Promo dan Murah - Tokopedia');
         }
 
         //head desctiption
-        if(!stash.get('headDescription')) {
+        if (!stash.get('headDescription')) {
             stash.set('headDescription', 'Cari dan Beli Tiket Kereta Api menjadi lebih mudah di Tokopedia. Pesan dan Reservasi tiket KAI langsung secara online. Praktis, aman dan nyaman, semua ada di Tokopedia.');
         }
 
         //refback
-        if(res && res.locals.refback) {
+        if (res && res.locals.refback) {
             stash.set('refback', res.locals.refback);
         }
-        if(!stash.get('refback')) {
+        if (!stash.get('refback')) {
             stash.set('refback', configServer.url.base)
         }
     }
@@ -71,12 +70,12 @@ exports.new = function (req, res) {
 
     var headTitle = function (title, page) {
         var headTitle;
-        if(title.toLowerCase() == 'tokopedia') {
+        if (title.toLowerCase() == 'tokopedia') {
             headTitle = 'Tokopedia';
         } else {
             headTitle = title + ' | Tokopedia';
 
-            if(page) {
+            if (page) {
                 headTitle = headTitle + ', ' + 'Halaman' + ' ' + page;
             }
         }
@@ -89,7 +88,7 @@ exports.new = function (req, res) {
 
     var setMessages = function (type, text) {
         var messages = stash.get('messages');
-        if(messages === undefined) {
+        if (messages === undefined) {
             messages = [];
         }
         messages.push({
@@ -103,7 +102,7 @@ exports.new = function (req, res) {
     var setFlashMessages = function (type, text) {
         var redis = nodame.import('redis');
         var fm = req.cookies.fm;
-        if(!fm) {
+        if (!fm) {
             fm = uuid.v4();
             res.cookie('fm', fm, {
                 domain: '.' + nodame.config.get('server.domain'),
@@ -118,19 +117,19 @@ exports.new = function (req, res) {
         redisClient.expire(keyFm, 600);
     }
 
-    var __initFlashMessages = function(callback) {
+    var __initFlashMessages = function (callback) {
         //flash messages
-        if(req && req.cookies) {
+        if (req && req.cookies) {
             var fm = req.cookies.fm;
 
-            if(fm) {
+            if (fm) {
                 var redis = nodame.import('redis');
                 var redisClient = redis.getClient('session', 'slave', 1);
 
                 var keyFm = 'flashMessages:' + fm;
                 // console.log(keyFm);
                 redisClient.lrange(keyFm, 0, -1, function (err, reply) {
-                    if(reply) {
+                    if (reply) {
                         // console.log(reply);
                         for (var i in reply) {
                             var msg = JSON.parse(reply[i]);
@@ -159,25 +158,26 @@ exports.new = function (req, res) {
 
     var render = function (args) {
         // console.log('Render html');
-        __initFlashMessages(function() {
+        __initFlashMessages(function () {
             // console.log('callback __initFlashMessages');
             __initHead();
             // console.log('__initHead');
-            res.render(path.view(req, args.module, args.file), stash.__stash, function(err, html) {
+            console.log('VIEW', path.view(req, args.module, args.file));
+            res.render(path.view(req, args.module, args.file), stash.__stash, function (err, html) {
                 // console.log('callback html', err);
-
-                if(err) {
+                console.log('STASH', stash);
+                if (err) {
                     res.end();
                 } else {
-                    if(args.cache) {
+                    if (args.cache) {
                         var redis       = nodame.import('redis');
                         var redisClient = redis.getClient('html', 'master', 1);
                         var hostname    = nodame.config.get('server.url.hostname');
                         var uri         = req.originalUrl;
                         var url         = path.normalize(hostname + uri);
                         var keyRedis = 'html:' + md5(url);
-                        redisClient.hset(keyRedis, req.device.type, html, function(err, reply){
-                                if(err) {
+                        redisClient.hset(keyRedis, req.device.type, html, function (err, reply) {
+                                if (err) {
                                     console.log('hset render err', err);
                                 } else {
                                     redisClient.expire(keyRedis, parse(args.cache) / 1000);
@@ -201,7 +201,7 @@ exports.new = function (req, res) {
 
         if (nodame.config.get('app.html_cache')) {
             redisClient.hget(keyRedis, req.device.type, function (err, reply) {
-                if(reply) {
+                if (reply) {
                     res.send(reply.toString());
                     callback(true);
                 } else {
@@ -233,4 +233,3 @@ exports.new = function (req, res) {
         res: res
     }
 }
-
