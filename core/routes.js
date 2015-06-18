@@ -1,5 +1,5 @@
 var path    = nodame.import('path');
-var redis   = nodame.middleware(redis);
+var redis   = nodame.import(redis);
 
 function routes(app) {
     var appName       = nodame.config.get('app.appname');
