@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "homepage": "https://github.com/tokopedia/nodame",
   "authors": [
-    "Argi Karunia <hkyo89@yahoo.co.jp>"
+    "Argi Karunia <https://github.com/hKyo89>",
+    "Teddy Hong <https://github.com/teddyhong>"
   ],
   "license": "MIT",
   "private": true,
