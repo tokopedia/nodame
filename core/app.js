@@ -67,13 +67,13 @@ var configStream;
 
 if (argv.config !== undefined) {
     if (argv.config.substring(0,1) !== '/') {
-        configStream = path.normalize(sprintf('%s/%s', nodame.path.app, argv.config));
+        configStream = path.normalize(sprintf('%s/%s', nodame.appPath(), argv.config));
     } else {
         configPath = path.normalize(argv.config);
     }
 } else {
     var configDir = IS_DEV ? 'config-devel' : 'config';
-    configStream  = path.normalize(sprintf('%s/%s/main.ini', nodame.path.app, configDir));
+    configStream  = path.normalize(sprintf('%s/%s/main.ini', nodame.appPath(), configDir));
 }
 
 var config          = toml.parse(fs.readFileSync(configStream));
@@ -89,12 +89,12 @@ CONFIG_DIR_PATH     = configStream.replace(/\/[a-zA-Z0-9\-\.]+$/, '');
 
 // Load and store assets config
 var assetsFilename  = IS_DEV ? 'assets.ini' : '.assets';
-var assetsStream    = path.normalize(sprintf('%s/config/%s', nodame.path.app, assetsFilename));
+var assetsStream    = path.normalize(sprintf('%s/config/%s', nodame.appPath(), assetsFilename));
 config.assets       = IS_DEV ? file.readGRUNT(assetsStream) : file.readJSON(assetsStream);
 
 // Store config to app
 app.set('config', config);
-nodame.config.set(config);
+nodame.set('config', config);
 
 
 
@@ -122,7 +122,7 @@ app.use(function (req, res, next) {
 // Static server setup
 if (config.server.assets.serve_static) {
     var assetsRoute = path.normalize(sprintf('/%s', config.server.assets.route));
-    var assetsDir   = path.normalize(sprintf('%s/%s', nodame.path.system, config.server.assets.dir));
+    var assetsDir   = path.normalize(sprintf('%s/%s', nodame.sysPath(), config.server.assets.dir));
 
     app.use(assetsRoute, require('serve-static')(assetsDir));
 }

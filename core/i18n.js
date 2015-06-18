@@ -1,11 +1,11 @@
-var I18n = require(__dirname + '/../my_modules/i18n');
+var I18n = nodame.import('i18n');
 
 function i18n(app) {
     I18n.expressBind(app, {
         locales: ['id', 'en'],
         defaultLocale: 'id',
         cookieName: 'lang',
-        directory: __dirname + '/../src/locales/'
+        directory: nodame.appPath() + '/locales/'
     });
     app.use(function (req, res, next) {
         req.i18n.setLocaleFromQuery();

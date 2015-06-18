@@ -3,7 +3,7 @@ var swig = nodame.import('swig');
 
 function views(app) {
     app.engine('html', swig.renderFile)
-    app.set('views', nodame.path.app + '/views');
+    app.set('views', nodame.appPath() + '/views');
     app.set('view engine', 'html');
 
     var swigLocals = {

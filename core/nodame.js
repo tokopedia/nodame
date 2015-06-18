@@ -1,29 +1,33 @@
 var numeral = require('numeral');
-var pathMod = require('path');
+var path    = require('path');
 
 module.exports = (function () {
+    var settings = {};
+
+    var set = function (key, obj) {
+        if (key === undefined || obj === undefined) {
+            throw new Errors('Invalid settings set parameters.');
+        }
+
+        settings[key] = obj;
+    };
+
     var express = require('express');
 
-    var router = function () {
+    var router  = function () {
         return this.express.Router();
     }
 
-    var path    = (function () {
-        var system = pathMod.normalize(__dirname + '/..');
+    var sysPath = function () {
+        return path.normalize(__dirname + '/..');
+    }
 
-        var app = pathMod.normalize(__dirname + '/../../..');
+    var appPath = function () {
+        return path.normalize(sysPath + '/../..');
+    }
 
-        return {
-            system: system,
-            app: app
-        }
-
-    })();
-
-    var config  = (function () {
-        var __config = new Object();
-
-        var __get = function (obj, params) {
+    var config  = function (key) {
+        var read = function (obj, params) {
             if (params.length == 0) {
                 return obj;
             }
@@ -31,31 +35,24 @@ module.exports = (function () {
             if (params.length > 1) {
                 obj = obj[params[0]];
                 params.shift();
-                return __get(obj, params);
+                return read(obj, params);
             } else {
                 obj = obj[params[0]];
                 return obj;
             }
         };
 
-        var set = function (config) {
-            __config = config;
-        };
+        var get = function () {
+            key = key.split('.');
+            return read(settings.config, key);
+        }
 
-        var get = function (params) {
-            params = params.split('.');
-            return __get(__config, params);
-        };
-
-        return {
-            set: set,
-            get: get
-        };
-    })();
+        return get();
+    };
 
     var __getFilePath = function (module, name) {
-        var dirname = module === 'my_modules' ? path.system : path.app;
-        return pathMod.normalize(sprintf('%s/%s/%s', dirname, module, name));
+        var dirname = module === 'my_modules' ? sysPath : appPath;
+        return path.normalize(sprintf('%s/%s/%s', dirname, module, name));
     }
 
     var load = function (name) {
@@ -251,12 +248,12 @@ module.exports = (function () {
                 },
                 url: {
                     base: function (uri, params) {
-                        var uri = pathMod.normalize('/' + uri);
+                        var uri = path.normalize('/' + uri);
                         var url = configs.url.base + uri;
                         return this.stringify(url, params);
                     },
                     assets: function (uri, params) {
-                        var uri = pathMod.normalize('/' + uri);
+                        var uri = path.normalize('/' + uri);
                         var url = configs.url.assets + uri;
                         return this.stringify(url, params);
                     },
@@ -364,15 +361,19 @@ module.exports = (function () {
     };
 
     return {
-        express: express,
-        router: router,
-        path: path,
-        import: load,
-        service: service,
-        handler: handler,
-        middleware: middleware,
-        config: config,
-        enforceMobile: enforceMobile,
-        locals: locals
+        settings        : settings,
+        set             : set,
+        express         : express,
+        router          : router,
+        sysPath         : sysPath,
+        appPath         : appPath,
+        config          : config,
+        import          : load,
+        service         : service,
+        handler         : handler,
+        middleware      : middleware,
+        config          : config,
+        enforceMobile   : enforceMobile,
+        locals          : locals
     }
 })();
