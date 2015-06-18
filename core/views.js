@@ -9,7 +9,7 @@ function views(app) {
     var swigLocals = {
         'currentYear': (new Date()).getFullYear(),
         'is_dev': IS_DEV,
-        'menu': nodame.config.get('menu')
+        'menu': nodame.config('menu')
         // 'processTime': function () {
         //     return '0.000000';
         // }

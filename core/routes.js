@@ -2,9 +2,9 @@ var path    = nodame.import('path');
 var redis   = nodame.import('redis');
 
 function routes(app) {
-    var appName       = nodame.config.get('app.appname');
-    var defaultModule = nodame.config.get('app.default_module');
-    var modules       = nodame.config.get('modules');
+    var appName       = nodame.config('app.appname');
+    var defaultModule = nodame.config('app.default_module');
+    var modules       = nodame.config('modules');
     var appRoute      = '/' + appName;
     //sesssion
     var session       = nodame.import('session');
@@ -58,9 +58,9 @@ function routes(app) {
     }
 
     // Redirect '/' to 'home'
-    if (nodame.config.get('app.root_redirect')) {
+    if (nodame.config('app.root_redirect')) {
         app.use('/', function (req, res) {
-            var hostname = nodame.config.get('server.url.hostname');
+            var hostname = nodame.config('server.url.hostname');
             var url = hostname + path.normalize('/' + appName);
             res.redirect(url);
         });

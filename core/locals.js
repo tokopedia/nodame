@@ -1,8 +1,8 @@
 function locals(app) {
     var configs = {
-        url: nodame.config.get('server.url'),
-        app: nodame.config.get('app'),
-        assets: nodame.config.get('assets')
+        url: nodame.config('server.url'),
+        app: nodame.config('app'),
+        assets: nodame.config('assets')
     };
 
     for (var config in configs) {

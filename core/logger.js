@@ -5,21 +5,21 @@ var logger = (function () {
         var colors          = require('colors');
     }
 
-    var client              = nodame.config.get('logger.client');
+    var client              = nodame.config('logger.client');
 
     switch (client) {
         case 'sentry':
             var raven        = require('raven');
-            var sentryClient = new raven.Client(nodame.config.get('logger.sentry_dns'));
+            var sentryClient = new raven.Client(nodame.config('logger.sentry_dns'));
             break;
 
         default:
             var fs           = require('fs');
             var path         = nodame.import('path');        
-            var accessFile   = path.normalize(nodame.config.get('logger.access_stream'));
+            var accessFile   = path.normalize(nodame.config('logger.access_stream'));
             var accessStream = fs.createWriteStream(accessFile, {flags: 'a'});
             var mailer       = nodame.import('mailer');
-            var logFile      = path.normalize(nodame.config.get('logger.error_stream'));
+            var logFile      = path.normalize(nodame.config('logger.error_stream'));
             var logStream    = fs.createWriteStream(logFile, {flags: 'a'});
             var Log          = require('log');
             var Logger       = new Log('debug', logStream);
@@ -131,7 +131,7 @@ var logger = (function () {
                             break;
                     }
 
-                    var hostname = nodame.config.get('server.url.hostname');
+                    var hostname = nodame.config('server.url.hostname');
 
                     var ua = __useragent();
                     var idDesc = details.split('.')[0];
