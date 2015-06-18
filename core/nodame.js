@@ -79,7 +79,7 @@ module.exports = (function () {
     };
 
     var middleware = function (name) {
-        return require(getFilePath('middleware', name));
+        return require(getFilePath('middlewares', name));
     }
 
     var enforceMobile = function () {
