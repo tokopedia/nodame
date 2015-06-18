@@ -8,28 +8,28 @@
 
 #### Installation
 1. Create project directory
-   ```bash
-   mkdir new_project && new_project
-   ```
+```bash
+mkdir new_project && new_project
+```
 
 2. Create `package.json` inside `new_project/`
-   ```bash
-   touch package.json
-   ```
+```bash
+touch package.json
+```
 
 3. Modify `package.json`
-   ```javascript
-   {
-      "dependencies": {
-         "nodame": "tokopedia/nodame#0.2.0"
-      }
+```javascript
+{
+   "dependencies": {
+      "nodame": "tokopedia/nodame#0.2.0"
    }
-   ```
+}
+```
 
 4. Run npm install
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 #### Configuration Files
 Coming soon
