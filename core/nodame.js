@@ -9,13 +9,9 @@ module.exports = (function () {
     }
 
     var path    = (function () {
-        var system = function () {
-            return pathMod.normalize(__dirname + '/..');
-        }
+        var system = pathMod.normalize(__dirname + '/..');
 
-        var app = function () {
-            return pathMod.normalize(__dirname + '/../../..');
-        }
+        var app = pathMod.normalize(__dirname + '/../../..');
 
         return {
             system: system,
@@ -57,29 +53,29 @@ module.exports = (function () {
         };
     })();
 
-    var getFilePath = function (module, name) {
+    var __getFilePath = function (module, name) {
         var dirname = module === 'my_modules' ? path.system : path.app;
         return pathMod.normalize(sprintf('%s/%s/%s', dirname, module, name));
     }
 
     var load = function (name) {
         try {
-            return require(getFilePath('my_modules', name));
+            return require(__getFilePath('my_modules', name));
         } catch (e) {
             return require(name);
         }
     };
 
     var service = function (name) {
-        return require(getFilePath('services', name));
+        return require(__getFilePath('services', name));
     };
 
     var handler = function (name) {
-        return require(getFilePath('handlers', name));
+        return require(__getFilePath('handlers', name));
     };
 
     var middleware = function (name) {
-        return require(getFilePath('middlewares', name));
+        return require(__getFilePath('middlewares', name));
     }
 
     var enforceMobile = function () {

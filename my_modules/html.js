@@ -159,9 +159,10 @@ exports.new = function (req, res) {
     var render = function (args) {
         __initFlashMessages(function () {
             __initHead();
-            res.render(path.view(req, args.module, args.file), stash.__stash, function (err, html) {
+            var viewPath = path.view(req, args.module, args.file);
+            res.render(viewPath, stash.__stash, function (err, html) {
                 if (err) {
-                    res.end();
+                    res.send(sprintf('Cannot find view %s', viewPath));
                 } else {
                     if (args.cache) {
                         var redis       = nodame.import('redis');
