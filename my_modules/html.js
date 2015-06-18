@@ -157,15 +157,9 @@ exports.new = function (req, res) {
     }
 
     var render = function (args) {
-        // console.log('Render html');
         __initFlashMessages(function () {
-            // console.log('callback __initFlashMessages');
             __initHead();
-            // console.log('__initHead');
-            console.log('VIEW', path.view(req, args.module, args.file));
             res.render(path.view(req, args.module, args.file), stash.__stash, function (err, html) {
-                // console.log('callback html', err);
-                console.log('STASH', stash);
                 if (err) {
                     res.end();
                 } else {

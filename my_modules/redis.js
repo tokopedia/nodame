@@ -1,4 +1,4 @@
-var redis       = nodame.import("redis");
+var redis       = require("redis");
 var md5         = nodame.import('MD5');
 var jumphash    = nodame.import('jumphash');
 var parent      = this;
