@@ -1,3 +1,8 @@
+// Global variable
+sprintf             = require('sprintf-js').sprintf;
+vsprintf            = require('sprintf-js').vsprintf;
+nodame              = require(__dirname + '/nodame.js');
+
 var argv            = require('commander');
 
 // Set argv options
@@ -38,17 +43,11 @@ if (argv.staging || argv.production) {
 
 IS_DEV              = productionEnv.indexOf(APP_ENV) < 0;
 
-express             = require('express');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var device          = require('express-device');
 var methodOverride  = require('method-override');
 var fs              = require('fs');
-
-// Global variable
-sprintf             = require('sprintf-js').sprintf;
-vsprintf            = require('sprintf-js').vsprintf;
-nodame              = require(__dirname + '/nodame.js');
 
 // Private Modules
 var toml            = nodame.import('toml-js');
@@ -56,7 +55,7 @@ var file            = nodame.import('file');
 var path            = nodame.import('path');
 
 // Expressjs initialization
-var app             = express();
+var app             = nodame.express();
 app.env             = APP_ENV;
 
 // Trust proxy setup

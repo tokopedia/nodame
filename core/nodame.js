@@ -2,13 +2,19 @@ var numeral = require('numeral');
 var pathMod = require('path');
 
 module.exports = (function () {
+    var express = require('express');
+
+    var router = function () {
+        return this.express.Router();
+    }
+
     var path    = (function () {
         var system = function () {
             return pathMod.normalize(__dirname + '/..');
         }
 
         var app = function () {
-            return pathMod.normalize(system + '/../..');
+            return pathMod.normalize(__dirname + '/../../..');
         }
 
         return {
@@ -53,7 +59,14 @@ module.exports = (function () {
 
     var load = function (name) {
         var filepath = pathMod.normalize(sprintf('%s/my_modules/%s', path.system, name));
-        return require(filepath);
+
+        try {
+            return require(filepath);
+        }
+
+        catch (e) {
+            return require(name);
+        }
     };
 
     var service = function (name) {
@@ -352,6 +365,8 @@ module.exports = (function () {
     };
 
     return {
+        express: express,
+        router: router,
         path: path,
         config: config,
         enforceMobile: enforceMobile,
