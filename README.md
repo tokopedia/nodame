@@ -6,28 +6,24 @@
 - Node.js (~0.12.4)
 
 ## Installation
-1. Create project directory
+1. Create *project directory*
    ```bash
    mkdir new_project && new_project
    ```
 
-2. Create `package.json` inside `new_project/`
+2. Create *package.json*
    ```bash
-   touch package.json
+   npm init
    ```
 
-3. Modify `package.json`
-   ```javascript
-   {
-      "dependencies": {
-         "nodame": "tokopedia/nodame#0.2.0"
-      }
-   }
+3. Install *nodame*
+   ```bash
+   npm install --save tokopedia/nodame#0.2.0
    ```
 
-4. Run npm install
+4. Build files
    ```bash
-   npm install
+   ./node_modules/nodame/build.sh
    ```
 
 ## Configuration Files
