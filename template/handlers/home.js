@@ -3,8 +3,8 @@ var router = express.Router();
 var async = require('async');
 var validate = require("validate.js");
 
-var path = nodame.import('path');
-var utilHtml = nodame.import('html');
+var path = require('path');
+var utilHtml = require('html');
 
 var service = nodame.service('home');
 
