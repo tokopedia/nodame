@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var app     = require('app');
+var app     = require('nodame/app');
 var debug   = require('debug')('desktop-kai:server');
 var http    = require('http');
 
