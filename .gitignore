@@ -38,7 +38,7 @@ Thumbs.db
 
 # nodemon #
 ###############
-node_modules
+/node_modules
 *.bak
 .dropbox
 .ignore
