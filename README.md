@@ -2,39 +2,34 @@
 - latest version: 0.2.0
 - latest stable version: 0.2.0
 
-
-#### Prerequisites
+## Prerequisites
 - Node.js (~0.12.4)
 
-#### Installation
-1. Create project directory
-```bash
-mkdir new_project && new_project
-```
+## Installation
+1. Create *project directory*
+   ```bash
+   mkdir new_project && new_project
+   ```
 
-2. Create `package.json` inside `new_project/`
-```bash
-touch package.json
-```
+2. Create *package.json*
+   ```bash
+   npm init
+   ```
 
-3. Modify `package.json`
-```javascript
-{
-   "dependencies": {
-      "nodame": "tokopedia/nodame#0.2.0"
-   }
-}
-```
+3. Install *nodame*
+   ```bash
+   npm install --save tokopedia/nodame#0.2.0
+   ```
 
-4. Run npm install
-```bash
-npm install
-```
+4. Build files
+   ```bash
+   ./node_modules/nodame/build.sh
+   ```
 
-#### Configuration Files
+## Configuration Files
 Coming soon
 
-#### Run Application
+## Run Application
 ```bash
 node node_modules/nodame [options]
 ```
@@ -50,7 +45,44 @@ Example:
 node node_modules/nodame --config ~/config/main.ini
 ```
 
-#### Packages
+## Built in method
+#### `nodame.router()`
+Loads express.Router()
+Usage:
+```javascript
+var router = nodame.router();
+```
+#### `nodame.require(moduleName)`
+Loads node's module. You are highly encouraged to use `nodame.require()` instead of plain `require()`. This is the way to load inherited and your custom modules.
+Usage:
+```javascript
+// Load nodame's module
+var request = nodame.require('nodame/request');
+// Load node's module
+var path    = nodame.require('path');
+// Load your custom module
+var foo     = nodame.require('my_modules/foo');
+```
+#### `nodame.handler(handlerName)`
+Loads application's handler. _Note: you will most-likely not be going to use this method.
+Usage:
+```javascript
+var home = nodame.handler('home');
+```
+
+#### `nodame.service(serviceName)`
+Loads application's service.
+Usage:
+```javascript
+var homeService = nodame.service('home');
+```
+
+#### `to be continued`
+
+## Modules
+This is the list of both inherited and nodame's modules. You don't need to install the modules anymore as it's already imported by nodame.
+
+#### Inherited modules
 |Name                                                             |Version |
 |-----------------------------------------------------------------|--------|
 |[async](https://www.npmjs.com/package/async)                     |~0.9.0  |
@@ -80,3 +112,21 @@ node node_modules/nodame --config ~/config/main.ini
 |[sprintf-js](https://www.npmjs.com/package/sprintf-js)           |~1.0.2  |
 |[swig](https://www.npmjs.com/package/swig)                       |~1.4.2  |
 |[validate.js](https://www.npmjs.com/package/validate.js)         |~0.6.1  |
+
+#### Nodame's modules
+- *nodame/datadog*
+- *nodame/date*
+- *nodame/file*
+- *nodame/html*
+- *nodame/jsonapi*
+- *nodame/linked*
+- *nodame/locale*
+- *nodame/mailer*
+- *nodame/redis*
+- *nodame/request*
+- *nodame/secret*
+- *nodame/session*
+- *nodame/string*
+- *nodame/toml*
+- *nodame/validate*
+- *nodame/view*
