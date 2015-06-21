@@ -9,7 +9,7 @@
 {%- endblock META -%}
 
 {% spaceless %}
-{( nodame.assets.css(assetsName) )}
+{{ nodame.assets.css(assetsName) }}
 {% endspaceless %}
 
 {%- block STYLES -%}
@@ -32,8 +32,8 @@
     {% endblock FOOTER %}
 
     {% block SCRIPTS %}
-        {( nodame.locale(locales) )}
-        {( nodame.assets.js(assetsName) )}
+        {{ nodame.locale(locales) }}
+        {{ nodame.assets.js(assetsName) }}
     {% endblock SCRIPTS %}
 </body>
 </html>
