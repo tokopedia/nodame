@@ -39,9 +39,7 @@
         "serve-static": "~1.9.2",
         "sprintf-js": "~1.0.2",
         "swig": "~1.4.2",
-        "validate.js": "~0.6.1"
-    },
-    "devDependencies": {
+        "validate.js": "~0.6.1",
         "grunt": "^0.4.5",
         "grunt-contrib-concat": "^0.5.1",
         "grunt-contrib-cssmin": "^0.12.2",
