@@ -1,17 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var async = require('async');
-var validate = require("validate.js");
+var router      = nodame.router();
+var async       = nodame.require('async');
+var validate    = nodame.require('nodame/validate');
+var path        = nodame.require('path');
+var utilHtml    = nodame.require('nodame/html');
 
-var path = require('path');
-var utilHtml = require('html');
-
-var service = nodame.service('home');
+var service     = nodame.service('home');
 
 router.get('/', function (req, res, next) {
-    var greets = service.hello('World!');
-
-    var html = utilHtml.new(req, res);
+    var greets  = service.hello('World');
+    var html    = utilHtml.new(req, res);
+    
     html.stash.set('greets', greets);
     html.render({
         module: 'home',

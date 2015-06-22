@@ -1,7 +1,7 @@
 {% spaceless %}
 <!doctype html>
 <head>
-<title>{( headTitle )}</title>
+<title>{{ headTitle }}</title>
 {% endspaceless %}
 
 {%- block META -%}
@@ -9,7 +9,7 @@
 {%- endblock META -%}
 
 {% spaceless %}
-{( nodame.assets.css(assetsName) )}
+{{ nodame.assets.css(assetsName) }}
 {% endspaceless %}
 
 {%- block STYLES -%}
@@ -18,22 +18,35 @@
 
 </head>
 <body>
-    {% block HEADER %}
-        {% include './header.html' ignore missing %}
-    {% endblock HEADER %}
+    <div id="wrapper">
+        {% block DRAWER %}
+            {% include './drawer.html' ignore missing %}
+        {% endblock DRAWER %}
 
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            {% block HEADER %}
+                {% include './header.html' ignore missing %}
+            {% endblock HEADER %}
 
-    {% block CONTENT %}
-        {% include './content.html' ignore missing %}
-    {% endblock CONTENT %}
+            <div class="container-fluid">
+                {% block CONTENT %}
+                    {% include './content.html' ignore missing %}
+                {% endblock CONTENT %}
+            </div>
 
-    {% block FOOTER %}
-        {% include './footer.html' ignore missing %}
-    {% endblock FOOTER %}
+            {% block FOOTER %}
+                {% include './footer.html' ignore missing %}
+            {% endblock FOOTER %}
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
 
     {% block SCRIPTS %}
-        {( nodame.locale(locales) )}
-        {( nodame.assets.js(assetsName) )}
+        {{ nodame.locale(locales) }}
+        {{ nodame.assets.js(assetsName) }}
     {% endblock SCRIPTS %}
 </body>
 </html>

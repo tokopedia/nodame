@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASEDIR=$(dirname $0)
-ASSETS_DIR=$BASEDIR/../src/assets/min
+ASSETS_DIR=$BASEDIR/../../assets/min
 
 echo ""
 echo "Cleaning assets"
@@ -21,7 +21,4 @@ echo ""
 
 echo "Running grunt"
 echo "-------------"
-cp $BASEDIR/Gruntfile.js $BASEDIR/../
-cd $BASEDIR/..
-grunt
-rm $BASEDIR/../Gruntfile.js
+grunt --gruntfile ${BASEDIR}/Gruntfile.js
