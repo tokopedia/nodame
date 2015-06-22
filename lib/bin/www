@@ -44,7 +44,8 @@ console.log('MM     MM    MM     MM,  $MM     MM   DM7    MM   MM    +MM    MMI 
 console.log('MM     MM    ,MMMMMMM     +MMMMMMMM    MMMMMMMM   MM    +MM    MMI    MMMMMMM$ ');
 console.log('');
 console.log(sprintf('Hi Nobita! Doraemon is serving you at %s', port));
-console.log('Running in', APP_ENV, 'with', 'Enforce mobile', ENFORCE_MOBILE != 'false' ? 'enabled in ' + (ENFORCE_MOBILE) + ' mode' : 'disabled');
+console.log('Running in', nodame.env(), 'with', 'Enforce mobile', ENFORCE_MOBILE != 'false' ? 'enabled in ' + (ENFORCE_MOBILE) + ' mode' : 'disabled');
+console.log(sprintf('Config file used: %s', nodame.settings.__systems.configPath));
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

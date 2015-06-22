@@ -1,10 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var async = require('async');
-var validate = require("validate.js");
-
-var path = require('path');
-var utilHtml = require('html');
+var router      = nodame.router();
+var async       = nodame.require('async');
+var validate    = nodame.require('nodame/validate');
+var path        = nodame.require('path');
+var utilHtml    = nodame.require('nodame/html');
 
 var service = nodame.service('home');
 
