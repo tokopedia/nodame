@@ -1,0 +1,29 @@
+{% macro listItem(name, url, icon) %}
+<li class="{% if name == activeMenu %} active{% endif %}">
+    <a href="{{ url }}">
+        {{ __('LABEL_DRAWER_' + name|upper) }}
+    </a>
+</li>
+{% endmacro %}
+
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+            <strong>Nodame</strong>
+        </li>
+        {% for item in menu %}
+            {% if item.auth_only || item.guest_only %}
+                {% if item.auth_only && isAuthenticated %}
+                    {{ listItem(loop.key, item.url, item.icon) }}
+                {% endif %}
+                {% if item.guest_only && !isAuthenticated %}
+                    {{ listItem(loop.key, item.url, item.icon) }}
+                {% endif %}
+            {% else %}
+                {{ listItem(loop.key, item.url, item.icon) }}
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+<!-- /#sidebar-wrapper -->

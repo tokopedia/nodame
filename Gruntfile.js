@@ -1,20 +1,21 @@
 'use strict';
-var file = require('./nodame/helpers/file')('production');
-var fs = require('fs');
-var path = require('path');
+var file    = require(__dirname + '/lib/node_modules/nodame/file');
+var fs      = require('fs');
+var path    = require('path');
+var appPath = path.normalize(__dirname + '/../..');
 
 module.exports = function (grunt) {
     // Project Configuration
     process.stdout.write('Reading config ... ');
 
-    var config_path = path.normalize(__dirname + '/src/config');
-    var config = file.readGRUNT(config_path + '/assets.ini');
-    
+    var config_path = path.normalize(appPath + '/configs');
+    var config      = file.readGRUNT(config_path + '/assets.ini');
+
     process.stdout.write('Done\n\n');
-    
-    var filename = config_path + '/.assets';
-    var confWrite = copyConfig(config, 'write');
-    var jsonConfig = JSON.stringify(config);
+
+    var filename    = config_path + '/.assets';
+    var confWrite   = copyConfig(config, 'write');
+    var jsonConfig  = JSON.stringify(config);
 
     process.stdout.write('Writing production assets configuration to src/config/.assets ... ');
     var err = fs.writeFileSync(filename, jsonConfig);
@@ -27,6 +28,9 @@ module.exports = function (grunt) {
     }
 
     grunt.initConfig({
+        default: {
+
+        },
         cssmin: {
             main: {
             files: confWrite.css
@@ -42,14 +46,14 @@ module.exports = function (grunt) {
             }
         }
     });
- 
+
     //Load NPM tasks
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
- 
+
     //Making grunt default to force in order not to break the project.
     grunt.option('force', true);
- 
+
     //Default task(s).
     grunt.registerTask('default', ['cssmin', 'uglify']);
 };
@@ -58,7 +62,7 @@ var rename = function (filepath, type) {
     var name;
 
     if (type === 'write') {
-        name = 'src/' + filepath;
+        name = path.normalize(appPath + '/' + filepath);
     } else {
         var re = /^.+[/]/;
         name = 'min/' + filepath.replace(re, '');
@@ -77,7 +81,7 @@ var copyConfig = function (config, confType) {
                 var _tmp = new Object();
                 var _key = rename(key, confType);
                 _tmp[_key] = new Array();
-                
+
                 for (var keyFile in config[type][typeIdx][key]) {
                     var _file = config[type][typeIdx][key][keyFile];
                     _file = rename(_file, confType);
