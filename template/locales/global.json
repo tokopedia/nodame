@@ -1,38 +1,30 @@
 {
     "LABEL_LANG": {
-        "id": "id",
-        "en": "en"
+        "en": "en",
+        "id": "id"
     },
     "LABEL_HOME": {
-        "id": "Home",
-        "en": ""
+        "en": "Home",
+        "id": "Home"
+    },
+    "LABEL_LANGUAGE": {
+        "en": "Language",
+        "id": "Bahasa"
     },
     "LABEL_DRAWER_HOME": {
-        "id": "Beranda",
-        "en": "Dashboard"
+        "en": "Home",
+        "id": "Beranda"
     },
-    "LABEL_DRAWER_FAVORITE": {
-        "id": "Favorit",
-        "en": "Favorite"
+    "LABEL_DRAWER_WIKI": {
+        "en": "Wiki",
+        "id": "Wiki"
     },
-    "LABEL_DRAWER_LOGIN": {
-        "id": "Masuk",
-        "en": "Login"
+    "TEXT_CONGRATULATION": {
+        "en": "Congratulation",
+        "id": "Selamat"
     },
-    "LABEL_DRAWER_LOGOUT": {
-        "id": "Keluar",
-        "en": "Logout"
-    },
-    "LABEL_DRAWER_SWITCH_LANGUAGE": {
-        "id": "Ubah Bahasa",
-        "en": "Switch Language"
-    },
-    "LABEL_DRAWER_GREETING": {
-        "id": "Hai!",
-        "en": "Hi!"
-    },
-    "LABEL_ELEMENT_MY_INPUT_VALUE": {
-        "id": "Nilai",
-        "en": "Value"
+    "TEXT_RUNNING_NODAME": {
+        "en": "You are now running nodame",
+        "id": "Kamu sekarang sedang menjalankan nodame"
     }
 }
