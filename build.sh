@@ -5,16 +5,18 @@ ROOTDIR=$BASEDIR/../..
 ROOT_LIST=(
     index.js
     .gitignore
+    nodemon.json
     assets
     handlers
     services
     modules
+    bootwares
     views
     configs
     middlewares
 )
 NODAME_LIST=(
-    template/*
+    templates/*
 )
 
 echo ""
