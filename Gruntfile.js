@@ -9,7 +9,7 @@ module.exports = function (grunt) {
     process.stdout.write('Reading config ... ');
 
     var config_path = path.normalize(appPath + '/configs');
-    var config      = file.readGRUNT(config_path + '/assets.ini');
+    var config      = file.readGRUNT(config_path + '/assets.toml');
 
     process.stdout.write('Done\n\n');
 
