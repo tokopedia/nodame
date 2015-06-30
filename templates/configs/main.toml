@@ -54,7 +54,6 @@
 
 # Set hooks, these modules will be loaded on boot
 # Hooks need to be put in ./hooks directory
-# Hook module needs to have init() public method
 #
 # default []
 #
