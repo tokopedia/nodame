@@ -62,7 +62,7 @@
 # Set to block favicon request
 #
 # default true
-# 
+#
 # block_favicon   = true
 
 #############################
@@ -166,7 +166,7 @@ assets          = "{{ url.hostname }}/assets"
 # Set mobile view enforcing
 #
 # default false
-#
+# 
 # enforce_mobile  = false
 
 # Set enforce mobile type (only if enforce_mobile is set true)

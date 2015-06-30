@@ -38,19 +38,17 @@ var server  = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+var version = nodame.settings.app.version;
+var versionMargin = Array(10 - version.length).join(' ');
+var _spc    = Array(12).join(' ');
 console.log('');
-console.log('version', nodame.settings.app.version);
 console.log('');
-console.log('                                 MM                                            ');
-console.log('                                 MM                                            ');
-console.log('                                 MM                                            ');
-console.log('MM?MMMMMO     MMMMMMM      MMMMMMMM    MMMMMMM,   MMMMMMMM MMMMMM     MMMMMMM  ');
-console.log('MMM   :MM    MM~    MM    MM7    MM          MM   MMM   MMMI   MM:   MM:   :MM ');
-console.log('MM     MM   MMZ     8MD  MMM     MM       ,,,MM   MM    IMM    MMI  MMM     MM+');
-console.log('MM     MM   MM+     ~MM  MM:     MM    ZMMMMMMM   MM    +MM    MMI  MMMMMMMMMM$');
-console.log('MM     MM   MM7     7MM  MMI     MM   8MM    MM   MM    +MM    MMI  MMM        ');
-console.log('MM     MM    MM     MM,  $MM     MM   DM7    MM   MM    +MM    MMI   MM        ');
-console.log('MM     MM    ,MMMMMMM     +MMMMMMMM    MMMMMMMM   MM    +MM    MMI    MMMMMMM$ ');
+console.log(_spc, '               .   ', versionMargin, version);
+console.log(_spc, '     ,-. ,-. ,-| ,-. ,-,-. ,-.');
+console.log(_spc, '     | | | | | | ,-| | | | |-\'');
+console.log(_spc, '     \' \' `-\' `-\' `-^ \' \' \' `-\'');
+console.log(_spc, '-----------------------------------');
+console.log(_spc, 'https://github.com/tokopedia/nodame');
 console.log('');
 console.log(sprintf('Hi Nobita! Doraemon is serving you at %s', port));
 console.log(sprintf('environment    : %s', nodame.env()));
