@@ -25,37 +25,44 @@
 # Set maintenance mode
 #
 # default false
+#
 # maintenance     = false
 
 # Set enable powered by
 #
 # default false
+#
 # powered_by      = false
 
 # Set port to run
 #
 # default 3000
+#
 # port            = 3000
 
 # Set non-development environment
 #
 # default ["production", "staging"]
+#
 # release_env     = ["production", "staging"]
 
 # Set enforce secure connection on non-development environment
 #
 # default true
+#
 # enforce_secure  = true
 
 # Set bootware, these modules will be loaded on boot
 # Bootware modules need to be put in ./bootwares directory
 #
 # default []
+#
 # bootwares       = []
 
 # Set to block favicon request
 #
 # default true
+# 
 # block_favicon   = true
 
 #############################
