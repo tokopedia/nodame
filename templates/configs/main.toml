@@ -52,12 +52,13 @@
 #
 # enforce_secure  = true
 
-# Set bootware, these modules will be loaded on boot
-# Bootware modules need to be put in ./bootwares directory
+# Set hooks, these modules will be loaded on boot
+# Hooks need to be put in ./hooks directory
+# Hook module needs to have init() public method
 #
 # default []
 #
-# bootwares       = []
+# hooks           = []
 
 # Set to block favicon request
 #
@@ -166,7 +167,7 @@ assets          = "{{ url.hostname }}/assets"
 # Set mobile view enforcing
 #
 # default false
-# 
+#
 # enforce_mobile  = false
 
 # Set enforce mobile type (only if enforce_mobile is set true)
@@ -583,7 +584,7 @@ url             = "{{ url.hostname }}"
     # auth_only   = false
 
         [menu.items.home]
-        url         = "{{ url.base }}/home"
+        url         = "{{ url.base }}"
 
         [menu.items.about]
         url         = "{{ url.base }}/about"
