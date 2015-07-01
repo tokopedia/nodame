@@ -1,0 +1,18 @@
+[desktop.global]
+css=[
+    "bootstrap-3.3.5.min.css",
+    "desktop.global-main.css"
+]
+js=[
+    "jquery-1.11.3.min.js",
+    "bootstrap-3.3.5.min.js",
+    "desktop.global.js"
+]
+
+[desktop.home]
+css=[
+    "desktop.home.css"
+]
+js=[
+    "desktop.home.js"
+]

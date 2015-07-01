@@ -11,11 +11,15 @@
         "en": "Language",
         "id": "Bahasa"
     },
-    "LABEL_DRAWER_HOME": {
+    "LABEL_MENU_HOME": {
         "en": "Home",
         "id": "Beranda"
     },
-    "LABEL_DRAWER_WIKI": {
+    "LABEL_MENU_ABOUT": {
+        "en": "About Us",
+        "id": "Tentang Kami"
+    },
+    "LABEL_MENU_WIKI": {
         "en": "Wiki",
         "id": "Wiki"
     },

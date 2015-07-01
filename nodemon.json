@@ -12,5 +12,5 @@
     "./",
     "../../"
   ],
-  "ext": "js json ini"
+  "ext": "js json toml"
 }
