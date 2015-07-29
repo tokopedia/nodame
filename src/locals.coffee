@@ -8,6 +8,7 @@
 
 Assets = require('nodame/assets')
 Numeral = require('numeral')
+DateParser = require('nodame/date')
 
 class Locals
   set: (app) ->
@@ -30,56 +31,7 @@ class Locals
 
     lead_zero = (num) -> ('0' + num).slice(-2)
 
-    date = (date_str, format = 'normal') ->
-      _date = new Date(date_str)
-      # TODO: Move to config
-      weekdays =
-        Sun: 'Minggu'
-        Mon: 'Senin'
-        Tue: 'Selasa'
-        Wed: 'Rabu'
-        Thu: 'Kamis'
-        Fri: 'Jumat'
-        Sat: 'Sabtu'
-      # TODO: Move to config
-      months =
-        Jan: { word: 'Januari',   num: 1  }
-        Feb: { word: 'Februari',  num: 2  }
-        Mar: { word: 'Maret',     num: 3  }
-        Apr: { word: 'April',     num: 4  }
-        May: { word: 'Mei',       num: 5  }
-        Jun: { word: 'Juni',      num: 6  }
-        Jul: { word: 'Juli',      num: 7  }
-        Aug: { word: 'Agustus',   num: 8  }
-        Sep: { word: 'September', num: 9  }
-        Oct: { word: 'Oktober',   num: 10 }
-        Nov: { word: 'November',  num: 11 }
-        Dec: { word: 'Desember',  num: 12 }
-
-      format_date = (match, $1, $2, $3, $4, offset, original) ->
-        switch format
-          when 'normal'
-            result = "#{weekdays[$1]}, #{$3} #{months[$2].word} #{$4}"
-          when 'short'
-            result = "#{lead_zero($3)}/#{$2}/#{$4}"
-        return result
-
-      replace_date = ->
-        re = ///^
-        ([a-z]{1,3})\         # $1 short day
-        ([a-z]{1,3})\         # $2 short month
-        ([0-9]{1,2})\         # $3 date
-        ([0-9]{1,4})\         # $4 year
-        ([0-9]{1,2}):         # $5 hours
-        ([0-9]{1,2}):         # $6 minutes
-        ([0-9]{1,2})\         # $7 seconds
-        GMT([-+][0-9]{1,4})\  # $8 GMT
-        (\([a-z ]+\))         # $9 timezone
-        $///i
-
-        return _date.toString().replace(re, format_date)
-
-      return replace_date()
+    date = DateParser.parseDate
 
     thousands = (num) -> Numeral(num).format(0.0)
 
