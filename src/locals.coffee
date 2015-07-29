@@ -6,9 +6,9 @@
 # @version 1.0.0
 ###
 
-Assets = require('nodame/assets')
+Assets = require('./assets')
 Numeral = require('numeral')
-DateParser = require('nodame/date')
+DateParser = require('./date')
 
 class Locals
   set: (app) ->

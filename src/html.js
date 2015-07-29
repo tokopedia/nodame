@@ -8,7 +8,7 @@
  */
 
 var path    = require('path');
-var View    = require('nodame/view');
+var View    = require('./view');
 var uuid    = require('node-uuid');
 var md5     = require('md5');
 var parse   = require('parse-duration');
@@ -115,7 +115,7 @@ exports.new = function (req, res) {
     };
 
     var setFlashMessages = function (type, text) {
-        var redis = require('nodame/redis');
+        var redis = require('./redis');
         var fm = req.cookies.fm;
 
         if (!fm) {
@@ -140,7 +140,7 @@ exports.new = function (req, res) {
             var fm = req.cookies.fm;
 
             if (fm) {
-                var redis = require('nodame/redis');
+                var redis = require('./redis');
                 var redisClient = redis.getClient('session', 'slave', 1);
 
                 var keyFm = 'flashMessages:' + fm;
@@ -182,7 +182,7 @@ exports.new = function (req, res) {
                 } else {
                     if (args.cache) {
                         var key         = '';
-                        var redis       = require('nodame/redis');
+                        var redis       = require('./redis');
                         var redisClient = redis.getClient('html', 'master', 1);
                         var hostname    = nodame.config('url.hostname');
                         var uri         = req.originalUrl;
@@ -209,7 +209,7 @@ exports.new = function (req, res) {
     };
 
     var renderCache = function (key, callback) {
-        var redis       = require('nodame/redis');
+        var redis       = require('./redis');
         var redisClient = redis.getClient('html', 'slave', 1);
         var hostname    = nodame.config('url.hostname');
         var uri         = req.originalUrl;

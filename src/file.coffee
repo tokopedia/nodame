@@ -7,9 +7,9 @@
 ###
 
 sha512  = require('js-sha512').sha512;
-fs      = require 'fs'
-path    = require 'nodame/path'
-toml    = require 'nodame/toml'
+fs      = require('fs')
+path    = require('./path')
+toml    = require('./toml')
 
 class File
   readJSON: (filepath) ->

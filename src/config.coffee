@@ -6,10 +6,10 @@
 # @version 1.0.0
 ###
 
-path    = require 'nodame/path'
-toml    = require 'nodame/toml'
-json    = require 'nodame/json'
-fs      = require 'fs'
+path    = require('./path')
+toml    = require('./toml')
+json    = require('./json')
+fs      = require('fs')
 
 class Config
   _keys   : ['module', 'menu']
@@ -42,8 +42,8 @@ class Config
     return stream
 
   _getDefaultConfig: ->
-    cfgPath = path.join __dirname, 'config.json'
-    return require cfgPath
+    cfgPath = path.join(__dirname, 'config.json')
+    return require(cfgPath)
 
   _assignDefault: ->
     defCfg = @_getDefaultConfig()

@@ -8,10 +8,10 @@ yellow="\033[1;33m"
 reset="\033[0m"
 rep="*************************"
 
-$BASEDIR/bin/nodame -c || exit
+$BASEDIR/bin/nodame -C || exit
 
 echo ""
-echo -e "${yellow}PLAY: [Nodame Unit Test] ***********${rep}${reset}"
+echo -e "${yellow}PLAY: [App Unit Test] **************${rep}${reset}"
 echo -e "${green}powered by mocha${reset}"
 echo ""
 

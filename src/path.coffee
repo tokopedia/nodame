@@ -3,14 +3,14 @@
 # @author  Originally by nodejs.org
 # @link    https://github.com/tokopedia/nodame
 # @license http://opensource.org/licenses/MIT
-# 
+#
 # @version 1.0.0
 ###
 
-os        = require 'os'
+os        = require('os')
 isNix     = os.platform != 'win32'
-Path      = require 'path'
-Path.sys  = Path.join __dirname, '..', '..', '..', '..'
+Path      = require('path')
+Path.sys  = Path.join __dirname, '..'
 Path.app  = Path.join Path.sys, '..', '..'
 
 Path.safe = (pathString) ->

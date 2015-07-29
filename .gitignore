@@ -39,8 +39,9 @@ Thumbs.db
 # nodemon #
 ###############
 /node_modules
-/lib/bin
-/lib/node_modules
+/lib
+/bin/www
+/test
 /.tmp
 *.bak
 .dropbox

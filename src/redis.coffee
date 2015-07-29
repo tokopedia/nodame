@@ -1,6 +1,6 @@
-redis       = require 'redis'
-md5         = require 'md5'
-jumphash    = require 'jumphash'
+redis       = require('redis')
+md5         = require('md5')
+jumphash    = require('jumphash')
 pool        = {}
 
 class RedisClient

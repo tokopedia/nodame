@@ -1,5 +1,6 @@
-Test = require('nodame/test')
-DateParser = require('nodame/date')
+lib         = "#{__dirname}/../lib"
+Test        = require("#{lib}/test")
+DateParser  = require("#{lib}/date")
 DateParserTest = new Test('DateParser')
 
 # Test parseDate($1)

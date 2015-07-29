@@ -1,5 +1,5 @@
-i18n = require 'nodame/i18n'
-path = require 'nodame/path'
+i18n = require('./i18n')
+path = require('./path')
 
 locale = (app) ->
   i18n.expressBind app,

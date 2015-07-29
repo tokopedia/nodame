@@ -2,7 +2,7 @@
 # @author  Argi Karunia <https://github.com/hkyo89>
 # @link    https://github.com/tokopedia/nodame
 # @license http://opensource.org/licenses/MIT
-# 
+#
 # @version 1.0.0
 ###
 

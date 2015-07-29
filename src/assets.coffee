@@ -6,7 +6,7 @@
 # @version 1.0.0
 ###
 
-Path         = require 'nodame/path'
+Path         = require('./path')
 
 class Assets
   constructor: (opt) ->

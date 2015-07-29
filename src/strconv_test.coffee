@@ -1,5 +1,6 @@
-Test = require('nodame/test')
-StrConv = require('nodame/strconv')
+lib       = "#{__dirname}/../lib"
+Test      = require("#{lib}/test")
+StrConv   = require("#{lib}/strconv")
 StrConvTest = new Test('StrConv')
 
 # Test btoi($1)

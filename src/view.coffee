@@ -1,5 +1,5 @@
-Path = require 'nodame/path'
-Swig = require 'swig'
+Path = require('./path')
+Swig = require('swig')
 
 class View
   constructor: (app) ->

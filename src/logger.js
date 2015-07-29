@@ -18,7 +18,7 @@ var logger = (function () {
 
     if (LOGGER.enable) {
         if (CLIENT.datadog.enable) {
-            var datadog         = require('nodame/datadog');
+            var datadog         = require('./datadog');
             var clientStatsD    = datadog.getClient();
         }
 
@@ -29,10 +29,10 @@ var logger = (function () {
 
         if (CLIENT.syslog.enable) {
             var fs           = require('fs');
-            var path         = require('nodame/path');
+            var path         = require('./path');
             var outputFile   = path.safe(CLIENT.syslog.output_stream);
             var outputStream = fs.createWriteStream(outputFile, {flags: 'a'});
-            var mailer       = require('nodame/mailer');
+            var mailer       = require('./mailer');
             var logFile      = path.safe(CLIENT.syslog.error_stream);
             var logStream    = fs.createWriteStream(logFile, {flags: 'a'});
             var Log          = require('log');

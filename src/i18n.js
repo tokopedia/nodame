@@ -8,8 +8,8 @@
  */
 
 // dependencies
-var fs          = require("fs"),
-    path        = require("nodame/path");
+var fs          = require('fs'),
+    path        = require('./path');
 
 var i18n = module.exports = function (opt) {
     var self = this;
