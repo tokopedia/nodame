@@ -1,0 +1,112 @@
+{
+    "server": {
+        "maintenance": false,
+        "powered_by": false,
+        "port": 3000,
+        "release_env": ["production", "staging"],
+        "enforce_secure": true,
+        "hooks": [],
+        "block_favicon": true
+    },
+    "app": {
+        "title": "Nodame",
+        "title_separator": "|",
+        "desc": "Nodame is a node.js framework built on express 4.0"
+    },
+    "cookie": {
+        "domain": "localhost",
+        "session": "_NODAME_"
+    },
+    "url": {
+        "hostname": "http://localhost:3000"
+    },
+    "view": {
+        "template": "default",
+        "device_capture": true,
+        "mobile": false,
+        "enforce_mobile": false,
+        "enforce_mobile_type": "soft",
+        "cache": false,
+        "purge_time": 60,
+        "cache_time": 900,
+        "redirect_404": false
+    },
+    "assets": {
+        "enable_server": true,
+        "route": "/assets",
+        "dir": "./assets"
+    },
+    "locale": {
+        "enable": true,
+        "default": "en"
+    },
+    "cache": {
+        "enable": false,
+        "client": "redis"
+    },
+    "email": {
+        "enable": false,
+        "client": "mandrill"
+    },
+    "session": {
+        "request_token": false,
+        "request_token_module": "request_token"
+    },
+    "logger": {
+        "enable": false,
+        "clients": {
+            "morgan": {
+                "enable": true
+            },
+            "syslog": {
+                "enable": false,
+                "error_stream": "./logs/error.log",
+                "output_stream": "./logs/output.log"
+            },
+            "sentry": {
+                "enable": false
+            },
+            "email": {
+                "enable": false
+            },
+            "console": {
+                "enable": true
+            },
+            "datadog": {
+                "enable": false,
+                "host": "127.0.0.1",
+                "port": "8125",
+                "key": {
+                    "error": "errors.nodame"
+                }
+            }
+        }
+    },
+    "module": {
+        "root": "/",
+        "default": "home",
+        "items": {
+            "__default": {
+                "enable": true,
+                "ajax": true,
+                "xhr_only": false,
+                "dev_only": false,
+                "middleware": false
+            }
+        }
+    },
+    "menu": {
+        "enable": true,
+        "font_icon": false,
+        "font_icon_class": "icon-",
+        "items": {
+            "__default": {
+                "enable": true,
+                "url": "#",
+                "font_icon": "",
+                "guest_only": false,
+                "auth_only": false
+            }
+        }
+    }
+}

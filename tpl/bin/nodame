@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DIRNAME=$(dirname $0)
+nodame=$DIRNAME/../node_modules/nodame/bin/nodame
+
+case "$1" in
+    "-a" | "--assets" )
+        $nodame -a
+        ;;
+    "-u" | "--update" )
+        $nodame -u
+        ;;
+    * )
+        echo ""
+        echo "  Usage: nodame <OPTION>"
+        echo ""
+        echo -e "  -a\t--assets\tbuild assets"
+        echo -e "  -u\t--update\tupdate build data"
+        echo ""
+        ;;
+esac

@@ -1,0 +1,34 @@
+{
+    "LABEL_LANG": {
+        "en": "en",
+        "id": "id"
+    },
+    "LABEL_HOME": {
+        "en": "Home",
+        "id": "Home"
+    },
+    "LABEL_LANGUAGE": {
+        "en": "Language",
+        "id": "Bahasa"
+    },
+    "LABEL_MENU_HOME": {
+        "en": "Home",
+        "id": "Beranda"
+    },
+    "LABEL_MENU_ABOUT": {
+        "en": "About Us",
+        "id": "Tentang Kami"
+    },
+    "LABEL_MENU_WIKI": {
+        "en": "Wiki",
+        "id": "Wiki"
+    },
+    "TEXT_CONGRATULATION": {
+        "en": "Congratulation",
+        "id": "Selamat"
+    },
+    "TEXT_RUNNING_NODAME": {
+        "en": "You are now running nodame",
+        "id": "Kamu sekarang sedang menjalankan nodame"
+    }
+}

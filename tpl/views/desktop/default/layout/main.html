@@ -1,0 +1,52 @@
+{% spaceless %}
+<!doctype html>
+<head>
+<title>{{ headTitle }}</title>
+{% endspaceless %}
+
+{%- block META -%}
+{% include './meta.html' ignore missing %}
+{%- endblock META -%}
+
+{% spaceless %}
+{{ nodame.assets.css(assetsName) }}
+{% endspaceless %}
+
+{%- block STYLES -%}
+{% include './styles.html' ignore missing %}
+{%- endblock STYLES -%}
+
+</head>
+<body>
+    <div id="wrapper">
+        {% block MENU %}
+            {% include './menu.html' ignore missing %}
+        {% endblock MENU %}
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            {% block HEADER %}
+                {% include './header.html' ignore missing %}
+            {% endblock HEADER %}
+
+            <div class="container-fluid">
+                {% block CONTENT %}
+                    {% include './content.html' ignore missing %}
+                {% endblock CONTENT %}
+            </div>
+
+            {% block FOOTER %}
+                {% include './footer.html' ignore missing %}
+            {% endblock FOOTER %}
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    {% block SCRIPTS %}
+        {{ nodame.locale(locales) }}
+        {{ nodame.assets.js(assetsName) }}
+    {% endblock SCRIPTS %}
+</body>
+</html>
