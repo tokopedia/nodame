@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Nodame by tokopedia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Nodame</h1>
+      <h2 class="project-tagline">nodame framework for Node.js</h2>
+      <a href="https://github.com/tokopedia/nodame" class="btn">View on GitHub</a>
+      <a href="https://github.com/tokopedia/nodame/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/tokopedia/nodame/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="https://lh4.googleusercontent.com/e8mR7D-KhqOW5B9XietJs8f2ld49EZjuQ7ldJlj68TxoGRE72iiWoOOHTWkCbwk-r5IARlutakWJ2baQAXvAZUKKfLX4JNO3wn3vo3u-1YcWGpEJrCho95CcgjWqJdRUpuzSog" alt="Nodame"></p>
+
+<div class="highlight highlight-bash"><pre>npm install nodame</pre></div>
+
+<ul>
+<li><a href="#intro">Intro</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#run-application">Run application</a></li>
+<li><a href="#release-updates">Release updates</a></li>
+<li>
+<a href="#features">Features</a>
+
+<ul>
+<li><a href="#routes">Routes</a></li>
+<li><a href="#menu">Menu</a></li>
+<li><a href="#handlers">Handlers</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#middlewares">Middlewares</a></li>
+<li><a href="#views">Views</a></li>
+<li><a href="#assets-manager">Assets manager</a></li>
+<li><a href="#unit-testing">Unit testing</a></li>
+<li>
+<a href="#public-methods">Public methods</a>
+
+<ul>
+<li><a href="#nodame">nodame</a></li>
+<li><a href="#sprintf">sprintf</a></li>
+</ul>
+</li>
+<li>
+<a href="#modules">Modules</a>
+
+<ul>
+<li><a href="#third-party-modules">Third-party modules</a></li>
+<li><a href="#custom-modules">Custom modules</a></li>
+<li>
+<a href="#private-modules">Private modules</a>
+
+<ul>
+<li><a href="#nodame-datadog">Datadog</a></li>
+<li><a href="#nodame-date">Date</a></li>
+<li><a href="#nodame-file">File</a></li>
+<li><a href="#nodame-html">HTML</a></li>
+<li><a href="#nodame-jsonapi">JsonApi</a></li>
+<li><a href="#nodame-linked">Linked</a></li>
+<li><a href="#nodame-locale">Locale</a></li>
+<li><a href="#nodame-mailer">Mailer</a></li>
+<li><a href="#nodame-redis">Redis</a></li>
+<li><a href="#nodame-request">Request</a></li>
+<li><a href="#nodame-secret">Secret</a></li>
+<li><a href="#nodame-session">Session</a></li>
+<li><a href="#nodame-string">String</a></li>
+<li><a href="#nodame-toml">TOML</a></li>
+<li><a href="#nodame-validate">Validate</a></li>
+<li><a href="#nodame-view">View</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+
+<p><a id="intro"></a></p>
+
+<h2>
+<a id="intro" class="anchor" href="#intro" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro</h2>
+
+<p>A <a href="https://nodejs.org/">Node.js</a> framework built on <a href="http://expressjs.com/">Express 4.0</a> with some <a href="#features">features</a> to help in increasing development productivity. Nodame uses both <a href="#third-party-modules">third-party</a> and <a href="#private-modules">private</a> modules.  </p>
+
+<p>It supports <strong>cross-platform</strong> development! You can freely develop your node team project directly on your laptop without needing a VM or anything!</p>
+
+<hr>
+
+<p><a id="prerequisites"></a></p>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<ul>
+<li>[x] node.js</li>
+<li>[x] npm -- installed with node.js</li>
+<li>[ ] mocha -- <code>npm install -g mocha</code> <strong>(Only if you are going to use the unit testing)</strong>
+</li>
+</ul>
+
+<hr>
+
+<p><a id="installation"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Installing Nodame is nothing more simpler than executing <code>npm install nodame</code>.</p>
+
+<ol>
+<li>
+<p>Create project directory</p>
+
+<div class="highlight highlight-bash"><pre>mkdir ./new_project <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">cd</span> ./new_project</pre></div>
+</li>
+<li>
+<p>Create package.json</p>
+
+<div class="highlight highlight-bash"><pre>npm init</pre></div>
+</li>
+<li>
+<p>Install nodame package</p>
+
+<div class="highlight highlight-bash"><pre>npm install --save nodame@~1.1.0</pre></div>
+
+<blockquote>
+<p><em>Check the <a href="#release-updates">release updates</a> for the latest stable version.</em></p>
+</blockquote>
+</li>
+<li>
+<p>Build project's files</p>
+
+<div class="highlight highlight-bash"><pre>./node_modules/nodame/build.sh</pre></div>
+</li>
+</ol>
+
+<hr>
+
+<p><a id="run-application"></a></p>
+
+<h2>
+<a id="run-application" class="anchor" href="#run-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run application</h2>
+
+<p>You can <a href="#run-application">run your application</a> by executing <code>index.js</code>. Your default project can be accessed through your browser at <a href="http://localhost:3000/my-project">http://localhost:3000/my-project</a>.</p>
+
+<blockquote>
+<p><em>P.S.: You might want to set cookie domain to <code>""</code>, <code>NULL</code>, or <code>FALSE</code>; if you are using <code>localhost</code> as your domain. See <a href="http://curl.haxx.se/rfc/cookie_spec.html">Cookie Specification</a>.</em></p>
+</blockquote>
+
+<h3>
+<a id="run-using-node-command" class="anchor" href="#run-using-node-command" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run using node command</h3>
+
+<div class="highlight highlight-bash"><pre>node index.js [options]</pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<code>-c</code>, <code>--config &lt;file&gt;</code>
+</td>
+<td><code>./config-devel</code></td>
+<td>Config file location</td>
+</tr>
+<tr>
+<td>
+<code>-e</code>, <code>--env &lt;env&gt;</code>
+</td>
+<td><code>development</code></td>
+<td>Application environment</td>
+</tr>
+<tr>
+<td>
+<code>-S</code>, <code>--staging</code>
+</td>
+<td></td>
+<td>Set staging environment</td>
+</tr>
+<tr>
+<td>
+<code>-P</code>, <code>--production</code>
+</td>
+<td></td>
+<td>Set production environment</td>
+</tr>
+<tr>
+<td>
+<code>-p</code>, <code>--port</code>
+</td>
+<td></td>
+<td>Set port</td>
+</tr>
+<tr>
+<td>
+<code>-t</code>, <code>--test</code>
+</td>
+<td></td>
+<td>Run test</td>
+</tr>
+</tbody>
+</table>
+
+<p>Example:</p>
+
+<pre><code>```bash
+node index.js --config ~/config/main.ini
+```
+</code></pre>
+
+<h3>
+<a id="run-using-nodemon" class="anchor" href="#run-using-nodemon" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run using nodemon</h3>
+
+<ol>
+<li>
+<p>Install nodemon</p>
+
+<div class="highlight highlight-bash"><pre>npm install -g nodemon</pre></div>
+
+<blockquote>
+<p>This will install nodemon globally</p>
+</blockquote>
+</li>
+<li>
+<p>Run nodemon</p>
+
+<div class="highlight highlight-bash"><pre>nodemon index.js [option]</pre></div>
+</li>
+</ol>
+
+<hr>
+
+<p><a id="release-updates"></a></p>
+
+<h2>
+<a id="release-updates" class="anchor" href="#release-updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Release updates</h2>
+
+<table>
+<thead>
+<tr>
+<th>Release</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stable</td>
+<td>1.1.0</td>
+</tr>
+<tr>
+<td>Release candidate</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="changes-history" class="anchor" href="#changes-history" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changes history</h3>
+
+<ul>
+<li>1.0.6
+
+<ul>
+<li>Fixed Windows assets issue</li>
+</ul>
+</li>
+<li>1.0.5
+
+<ul>
+<li>Fixed Windows path issue</li>
+</ul>
+</li>
+<li>1.0.4
+
+<ul>
+<li>Added support to cross-platform development</li>
+<li>Added <code>nodame/path</code> module</li>
+</ul>
+</li>
+<li>1.0.3
+
+<ul>
+<li>Added xml parser support to <code>req.body</code>
+</li>
+</ul>
+</li>
+<li>1.0.2
+
+<ul>
+<li>Added support to session token hook</li>
+</ul>
+</li>
+<li>1.0.1
+
+<ul>
+<li>Deprecated <code>nodame.service()</code>, changed to <code>nodame.require('service/')</code>
+</li>
+<li>Deprecated <code>nodame.middleware()</code>, changed to <code>nodame.require('middleware/')</code>
+</li>
+<li>Deprecated <code>nodame.handler()</code>, changed to <code>nodame.require('handler/')</code>
+</li>
+</ul>
+</li>
+<li>
+<strong>1.0.0</strong>
+
+<ul>
+<li><strong>Public release to <a href="https://www.npmjs.com/package/nodame">npm</a></strong></li>
+<li>Added hook support to run on system boot</li>
+</ul>
+</li>
+<li>0.2.2
+
+<ul>
+<li>Added support to set header in request</li>
+<li>Added support to post XML in request</li>
+<li>Fixed assets manager bug</li>
+</ul>
+</li>
+<li>0.2.1
+
+<ul>
+<li>Changed self passing variable in config file to <code>{{config.name}}</code>
+</li>
+<li>Added support to argv</li>
+<li>Fixed assets manager bug<br>
+</li>
+</ul>
+</li>
+<li>0.2.0
+
+<ul>
+<li>Added support to self passing variable in config file using <code>%config.name%</code>
+</li>
+<li>Added support to URL encode in config file using <code>(config_value|encode_url)</code>
+</li>
+<li>Removed support to bower<br>
+</li>
+</ul>
+</li>
+<li>0.1.0
+
+<ul>
+<li>Added support to bower</li>
+<li>Extracted from team's project</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+
+<p><a id="features"></a></p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p><a id="routes"></a></p>
+
+<h3>
+<a id="routes" class="anchor" href="#routes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Routes</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Automates routing as defined in config.</p>
+
+<p><a id="menu"></a></p>
+
+<h3>
+<a id="menu" class="anchor" href="#menu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Menu</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Auto-config menu.</p>
+
+<p><a id="handlers"></a></p>
+
+<h3>
+<a id="handlers" class="anchor" href="#handlers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handlers</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Handlers.</p>
+
+<p><a id="services"></a></p>
+
+<h3>
+<a id="services" class="anchor" href="#services" aria-hidden="true"><span class="octicon octicon-link"></span></a>Services</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Services.</p>
+
+<p><a id="middlewares"></a></p>
+
+<h3>
+<a id="middlewares" class="anchor" href="#middlewares" aria-hidden="true"><span class="octicon octicon-link"></span></a>Middlewares</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Middlewares.</p>
+
+<p><a id="views"></a></p>
+
+<h3>
+<a id="views" class="anchor" href="#views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Views</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Views.</p>
+
+<p><a id="assets-manager"></a></p>
+
+<h3>
+<a id="assets-manager" class="anchor" href="#assets-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>Assets manager</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Provides automated assets generation of javascript and stylesheet files for production. It minifies and combines assets as defined in config.</p>
+
+<p><a id="unit-testing"></a></p>
+
+<h3>
+<a id="unit-testing" class="anchor" href="#unit-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unit testing</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Unit testing using BDD style.</p>
+
+<p><a id="public-methods"></a></p>
+
+<h3>
+<a id="public-methods" class="anchor" href="#public-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Public methods</h3>
+
+<ul>
+<li>[ ] TODO: Complete this section.<br>
+</li>
+</ul>
+
+<p>Public methods are methods or objects that can be ran throughout the environment.</p>
+
+<p><a id="nodame"></a></p>
+
+<h4>
+<a id="nodame" class="anchor" href="#nodame" aria-hidden="true"><span class="octicon octicon-link"></span></a>nodame</h4>
+
+<ul>
+<li>
+<p><code>nodame.appPath()</code><br>
+Return application's absolute path.  </p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> appPath <span class="pl-k">=</span> nodame.appPath();
+<span class="pl-c">// return '/absolute/path/to/app'</span></pre></div>
+</li>
+<li>
+<p><code>nodame.argv</code><br>
+Return argv object  </p>
+
+<div class="highlight highlight-bash"><pre>node index.js --env development</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> env <span class="pl-k">=</span> nodame.argv.env;
+<span class="pl-c">// return 'development'</span></pre></div>
+</li>
+<li>
+<p><code>nodame.config()</code><br>
+Return config's value by passing selector. Please see <code>nodame.settings</code> for direct access to config's object.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> baseUrl <span class="pl-k">=</span> nodame.config(<span class="pl-s"><span class="pl-pds">'</span>server.url.base<span class="pl-pds">'</span></span>);
+<span class="pl-c">// return server.url.base in config</span></pre></div>
+</li>
+<li><p><code>nodame.enforceMobile()</code><br>
+Middleware to enforce mobile view. <em>Not to be used in application.</em>  </p></li>
+<li>
+<p><code>nodame.env()</code><br>
+Return application's environment</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> env <span class="pl-k">=</span> nodame.env();
+<span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>development<span class="pl-pds">'</span></span></pre></div>
+</li>
+<li>
+<p><code>nodame.express()</code>
+Return new Express' object.  </p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> express <span class="pl-k">=</span> nodame.express();
+<span class="pl-c">// return new express' object</span></pre></div>
+</li>
+<li><p><code>nodame.handler(name string)</code>
+<strong>Deprecated in 1.0.1.</strong> Please see <code>nodame.require()</code></p></li>
+<li>
+<p><code>nodame.isDev()</code>
+Return whether it's development environment. Production and staging are considered as non-development environment.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">if</span> (nodame.isDev()) {
+    <span class="pl-en">console</span><span class="pl-c1">.log</span>(<span class="pl-s"><span class="pl-pds">'</span>Hello Dev!<span class="pl-pds">'</span></span>);
+}</pre></div>
+</li>
+<li><p><code>nodame.locals()</code>
+Middleware to register locals variable. <em>Not to be used in application.</em></p></li>
+<li>
+<code>nodame.middleware()</code>
+<strong>Deprecated in 1.0.1.</strong> Please see <code>nodame.require()</code>
+</li>
+<li>
+<p><code>nodame.require(name string)</code>
+Native's require wrapper. You are encouraged to use this method instead of native's method as the native method won't load npm modules imported by nodame and nodame modules.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> path <span class="pl-k">=</span> nodame.require(<span class="pl-s"><span class="pl-pds">'</span>path<span class="pl-pds">'</span></span>);
+<span class="pl-c">// return native's module path</span>
+<span class="pl-k">var</span> request <span class="pl-k">=</span> nodame.require(<span class="pl-s"><span class="pl-pds">'</span>nodame/request<span class="pl-pds">'</span></span>);
+<span class="pl-c">// return nodame module request</span>
+<span class="pl-k">var</span> foo <span class="pl-k">=</span> nodame.require(<span class="pl-s"><span class="pl-pds">'</span>module/foo<span class="pl-pds">'</span></span>);
+<span class="pl-c">// return custom module foo as located in /modules</span></pre></div>
+</li>
+<li>
+<p><code>nodame.router()</code>
+Return new express.Router().</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> router <span class="pl-k">=</span> nodame.router();
+<span class="pl-c">// return express.Router()</span></pre></div>
+</li>
+<li><p><code>nodame.service(name string)</code>
+<strong>Deprecated in 1.0.1.</strong> Please see <code>nodame.require()</code></p></li>
+<li>
+<code>nodame.set(name string, obj object)</code>
+Register object to <code>nodame.settings.__systems</code>. <em>Not to be used in application.</em>
+</li>
+<li>
+<p><code>nodame.settings</code>
+Return settings value directly. This is a call to <code>nodame.setting</code>. You can use this to return config value directly by using <code>nodame.settings.config</code>, for calling config indirectly please see <code>nodame.config()</code>.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> baseUrl <span class="pl-k">=</span> nodame.settings.config.server.url.base;
+<span class="pl-c">// return server.url.base</span></pre></div>
+</li>
+<li><p><code>nodame.sysPath()</code>
+Return system's path. <em>Not to be used in application.</em></p></li>
+</ul>
+
+<p><a id="sprintf"></a></p>
+
+<h4>
+<a id="sprintf" class="anchor" href="#sprintf" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>sprintf</code>
+</h4>
+
+<ul>
+<li>
+<p><code>sprintf(string format , [mixed arg1 [, mixed arg2 [ ,...]]])</code>
+Public method to <a href="https://www.npmjs.com/package/sprintf-js">sprintf</a></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> foo <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>wooof<span class="pl-pds">'</span></span>;
+<span class="pl-k">var</span> bar <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>booo!<span class="pl-pds">'</span></span>;
+<span class="pl-k">var</span> str <span class="pl-k">=</span> sprintf(<span class="pl-s"><span class="pl-pds">'</span>It sounds like %s but actually %s<span class="pl-pds">'</span></span>, foo, bar);
+<span class="pl-c">// return 'It sounds like wooof but actually booo!'</span></pre></div>
+</li>
+<li>
+<p><code>vsprintf()</code>
+Same as <code>sprintf()</code> but accept arrays.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> foo <span class="pl-k">=</span> vsprintf(<span class="pl-s"><span class="pl-pds">'</span>The first 4 letters of the english alphabet are: %s, %s, %s and %s<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>]);
+<span class="pl-c">// return 'The first 4 letters of the english alphabet are: a, b, c, d'</span></pre></div>
+</li>
+</ul>
+
+<p><a id="modules"></a></p>
+
+<h3>
+<a id="modules" class="anchor" href="#modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modules</h3>
+
+<p>Nodame comes with <a href="#third-party-modules">third-party modules</a> and <a href="#private-modules">private modules</a> which can be used using <code>nodame.require()</code>.</p>
+
+<h4>
+<a id="third-party-modules" class="anchor" href="#third-party-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Third party modules</h4>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.npmjs.com/package/async">async</a></td>
+<td>~0.9.0</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/body-parser">body-parser</a></td>
+<td>~1.10.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/colors">colors</a></td>
+<td>~1.0.3</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/commander">commander</a></td>
+<td>~2.8.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/cookie-parser">cookie-parser</a></td>
+<td>~1.3.3</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/debug">debug</a></td>
+<td>~2.1.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/express">express</a></td>
+<td>~4.11.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/express-device">express-device</a></td>
+<td>~0.3.11</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/express-xml-bodyparser">express-xml-bodyparser</a></td>
+<td>~0.0.7</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/js-sha512">js-sha512</a></td>
+<td>^0.2.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/jumphash">jumphash</a></td>
+<td>^0.2.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/log">log</a></td>
+<td>~1.4.0</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/mandrill-api">mandrill-api</a></td>
+<td>~1.0.41</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/md5">md5</a></td>
+<td>^2.0.0</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/measure">measure</a></td>
+<td>^0.1.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/method-override">method-override</a></td>
+<td>~2.3.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/morgan">morgan</a></td>
+<td>~1.5.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/node-dogstatsd">node-dogstatsd</a></td>
+<td>0.0.6</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/node-uuid">node-uuid</a></td>
+<td>~1.4.3</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/numeral">numeral</a></td>
+<td>~1.5.3</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/parse-duration">parse-duration</a></td>
+<td>^0.1.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/query-string">query-string</a></td>
+<td>~1.0.0</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/raven">raven</a></td>
+<td>^0.7.3</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/redis">redis</a></td>
+<td>~0.12.1</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/serve-static">serve-static</a></td>
+<td>~1.9.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/sprintf-js">sprintf-js</a></td>
+<td>~1.0.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/swig">swig</a></td>
+<td>~1.4.2</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/validate.js">validate.js</a></td>
+<td>~0.6.1</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="private-modules" class="anchor" href="#private-modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Private modules</h4>
+
+<p><a id="nodame-datadog"></a></p>
+
+<h5>
+<a id="datadog" class="anchor" href="#datadog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Datadog</h5>
+
+<p><a id="nodame-date"></a></p>
+
+<h5>
+<a id="date" class="anchor" href="#date" aria-hidden="true"><span class="octicon octicon-link"></span></a>Date</h5>
+
+<p><a id="nodame-file"></a></p>
+
+<h5>
+<a id="file" class="anchor" href="#file" aria-hidden="true"><span class="octicon octicon-link"></span></a>File</h5>
+
+<p><a id="nodame-html"></a></p>
+
+<h5>
+<a id="html" class="anchor" href="#html" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTML</h5>
+
+<p><a id="nodame-jsonapi"></a></p>
+
+<h5>
+<a id="jsonapi" class="anchor" href="#jsonapi" aria-hidden="true"><span class="octicon octicon-link"></span></a>JsonApi</h5>
+
+<p><a id="nodame-linked"></a></p>
+
+<h5>
+<a id="linked" class="anchor" href="#linked" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linked</h5>
+
+<p><a id="nodame-locale"></a></p>
+
+<h5>
+<a id="locale" class="anchor" href="#locale" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locale</h5>
+
+<p><a id="nodame-mailer"></a></p>
+
+<h5>
+<a id="mailer" class="anchor" href="#mailer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mailer</h5>
+
+<p><a id="nodame-redis"></a></p>
+
+<h5>
+<a id="redis" class="anchor" href="#redis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Redis</h5>
+
+<p><a id="nodame-request"></a></p>
+
+<h5>
+<a id="request" class="anchor" href="#request" aria-hidden="true"><span class="octicon octicon-link"></span></a>Request</h5>
+
+<p><a id="nodame-secret"></a></p>
+
+<h5>
+<a id="secret" class="anchor" href="#secret" aria-hidden="true"><span class="octicon octicon-link"></span></a>Secret</h5>
+
+<p><a id="nodame-session"></a></p>
+
+<h5>
+<a id="session" class="anchor" href="#session" aria-hidden="true"><span class="octicon octicon-link"></span></a>Session</h5>
+
+<p><a id="nodame-string"></a></p>
+
+<h5>
+<a id="string" class="anchor" href="#string" aria-hidden="true"><span class="octicon octicon-link"></span></a>String</h5>
+
+<p><a id="nodame-view"></a></p>
+
+<h5>
+<a id="view" class="anchor" href="#view" aria-hidden="true"><span class="octicon octicon-link"></span></a>View</h5>
+
+<hr>
+
+<p>Need help? Find <a href="https://github.com/hkyo89">Argi Karunia</a>. <img class="emoji" title=":smiley:" alt=":smiley:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f603.png" height="20" width="20" align="absmiddle"></p>
+
+<blockquote>
+<p><strong>&lt;&gt;</strong> with <img class="emoji" title=":heart:" alt=":heart:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2764.png" height="20" width="20" align="absmiddle"> by <strong>ドラえもん</strong></p>
+</blockquote>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/tokopedia/nodame">Nodame</a> is maintained by <a href="https://github.com/tokopedia">tokopedia</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
