@@ -1,5 +1,6 @@
-Test = require('nodame/test')
-Strings = require('nodame/string')
+lib     = "#{__dirname}/../lib"
+Test    = require("#{lib}/test")
+Strings = require("#{lib}/string")
 StringsTest = new Test('Strings')
 
 fn = ->

@@ -13,12 +13,12 @@ XMLBodyParser   = require('express-xml-bodyparser')
 MethodOverride  = require('method-override')
 ExpressDevice   = require('express-device')
 # private modules
-Router  = require('nodame/router')
-View    = require('nodame/view')
-Locals  = require('nodame/locals')
-Path    = require('nodame/path')
-File    = require('nodame/file')
-Logger  = require('nodame/logger')
+Router  = require('./router')
+View    = require('./view')
+Locals  = require('./locals')
+Path    = require('./path')
+File    = require('./file')
+Logger  = require('./logger')
 # expressjs initialization
 app     = nodame.express()
 app.env = nodame.env()
@@ -108,10 +108,10 @@ locals = new Locals()
 locals.set(app)
 
 # i18n setup
-require('nodame/locale')(app)
+require('./locale')(app)
 
 # numeral setup
-require('nodame/numeral')(app)
+require('./numeral')(app)
 
 # enforce mobile setup
 enfore_mobile = CONFIG.view.device_capture and CONFIG.view.enforce_mobile
@@ -131,7 +131,7 @@ app.use(local_path_helper)
 
 # maintenance setup
 server_maintenance = (req, res, next) ->
-  html = require('nodame/html').new(req, res)
+  html = require('./html').new(req, res)
   html.headTitle(CONFIG.app.title)
   html.headDescription(CONFIG.app.desc)
   res.status(503)
@@ -143,7 +143,7 @@ app.use(server_maintenance) if CONFIG.server.maintenance
 new Router(app)
 
 # errors setup
-require('nodame/error')(app)
+require('./error')(app)
 
 # hooks setup
 if CONFIG.server.hooks.length > 0

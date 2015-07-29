@@ -1,4 +1,4 @@
-validate = require 'validate.js'
+validate = require('validate.js')
 
 validate.isDefinedAll = () ->
   if arguments.length > 0

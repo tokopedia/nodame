@@ -1,8 +1,8 @@
 #!/bin/bash
 
-BASEDIR=$(dirname $0)/../..
+BASEDIR=$(dirname $0)
 filename=$1
-filepath=${BASEDIR}/lib/node_modules/nodame/${filename}/index.js
+filepath=${BASEDIR}/lib/${filename}.js
 culprit=$2
 margin=10
 pre=$((culprit-${margin}))

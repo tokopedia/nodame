@@ -1,16 +1,17 @@
 # global variable
-`var Nodame  = require('nodame/core')
+lib = "#{__dirname}/../lib"
+`var Nodame  = require(lib + '/core')
 sprintf     = require('sprintf-js').sprintf
 vsprintf    = require('sprintf-js').vsprintf
 nodame      = new Nodame()
-validate    = require('nodame/validate')`
+validate    = require(lib + '/validate')`
 
 # load modules
-app     = require('nodame/app')
+app     = require("#{lib}/app")
 debug_name = nodame.config('app.debug_name')
 debug   = require('debug')(debug_name)
 http    = require('http')
-path    = require('nodame/path')
+path    = require("#{lib}/path")
 colors  = require('colors')
 
 # normalize port

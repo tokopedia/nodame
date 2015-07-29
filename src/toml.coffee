@@ -1,5 +1,5 @@
-toml   = require 'toml'
-json   = require 'nodame/json'
+toml   = require('toml')
+json   = require('./json')
 parse  = toml.parse
 object = {}
 

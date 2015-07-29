@@ -8,7 +8,7 @@
  */
 
 var async       = require('async');
-var request     = require('nodame/request');
+var request     = require('./request');
 var sha384      = require('js-sha512').sha384;
 var parent      = this;
 var cookieCfg   = nodame.config('cookie');
@@ -18,7 +18,7 @@ var keyRedisIdentifier = nodame.config('app.name') + ':session:';
 
 exports.__getClientRedisSession = function (sessionId) {
     // TODO: Make flexible
-    var redis       = require('nodame/redis');
+    var redis       = require('./redis');
     var redisId     = sessionId.match(/\d+/)[0];
     var redisClient = redis.getClient('session', 'slave', redisId);
 
@@ -137,7 +137,7 @@ exports.__clearSession = function (sessionId) {
 
 exports.__getSession = function (sessionId, callback) {
     var url         = nodame.config('url.api.session');
-    var secret      = require('nodame/secret');
+    var secret      = require('./secret');
     var hash        = secret.getHash('session', sessionId);
     var apiReqUrl   = sprintf('%s?ck=%s&h=%s', url, sessionId, hash);
 

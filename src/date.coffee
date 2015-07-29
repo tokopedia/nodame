@@ -33,7 +33,7 @@ class DateParser
         Oct: { word: 'Oktober',   num: 10 }
         Nov: { word: 'November',  num: 11 }
         Dec: { word: 'Desember',  num: 12 }
-      
+
       lead_zero = (num) -> ('0' + num).slice(-2)
 
       format_date = (match, $1, $2, $3, $4, offset, original) ->
@@ -61,12 +61,12 @@ class DateParser
         return _date.toString().replace(re, format_date)
 
       result = replace_date()
-      
-      if result isnt 'Invalid Date' 
-        return result 
-      else 
+
+      if result isnt 'Invalid Date'
+        return result
+      else
         return false
-    
+
     else
       return false
     return

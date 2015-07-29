@@ -1,5 +1,5 @@
 var mandrill = require('mandrill-api/mandrill');
-var path     = require('nodame/path');
+var path     = require('./path');
 
 var mailer = (function () {
     // TODO: make flexible

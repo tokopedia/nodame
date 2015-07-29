@@ -23,7 +23,7 @@ class Router
     unless @root[0] is '/'
       @root = "/#{@root}"
 
-    Session   = require('nodame/session')
+    Session   = require('./session')
     app.use(Session.initSession)
 
     for mod of @modules

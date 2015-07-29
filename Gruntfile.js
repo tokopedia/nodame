@@ -1,5 +1,5 @@
-var file    = require(__dirname + '/lib/node_modules/nodame/file');
-var path    = require(__dirname + '/lib/node_modules/nodame/path');
+var file    = require(__dirname + '/lib/file');
+var path    = require(__dirname + '/lib/path');
 var fs      = require('fs');
 
 module.exports = function (grunt) {

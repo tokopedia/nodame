@@ -20,7 +20,7 @@ function errors(app) {
 }
 
 function errorsHandler(err, req, res, next) {
-    var utilHtml    = require('nodame/html');
+    var utilHtml    = require('./html');
     var errCode     = err.status || 500;
     var errCodeView = getErrCodeView(err, req);
 
