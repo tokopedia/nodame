@@ -3,17 +3,18 @@
 BASEDIR=$(dirname $0)/../..
 ROOTDIR=$BASEDIR/../..
 ROOT_LIST=(
-    index.js
     .gitignore
-    nodemon.json
     assets
-    handlers
-    services
-    modules
-    bootwares
-    views
+    bin
     configs
+    handlers
+    hooks
+    index.js
     middlewares
+    modules
+    nodemon.json
+    services
+    views
 )
 NODAME_LIST=(
     tpl/*
@@ -49,6 +50,11 @@ for nodame_file in ${NODAME_LIST[@]}; do
     count=$((count+1))
 done
 echo -e "${green}summary     : ok=$count  failed=0${reset}"
+echo ""
+
+echo -e "${cyan}TASK: [Copy exec file] *************${rep}${reset}"
+chmod +x $ROOTDIR/nodame
+echo -e "${green}summary     : ok=1  failed=0${reset}"
 echo ""
 
 echo -e "${cyan}TASK: [Update build data] **********${rep}${reset}"
