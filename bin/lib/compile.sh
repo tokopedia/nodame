@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-BASEDIR=$(dirname $0)
+BASEDIR=$(dirname $0)/../..
 
 src=$BASEDIR/src
 bin=$BASEDIR/bin
@@ -30,7 +30,7 @@ echo -e "${cyan}TASK: [Clean target directory] *****${rep}${reset}"
 files=($lib/*)
 count=$((count+${#files[@]}))
 rm -rf $lib
-rm $bin/www
+rm -f $bin/www
 echo -e "${green}>> $count files removed.${reset}"
 echo ""
 

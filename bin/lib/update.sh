@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BASEDIR=$(dirname $0)
-file=${BASEDIR}/../../configs/.build
+BASEDIR=$(dirname $0)/../../../..
+file=${BASEDIR}/configs/.build
 timestamp=$(date +%s)
 os=`uname -a`
 

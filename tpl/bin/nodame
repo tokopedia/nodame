@@ -7,6 +7,15 @@ case "$1" in
     "-a" | "--assets" )
         $nodame -a
         ;;
+    "-c" | "--compile" )
+        $nodame -C
+        ;;
+    "-d" | "--debug" )
+        $nodame -D
+        ;;
+    "-t" | "--test" )
+        $nodame -T
+        ;;
     "-u" | "--update" )
         $nodame -u
         ;;
@@ -15,6 +24,9 @@ case "$1" in
         echo "  Usage: nodame <OPTION>"
         echo ""
         echo -e "  -a\t--assets\tbuild assets"
+        echo -e "  -c\t--compile\tcompile coffee script"
+        echo -e "  -d\t--debug\tdebug js file"
+        echo -e "  -t\t--test\trun unit testing"
         echo -e "  -u\t--update\tupdate build data"
         echo ""
         ;;
