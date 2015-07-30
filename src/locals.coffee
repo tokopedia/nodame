@@ -31,7 +31,7 @@ class Locals
 
     lead_zero = (num) -> ('0' + num).slice(-2)
 
-    date = DateParser.parseDate
+    date = DateParser.toString
 
     thousands = (num) -> Numeral(num).format(0.0)
 
