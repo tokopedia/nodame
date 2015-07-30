@@ -15,13 +15,19 @@ class Router
     return
 
   constructor: (app) ->
-    @default_module  = nodame.config 'module.default'
-    @modules  = nodame.config 'module.items'
-    @hostname = nodame.config 'url.hostname'
+    @default_module  = nodame.config('module.default')
+    @modules  = nodame.config('module.items')
+    @hostname = nodame.config('url.hostname')
     @root = "#{nodame.config('module.root')}"
-
-    unless @root[0] is '/'
-      @root = "/#{@root}"
+    # normalize root path
+    if @root.length > 1
+      unless @root[0] is '/'
+        @root = "/#{@root}"
+      if @root[@root.length - 1] is '/'
+        @root = @root.slice(0, -1)
+    else
+      if @root[0] is '/'
+        @root = ''
 
     Session   = require('./session')
     app.use(Session.initSession)
@@ -37,7 +43,7 @@ class Router
         route   = "#{@root}"
 
         if mod isnt @default_module then route += "/#{mod}"
-        else defRoute = "#{route}/#{mod}"
+        else default_route = "#{route}/#{mod}"
 
         # Init middleware
         if config.middleware
@@ -49,7 +55,7 @@ class Router
           app.use "#{route}/", handler
 
           # Enable access to default route using its module name
-          app.use "#{defRoute}/", handler if mod is @default_module
+          app.use "#{default_route}/", handler if mod is @default_module
 
         # Init xhr
         app.use "#{@root}/ajax/#{mod}/", handler if config.ajax
