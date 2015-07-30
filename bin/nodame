@@ -10,6 +10,9 @@ case "$1" in
     "-b" | "--build" )
         $lib/build.sh
         ;;
+    "-bc" | "--build-coffee" )
+        $lib/build.sh 1
+        ;;
     "-c" | "--compile" )
         $lib/compile.sh
         ;;

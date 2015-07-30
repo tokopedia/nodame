@@ -30,7 +30,7 @@ echo -e "${cyan}TASK: [Clean target directory] *****${rep}${reset}"
 files=($lib/*)
 count=$((count+${#files[@]}))
 rm -rf $lib
-rm $bin/www
+rm -f $bin/www
 echo -e "${green}>> $count files removed.${reset}"
 echo ""
 

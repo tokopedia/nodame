@@ -26,6 +26,12 @@ yellow="\033[1;33m"
 reset="\033[0m"
 rep="*************************"
 
+is_coffee=false
+
+if [[ $# -eq 1 && "$1" -eq 1 ]]; then
+    is_coffee=true
+fi
+
 echo ""
 echo -e "${yellow}PLAY: [Build Application Base] *****${rep}${reset}"
 echo ""
@@ -43,24 +49,34 @@ done
 echo -e "${green}summary     : ok=$count  failed=0${reset}"
 echo ""
 
-echo -e "${cyan}TASK: [Copy files] *****************${rep}${reset}"
-count=0
-for nodame_file in ${NODAME_LIST[@]}; do
-    cp -rf ${BASEDIR}/${nodame_file} ${ROOTDIR}/
-    count=$((count+1))
-done
-echo -e "${green}summary     : ok=$count  failed=0${reset}"
+echo -e "${cyan}TASK: [Copy template directory] ****${rep}${reset}"
+cp -rf $BASEDIR/tpl/* $ROOTDIR/
+echo -e "${green}summary     : ok=1  failed=0${reset}"
 echo ""
 
 echo -e "${cyan}TASK: [Copy exec file] *************${rep}${reset}"
-chmod +x $ROOTDIR/nodame
+chmod +x $ROOTDIR/bin/nodame
 echo -e "${green}summary     : ok=1  failed=0${reset}"
 echo ""
 
 echo -e "${cyan}TASK: [Update build data] **********${rep}${reset}"
-$BASEDIR/bin/nodame -u
+$ROOTDIR/bin/nodame -u
 echo -e "${green}summary     : ok=1  failed=0${reset}"
-
 
 echo -e "${cyan}Finished: SUCCESS${reset}"
 echo ""
+
+$ROOTDIR/bin/nodame -c
+
+if $is_coffee; then
+cat << GITIGNORE >> $ROOTDIR/.gitignore
+/handlers
+/hooks
+/middlewares
+/modules
+/services
+
+GITIGNORE
+else
+    rm -rf $ROOTDIR/src
+fi

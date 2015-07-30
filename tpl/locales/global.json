@@ -27,6 +27,10 @@
         "en": "Congratulation",
         "id": "Selamat"
     },
+    "TEXT_ABOUT": {
+        "en": "About Us",
+        "id": "Tentang Kami"
+    },
     "TEXT_RUNNING_NODAME": {
         "en": "You are now running nodame",
         "id": "Kamu sekarang sedang menjalankan nodame"
