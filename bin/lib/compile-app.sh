@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASEDIR=$(dirname $0)/../..
+BASEDIR=$(dirname $0)/../../../..
 src=$BASEDIR/src
 dst=$BASEDIR
 tmp=$dst/.tmp

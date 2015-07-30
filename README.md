@@ -415,6 +415,4 @@ Nodame comes with [third-party modules](#third-party-modules) and [private modul
 ##### View
 
 ---
-Need help? Find [Argi Karunia](https://github.com/hkyo89). :smiley:
-
-> **<>** with :heart: by **ドラえもん**
+> **<>** with **❤︎** by **ドラえもん**

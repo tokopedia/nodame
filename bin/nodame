@@ -1,33 +1,38 @@
 #!/bin/bash
 
 DIRNAME=$(dirname $0)
-sys=$DIRNAME/..
-app=$DIRNAME/../../..
+lib=$DIRNAME/lib
 
 case "$1" in
     "-a" | "--assets" )
-        $sys/assets.sh
+        $lib/assets.sh
         ;;
     "-b" | "--build" )
-        $sys/build.sh
+        $lib/build.sh
+        ;;
+    "-bc" | "--build-coffee" )
+        $lib/build.sh 1
         ;;
     "-c" | "--compile" )
-        $sys/compile.sh
+        $lib/compile.sh
         ;;
     "-C" | "--compile-app" )
-        $sys/compile-app.sh
+        $lib/compile-app.sh
         ;;
     "-d" | "--debug" )
-        $sys/debug.sh
+        $lib/debug.sh
+        ;;
+    "-D" | "--debug-app" )
+        $lib/debug-app.sh
         ;;
     "-t" | "--test" )
-        $sys/test.sh
+        $lib/test.sh
         ;;
     "-T" | "--test-app" )
-        $sys/test-app.sh
+        $lib/test-app.sh
         ;;
     "-u" | "--update" )
-        $sys/update.sh
+        $lib/update.sh
         ;;
     * )
         echo ""
@@ -38,6 +43,7 @@ case "$1" in
         echo -e "  -c\t--compile\tcompile nodame's coffee-script"
         echo -e "  -C\t--compile-app\tcompile app's coffee-script"
         echo -e "  -d\t--debug\t\tdebug js file"
+        echo -e "  -D\t--debug-app\t\tdebug app's js file"
         echo -e "  -t\t--test\t\trun nodame's unit testing"
         echo -e "  -T\t--test-app\t\trun app's unit testing"
         echo -e "  -u\t--update\tupdate build data"
