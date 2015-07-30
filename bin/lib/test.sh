@@ -1,5 +1,5 @@
 #!/bin/bash
-BASEDIR=$(dirname $0)
+BASEDIR=$(dirname $0)/../..
 set -e
 red="\033[0;31m"
 green="\033[0;32m"

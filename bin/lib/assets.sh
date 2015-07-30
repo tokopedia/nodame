@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(dirname $0)/../..
 dir=$BASEDIR/../../assets/min
 
 red="\033[0;31m"
