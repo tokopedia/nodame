@@ -8,6 +8,48 @@
 
 var LOGGER = nodame.config('logger');
 var CLIENT = LOGGER.clients;
+var FS     = require('fs')
+
+EMERGENCY = {
+    level   : 0,
+    title   : 'EMERGENCY',
+    message : 'System is unusable'
+};
+ALERT     = {
+    level   : 1,
+    title   : 'ALERT',
+    message : 'Action must be taken immediately'
+};
+CRITICAL  = {
+    level   : 2,
+    title   : 'CRITICAL',
+    message : 'System is in critical condition'
+};
+ERROR     = {
+    level   : 3,
+    title   : 'ERROR',
+    message : 'Error condition'
+};
+WARNING   = {
+    level   : 4,
+    title   : 'WARNING',
+    message : 'Warning condition'
+};
+NOTICE    = {
+    level   : 5,
+    title   : 'NOTICE',
+    message : 'Normal but significant condition'
+};
+INFO      = {
+    level   : 6,
+    title   : 'INFO',
+    message : 'Purely informational message'
+};
+DEBUG     = {
+    level   : 7,
+    title   : 'DEBUG',
+    message : 'Debug only'
+};
 
 var logger = (function () {
     var self = this;
@@ -44,51 +86,21 @@ var logger = (function () {
             var morganFormat = ':date[clf] :method :status :url <- :referrer :remote-addr :response-time ms - :res[content-length]';
         }
     }
+     
+    _register_errors = function() {
+
+        var filename = nodame.appPath() + '/locales/errors.json';
+        
+        var buff = FS.readFileSync(filename, "utf8");
+        error_codes = JSON.parse(buff)
+
+        return nodame.set('errors', error_codes);
+    }();
 
     var error = function () {
         return function (req, res, next) {
             log = (function () {
-                var EMERGENCY = {
-                    level   : 0,
-                    title   : 'EMERGENCY',
-                    message : 'System is unusable'
-                };
-                var ALERT     = {
-                    level   : 1,
-                    title   : 'ALERT',
-                    message : 'Action must be taken immediately'
-                };
-                var CRITICAL  = {
-                    level   : 2,
-                    title   : 'CRITICAL',
-                    message : 'System is in critical condition'
-                };
-                var ERROR     = {
-                    level   : 3,
-                    title   : 'ERROR',
-                    message : 'Error condition'
-                };
-                var WARNING   = {
-                    level   : 4,
-                    title   : 'WARNING',
-                    message : 'Warning condition'
-                };
-                var NOTICE    = {
-                    level   : 5,
-                    title   : 'NOTICE',
-                    message : 'Normal but significant condition'
-                };
-                var INFO      = {
-                    level   : 6,
-                    title   : 'INFO',
-                    message : 'Purely informational message'
-                };
-                var DEBUG     = {
-                    level   : 7,
-                    title   : 'DEBUG',
-                    message : 'Debug only'
-                };
-
+                
                 var date = new Date();
 
                 var emergency = function (title, details) {
@@ -264,6 +276,42 @@ var logger = (function () {
                     return FakeDatadogClient;
                 })();
 
+                var error_code = function (code_str, level_obj) {
+                    var use_english = true;
+                    if(use_english){
+                        err_message = nodame.settings.errors[code_str].en                        
+                    } else {
+                        err_message = nodame.settings.errors[code_str].id
+                    }
+
+                    switch(level_obj.level) {
+                        case 0:
+                            emergency(level_obj.title, err_message)
+                            break; 
+                        case 1: 
+                            alert(level_obj.title, err_message)
+                            break; 
+                        case 2: 
+                            critical(level_obj.title, err_message)
+                            break; 
+                        case 3: 
+                            error(level_obj.title, err_message)
+                            break; 
+                        case 4: 
+                            warning(level_obj.title, err_message)
+                            break; 
+                        case 5: 
+                            notice(level_obj.title, err_message)
+                            break; 
+                        case 6: 
+                            info(level_obj.title, err_message)
+                            break; 
+                        case 7: 
+                            debug(level_obj.title, err_message)
+                            break; 
+                    }
+                }
+
                 return {
                     emergency: emergency,
                     alert: alert,
@@ -273,7 +321,8 @@ var logger = (function () {
                     notice: notice,
                     info: info,
                     debug: debug,
-                    stat: stat
+                    stat: stat,
+                    error_code: error_code
                 };
             })();
 
