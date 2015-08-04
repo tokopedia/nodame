@@ -176,6 +176,7 @@ var logger = (function () {
                     var options = {
                         level: __level,
                         tags: {
+                            environment: nodame.env(),
                             service: 'desktop',
                             ip: req.ip,
                             real_ip: req.ips[0],
