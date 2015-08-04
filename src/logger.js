@@ -284,30 +284,33 @@ var logger = (function () {
                         err_message = nodame.settings.errors[code_str].id
                     }
 
+                    pattern = new RegExp('[^0-9]+')
+                    err_code = code_str.replace(pattern,"")
+
                     switch(level_obj.level) {
                         case 0:
-                            emergency(level_obj.title, err_message)
+                            emergency(err_code, err_message)
                             break; 
                         case 1: 
-                            alert(level_obj.title, err_message)
+                            alert(err_code, err_message)
                             break; 
                         case 2: 
-                            critical(level_obj.title, err_message)
+                            critical(err_code, err_message)
                             break; 
                         case 3: 
-                            error(level_obj.title, err_message)
+                            error(err_code, err_message)
                             break; 
                         case 4: 
-                            warning(level_obj.title, err_message)
+                            warning(err_code, err_message)
                             break; 
                         case 5: 
-                            notice(level_obj.title, err_message)
+                            notice(err_code, err_message)
                             break; 
                         case 6: 
-                            info(level_obj.title, err_message)
+                            info(err_code, err_message)
                             break; 
                         case 7: 
-                            debug(level_obj.title, err_message)
+                            debug(err_code, err_message)
                             break; 
                     }
                 }
