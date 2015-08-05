@@ -4,7 +4,7 @@
         "powered_by": false,
         "port": 3000,
         "release_env": ["production", "staging"],
-        "enforce_secure": true,
+        "enforce_secure": false,
         "hooks": [],
         "block_favicon": true
     },
