@@ -89,7 +89,7 @@ new View(app)
 
 # redirect non-https on production
 enforce_secure = (req, res, next) ->
-  unless is_dev and req.secure
+  if not is_dev and req.secure
     res.redirect("#{CONFIG.url.hostname}#{req.originalUrl}")
     next = false
   return next() if next
