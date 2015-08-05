@@ -7,6 +7,8 @@
  * @version 0.4.6
  */
 
+// 5 Aug, 2015 - Edited by Tirta Wening Rachman <tirtawening@gmail.com>
+
 // dependencies
 var fs          = require('fs'),
     path        = require('./path');
@@ -38,7 +40,8 @@ var i18n = module.exports = function (opt) {
             self.readFile(locale);
         });
 
-        this.defaultLocale = opt.locales[0];
+        // Comented out by Tirta (defaultLocale set in locale.coffee)
+        // this.defaultLocale = opt.locales[0];
     }
 
     // Set the locale to the default locale
@@ -249,17 +252,42 @@ i18n.prototype = {
 
             this.initLocale(locale, {});
         }
+        // ORIGINAL 
+        // if (!this.locales[locale][singular]) {
+        //     this.locales[locale][singular] = plural ?
+        //         { one: singular, other: plural } :
+        //         singular;
 
+        //     if (this.devMode) {
+        //         this.writeFile(locale);
+        //     }
+        // }
+
+        // Tirta Wening Rachman - tirtawening@gmail.com
+        // August 5, 2015
+        
         if (!this.locales[locale][singular]) {
-            this.locales[locale][singular] = plural ?
-                { one: singular, other: plural } :
-                singular;
+            if(this.locales[this.defaultLocale][singular]){
+                return this.locales[this.defaultLocale][singular];
+            } else {
+                if (!this.locales[locale][singular]) {
+                    this.locales[locale][singular] = plural ?
+                        { one: singular, other: plural } :
+                        singular;
+
+                    if (this.devMode) {
+                        this.writeFile(locale);
+                    }
+                }
+            }
 
             if (this.devMode) {
                 this.writeFile(locale);
             }
         }
 
+        //End Tirta
+        
         return this.locales[locale][singular];
     },
 
