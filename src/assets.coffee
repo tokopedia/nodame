@@ -21,7 +21,7 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = opt.device
+    @_device  = nodame.config('view.mobile') then opt.device else 'desktop'
 
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
