@@ -30,8 +30,12 @@ class View
 
   path: (req, moduleName, file) ->
     template = nodame.config('view.template')
-    device = if req? and req.device.type is 'phone' \
-      then 'mobile' else 'desktop'
+    device = 'desktop'
+    mobile = nodame.config('view.mobile')
+
+    if req?.device?.type? and req.device.type is 'phone' and mobile
+      device = 'mobile'
+
     Path.join device, template, moduleName, file
 
   _filterPush: (input, val) ->

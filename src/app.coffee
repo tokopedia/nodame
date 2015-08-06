@@ -94,7 +94,7 @@ enforce_secure = (req, res, next) ->
     next = false
   return next() if next
 
-app.use(enforce_secure) if !is_dev and CONFIG.server.enforce_secure
+app.use(enforce_secure) if not is_dev and CONFIG.server.enforce_secure
 
 # middlewares Setups
 app.use(BodyParser.json())

@@ -51,6 +51,8 @@ class DateParser
       Nov: { word: 'November',  num: 11 }
       Dec: { word: 'Desember',  num: 12 }
 
+    lead_zero = (num) -> ('0' + num).slice(-2)
+
     format_date = (match, $1, $2, $3, $4, offset, original) ->
       switch format
         when 'normal'
