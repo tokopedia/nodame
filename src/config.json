@@ -56,7 +56,7 @@
         "enable": false,
         "clients": {
             "slack": {
-                "enable": false,
+                "enable": false
             }
         }
     },
