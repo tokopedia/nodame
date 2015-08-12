@@ -86,13 +86,13 @@ var logger = (function () {
             var morganFormat = ':date[clf] :method :status :url <- :referrer :remote-addr :response-time ms - :res[content-length]';
         }
     }
-     
+
     _register_errors = function() {
 
         var filename = nodame.appPath() + '/locales/errors.json';
-        
+
         var buff = FS.readFileSync(filename, "utf8");
-        error_codes = JSON.parse(buff)
+        error_codes = JSON.parse(buff);
 
         return nodame.set('errors', error_codes);
     }();
@@ -100,7 +100,7 @@ var logger = (function () {
     var error = function () {
         return function (req, res, next) {
             log = (function () {
-                
+
                 var date = new Date();
 
                 var emergency = function (title, details) {
@@ -277,10 +277,10 @@ var logger = (function () {
                     return FakeDatadogClient;
                 })();
 
-                var error_code = function (code_str, level_obj) {
+                var code = function (code_str, level_obj) {
                     var use_english = true;
                     if(use_english){
-                        err_message = nodame.settings.errors[code_str].en                        
+                        err_message = nodame.settings.errors[code_str].en
                     } else {
                         err_message = nodame.settings.errors[code_str].id
                     }
@@ -291,28 +291,28 @@ var logger = (function () {
                     switch(level_obj.level) {
                         case 0:
                             emergency(err_code, err_message)
-                            break; 
-                        case 1: 
+                            break;
+                        case 1:
                             alert(err_code, err_message)
-                            break; 
-                        case 2: 
+                            break;
+                        case 2:
                             critical(err_code, err_message)
-                            break; 
-                        case 3: 
+                            break;
+                        case 3:
                             error(err_code, err_message)
-                            break; 
-                        case 4: 
+                            break;
+                        case 4:
                             warning(err_code, err_message)
-                            break; 
-                        case 5: 
+                            break;
+                        case 5:
                             notice(err_code, err_message)
-                            break; 
-                        case 6: 
+                            break;
+                        case 6:
                             info(err_code, err_message)
-                            break; 
-                        case 7: 
+                            break;
+                        case 7:
                             debug(err_code, err_message)
-                            break; 
+                            break;
                     }
                 }
 
@@ -326,7 +326,7 @@ var logger = (function () {
                     info: info,
                     debug: debug,
                     stat: stat,
-                    error_code: error_code
+                    code: code
                 };
             })();
 

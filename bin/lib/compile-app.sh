@@ -1,6 +1,7 @@
 #!/bin/bash
 
-BASEDIR=$(dirname $0)/../../../..
+lib=$(dirname $0)
+BASEDIR=$lib/../../../..
 src=$BASEDIR/src
 dst=$BASEDIR
 tmp=$dst/.tmp
@@ -80,7 +81,7 @@ echo -e "${green}>> $count files removed.${reset}"
 echo ""
 
 echo -e "${cyan}TASK: [Update build] ***************${rep}${reset}"
-$BASEDIR/update.sh &> /dev/null
+$lib/update.sh &> /dev/null
 echo -e "${green}>> build file updated."
 echo ""
 
