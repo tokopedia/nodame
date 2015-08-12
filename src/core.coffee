@@ -15,6 +15,8 @@ QueryString = require('query-string')
 
 class Core
   settings: {}
+  hooks: {}
+  clients: {}
   sysPath: -> Path.sys
   appPath: -> Path.app
 
@@ -33,9 +35,29 @@ class Core
 
   argv: -> @settings.__systems.argv
 
+  client: (key, obj) ->
+    @_set('clients', key, obj)
+    return
+
+  hook: (key, obj) ->
+    @_set('hooks', key, obj)
+    return
+
   set: (key, obj) ->
-    throw new Errors 'Invalid settings parameters.' unless key? and obj?
-    @settings[key] = obj
+    @_set('settings', key, obj)
+    return
+
+  _set: (mod, key, obj) ->
+    throw new Error 'Invalid settings parameters.' unless key? and obj?
+
+    mods = ['settings', 'hooks', 'clients']
+
+    if mods.indexOf(mod) is -1
+      throw new Error 'Invalid module of Nodame.'
+      return
+
+    @[mod][key] = obj
+    return
 
   express: require('express')
   router: -> @express.Router()
@@ -68,11 +90,12 @@ class Core
   require: (name) ->
     vars = name.split('/')
     tags = ['module', 'hook', 'service', 'middleware', 'handler']
+
     if tags.indexOf(vars[0]) isnt -1
       return require(@_getFilePath("#{vars[0]}s", vars[1]))
-    else
-      name = "./#{vars[1]}" if vars[0] is 'nodame'
-      return require(name)
+
+    name = "./#{vars[1]}" if vars[0] is 'nodame'
+    return require(name)
 
   ###
   #  Enforce mobile views
