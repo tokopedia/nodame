@@ -19,7 +19,7 @@ class Notification
         message = @CLIENTS.slack.message ? ''
         message = "\n\n#{message}" if message?
         title = @CLIENTS.slack.title ? nodame.config('app.name')
-        host = nodame.config('url.base')
+        url = @CLIENTS.slack.url ? nodame.config('url.base')
         auto_reconnect = true
         auto_mark = true
         slack = new Slack(token, auto_reconnect, auto_mark)
@@ -29,7 +29,7 @@ class Notification
           channel = slack.getChannelGroupOrDMByID(channel_id)
           time = new Date()
           env = nodame.env()
-          body = ">>>*[#{title} (#{env})]* _restarted_ \n_#{time}_\n#{host}#{message}"
+          body = ">>>*[#{title} (#{env})]* _restarted_ \n_#{time}_\n#{url}#{message}"
           channel.send(body)
           slack.disconnect()
           console.log('Notification sent to slack.')
