@@ -112,7 +112,8 @@ start = (app) ->
   welcome()
 
   notification = new Notification()
-  notification.send()
+  title = 'restarted'
+  notification.send(title)
   return
 
 # Event listener for HTTP server "error" event.

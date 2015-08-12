@@ -386,18 +386,11 @@ user            = "123456"
         # Set slack channel id
         channel_id      = ""
 
-        # Set notification title
+        # Set notification name
         #
         # default {{ app.name }}
         #
-        # title           = "{{ app.name }}"
-
-        # Set notification messages
-        #
-        # default ""
-        #
-        # message         = ""
-
+        # name           = "{{ app.name }}"
 
         # Set notification url
         #
