@@ -397,7 +397,15 @@ user            = "123456"
         # default ""
         #
         # message         = ""
-        
+
+
+        # Set notification url
+        #
+        # default "{{ url.base }}"
+        #
+        # url             = "{{ url.base }}"
+
+
 ##########
 # Logger #
 ##########
