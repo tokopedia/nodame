@@ -52,6 +52,14 @@
         "request_token": false,
         "request_token_module": "request_token"
     },
+    "notification": {
+        "enable": false,
+        "clients": {
+            "slack": {
+                "enable": false,
+            }
+        }
+    },
     "logger": {
         "enable": false,
         "clients": {

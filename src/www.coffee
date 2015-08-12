@@ -13,6 +13,7 @@ debug   = require('debug')(debug_name)
 http    = require('http')
 path    = require("#{lib}/path")
 colors  = require('colors')
+Notification = require("#{lib}/notification")
 
 # normalize port
 normalize_port = (val) ->
@@ -109,6 +110,9 @@ start = (app) ->
   server.on('error', on_error)
   server.on('listening', on_listening)
   welcome()
+
+  notification = new Notification()
+  notification.send()
   return
 
 # Event listener for HTTP server "error" event.

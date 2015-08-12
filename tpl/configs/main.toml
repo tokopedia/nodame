@@ -357,7 +357,47 @@ user            = "123456"
 #
 # request_token_module = "request_token"
 
+################
+# Notification #
+################
+[notification]
 
+# Set to enable notification
+#
+# default false
+#
+# enable          = false
+
+    # Notification clients
+    [notification.clients]
+
+        # Slack configuration
+        [notification.clients.slack]
+
+        # Set to enable slack
+        #
+        # default false
+        #
+        # enable          = false
+
+        # Set slack token
+        token           = ""
+
+        # Set slack channel id
+        channel_id      = ""
+
+        # Set notification title
+        #
+        # default {{ app.name }}
+        #
+        # title           = "{{ app.name }}"
+
+        # Set notification messages
+        #
+        # default ""
+        #
+        # message         = ""
+        
 ##########
 # Logger #
 ##########
@@ -377,7 +417,7 @@ user            = "123456"
 
         # Set to enable morgan
         #
-        # enable true
+        # default true
         #
         # enable          = true
 
