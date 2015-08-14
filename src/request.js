@@ -103,7 +103,11 @@ var httpRequest = module.exports = (function () {
         var parse = function (contentType, data) {
             var result;
 
-            if (!(contentType) || (contentType.match(/xml|html/) !== null && data.substr(0, 1) !== '{')) {
+            if (!(contentType)) {
+                return data;
+            }
+            
+            if(contentType.match(/xml|html/) !== null && data.substr(0, 1) !== '{'){
                 return data;
             }
 
