@@ -347,6 +347,7 @@ var httpRequest = module.exports = (function () {
             delRaw: delRaw,
             delXML: delXML,
             header: header,
+            set: set,
             rejectUnauthorized: rejectUnauthorized
         };
     })();
