@@ -106,7 +106,7 @@ var httpRequest = module.exports = (function () {
             if (!(contentType)) {
                 return data;
             }
-            
+
             if(contentType.match(/xml|html/) !== null && data.substr(0, 1) !== '{'){
                 return data;
             }
@@ -239,6 +239,12 @@ var httpRequest = module.exports = (function () {
 
         var rejectUnauthorized = function () {
             __options.rejectUnauthorized = false;
+        };
+
+        var set = function (key, value) {
+            if (__options[key] === undefined) {
+                __options[key] = value;
+            }
         };
 
         var rebuild = function (method, data) {
