@@ -56,7 +56,9 @@
         "enable": false,
         "clients": {
             "slack": {
-                "enable": false
+                "enable": false,
+                "auto_reconnect": true,
+                "auto_mark": true
             }
         }
     },

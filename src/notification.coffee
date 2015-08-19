@@ -12,8 +12,8 @@ class Notification
         @token = @CLIENTS.slack.token
         @channel_id = @CLIENTS.slack.channel_id
         return unless @token? or @channel_id?
-        auto_reconnect = true
-        auto_mark = true
+        auto_reconnect = @CLIENTS.slack.auto_reconnect
+        auto_mark = @CLIENTS.slack.auto_mark
         @slack = new Slack(@token, auto_reconnect, auto_mark)
         @slack.login()
     return
@@ -26,7 +26,7 @@ class Notification
         url = @CLIENTS.slack.url ? nodame.config('url.base')
         title = 'notification' unless title?
         channel_id = @channel_id
-        
+
         @slack.on 'open', ->
           groups = (group.name for id, group of @groups when group.is_open and not group.is_archived)
           channel = @getChannelGroupOrDMByID(channel_id)
