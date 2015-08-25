@@ -15,7 +15,8 @@
     },
     "cookie": {
         "domain": "localhost",
-        "session": "_NODAME_"
+        "session": "_NODAME_",
+        "secret": "$uSm~a!yGi6zqj+7_K%Crvk0wxstO2Ae"
     },
     "url": {
         "hostname": "http://localhost:3000"

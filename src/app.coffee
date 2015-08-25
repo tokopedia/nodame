@@ -100,7 +100,7 @@ app.use(enforce_secure) if not is_dev and CONFIG.server.enforce_secure
 app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: false }))
 app.use(XMLBodyParser())
-app.use(CookieParser())
+app.use(CookieParser(nodame.config('cookie.secret')))
 app.use(MethodOverride())
 
 # Locals setup
