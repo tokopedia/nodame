@@ -50,6 +50,8 @@
         "client": "mandrill"
     },
     "session": {
+        "key": "_sid",
+        "expires": 3600,
         "request_token": false,
         "request_token_module": "request_token"
     },
@@ -96,12 +98,15 @@
     "module": {
         "root": "/",
         "default": "home",
+        "forbidden": "404",
         "items": {
             "__default": {
                 "enable": true,
                 "ajax": true,
                 "xhr_only": false,
                 "dev_only": false,
+                "auth_only": false,
+                "guest_only": false,
                 "middleware": false
             }
         }

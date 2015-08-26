@@ -340,11 +340,33 @@ var logger = (function () {
                 return morgan(outputFile, {
                     stream: outputStream,
                     skip: function (req, res) {
-                        return res.StatusCode < 400;
+                        return res.statusCode < 400;
                     }
                 });
             } else {
-                return morgan(morganFormat);
+                return morgan(morganFormat, {
+                    skip: function (req, res) {
+                        skip = false;
+                        // Skip assets
+                        var _path = req.originalUrl;
+                        _path = _path.split('/');
+                        _path = _path[1];
+                        // Assets route
+                        var assets_route = nodame.config('assets.route');
+                        assets_route = assets_route.split('/');
+                        assets_route = assets_route[1];
+                        // Check if path is assets route
+                        if (_path == assets_route) {
+                            skip = true;
+                        }
+                        // Skip status code 200
+                        if (res.statusCode === 200) {
+                            skip = true;
+                        }
+
+                        return skip;
+                    }
+                });
             }
         } else {
             return function (req, res, next) {
