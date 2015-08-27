@@ -43,13 +43,21 @@
     },
     "cache": {
         "enable": false,
-        "client": "redis"
+        "client": "redis",
+        "clients": {
+            "redis": {
+                "enable": false
+            }
+        }
     },
     "email": {
         "enable": false,
         "client": "mandrill"
     },
     "session": {
+        "enable": false,
+        "storage": "redis",
+        "storage_map": "session",
         "key": "_sid",
         "expires": 3600,
         "request_token": false,

@@ -346,7 +346,6 @@ var logger = (function () {
             } else {
                 return morgan(morganFormat, {
                     skip: function (req, res) {
-                        skip = false;
                         // Skip assets
                         var _path = req.originalUrl;
                         _path = _path.split('/');
@@ -357,14 +356,14 @@ var logger = (function () {
                         assets_route = assets_route[1];
                         // Check if path is assets route
                         if (_path == assets_route) {
-                            skip = true;
+                            return true;
                         }
                         // Skip status code 200
                         if (res.statusCode === 200) {
-                            skip = true;
+                            return true;
                         }
 
-                        return skip;
+                        return false;
                     }
                 });
             }

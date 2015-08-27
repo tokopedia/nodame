@@ -7,8 +7,9 @@
 # @version 1.0.0
 ###
 
-Session = require('./session')
 MODULES = nodame.config('module')
+
+Session = require('./session')
 
 class Router
   locals: (req, res, next) ->
@@ -33,7 +34,7 @@ class Router
       if @root[0] is '/'
         @root = ''
     # Run session evaluation middleware
-    app.use(Session.middleware)
+    app.use((new Session()).middleware)
     # Register modules
     for mod of @modules
       # Assign config
