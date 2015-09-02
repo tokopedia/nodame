@@ -43,8 +43,8 @@
     },
     "cache": {
         "enable": false,
-        "client": "redis",
-        "clients": {
+        "db_server": "redis",
+        "db": {
             "redis": {
                 "enable": false
             }

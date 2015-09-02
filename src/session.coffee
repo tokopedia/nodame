@@ -45,23 +45,16 @@ class Session
     # Check if session is enable in configuration
     unless SESSION.enable
       return false
-    # Get storage engine
-    storage = SESSION.storage
-    # Check if storage engine is enable
-    unless CACHE.clients[storage]?
-      throw new Error "Session storage engine '#{storage}' in not enabled"
+    # Get db engine
+    db_server = CACHE.db_server
+    # Check if db engine is enable
+    unless CACHE.db[db_server].enable
+      throw new Error "#{db_server} is not enabled"
     # Assign client configuration
-    client = CACHE.clients[storage]
-    # Assign map
-    map = SESSION.storage_map
-    # Check if map exists
-    unless not client.enable and client.map?[map]?
-      throw new Error "Map 'session' doesn't exist in #{storage} config"
-    # Assign shard
-    shard = client.map[map]
-    # Check if dhard exists
-    unless client[shard]?
-      throw new Error "Shard #{shard} doesn't exist in #{storage} config"
+    client = CACHE.db[db_server]
+    # Check host and port configuration
+    unless client.host? or client.port?
+      throw new Error "Missing host or port config for #{db_server}"
     # Session is enable
     return true
   ###
