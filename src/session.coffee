@@ -18,6 +18,7 @@ APP     = nodame.config('app')
 HTML    = require('./html')
 Hash    = require('js-sha512')
 Redis   = require('./redis')
+Async   = require('async')
 
 class Session
   ###
@@ -101,33 +102,36 @@ class Session
           @_mod = MODULES.items[@_path]
           # Check if this was called from router
           if next?
-            # Evaluate session
-            @_evaluate_session()
-            # Evaluate access
-            unless @_evaluate_access()
-              switch MODULES.forbidden
-                when 'redirect'
-                  @_res.redirect("#{URL.base}/#{MODULES.default}")
-                else
-                  html = HTML.new(@_req, @_res)
-                  html.render
-                    module: 'errors'
-                    file: MODULES.forbidden
-              return
 
-    return next() if next?
+            redis_key = @_get_redis_key()
+            redis = Redis.client()
+            redis.get redis_key, (err, reply) =>
+              unless err?
+                if reply?
+                  session = JSON.parse(reply)
+
+              @_evaluate_session(session)
+
+              unless @_evaluate_access()
+                switch MODULES.forbidden
+                  when 'redirect'
+                    @_res.redirect("#{URL.base}/#{MODULES.default}")
+                  else
+                    html = HTML.new(@_req, @_res)
+                    html.render
+                      module: 'errors'
+                      file: MODULES.forbidden
+                return
+              return next()
     return
   ###
   # @method Evaluate existence of session
   # @private
   ###
-  _evaluate_session: ->
+  _evaluate_session: (session) ->
     if @_is_live()
-      @get (err, reply) =>
-        unless err?
-          session = JSON.parse(reply)
-          @_register_session(session)
-          return
+      @_register_session(session)
+      return
 
     @_register_session()
     return
@@ -216,7 +220,7 @@ class Session
     # Set to redis
     redis = Redis.client()
     redis.set(redis_key, JSON.stringify(session))
-    redis.expire(redis_key, 300)
+    redis.expire(redis_key, SESSION.expires)
     # return callback
     callback(null, session_id)
     return
@@ -238,9 +242,8 @@ class Session
   get: (callback) ->
     redis_key = @_get_redis_key()
     redis = Redis.client()
-    redis.get redis_key, (err, reply) =>
+    redis.get redis_key, (err, reply) ->
       callback(err, reply)
-      return
     return
   ###
   # @method Destroy session
