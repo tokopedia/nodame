@@ -56,8 +56,6 @@
     },
     "session": {
         "enable": false,
-        "storage": "redis",
-        "storage_map": "session",
         "key": "_sid",
         "expires": 3600,
         "request_token": false,
