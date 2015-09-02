@@ -87,15 +87,18 @@ class Session
     if @_path?
       @_path = @_path.split('/')
       if @_path[1]?
-        @_path = @_path[1]
-        # Set no path to defaul
+        # Set path depends on whether path is root
+        if "/#{@_path[1]}" is MODULES.root
+          @_path = if @_path[2]? then @_path[2] else ''
+        else
+          @_path = @_path[1]
+        # Set no path to default
         @_path = MODULES.default if @_path is ''
         # Validate if path is module
         if MODULES.items[@_path]?
           @_mod = MODULES.items[@_path]
           # Check if this was called from router
           if next?
-
             redis_key = @_get_redis_key()
             redis = Redis.client()
             redis.get redis_key, (err, reply) =>
