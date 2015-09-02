@@ -103,7 +103,6 @@ class Session
           if next?
             # Evaluate session
             @_evaluate_session()
-            @_generate_redis_key()
             # Evaluate access
             unless @_evaluate_access()
               switch MODULES.forbidden
@@ -124,12 +123,29 @@ class Session
   ###
   _evaluate_session: ->
     if @_is_live()
+      @get (err, reply) =>
+        unless err?
+          session = JSON.parse(reply)
+          @_register_session(session)
+          return
+
+    @_register_session()
+    return
+  ###
+  # @method Register session to environment
+  # @private
+  ###
+  _register_session: (session) ->
+    if session?
+      @_req.session         = session
+      @_res.locals.session  = session
       @_req.is_auth         = true
       @_res.locals.is_auth  = true
     else
+      @_req.session         = undefined
+      @_res.locals.session  = undefined
       @_req.is_auth         = false
       @_res.locals.is_auth  = false
-
     return
   ###
   # @method Evaluate access
@@ -164,16 +180,15 @@ class Session
   # @return string
   ###
   _generate_session_id: (session) ->
-    session_id = Hash.sha384("#{session}:#{COOKIE.secret}")
+    session_id = Hash.sha384("#{session}:#{COOKIE.secret}:#{new Date()}")
     return session_id
   ###
   # @method Generate redis key
   # @private
   # @return string
   ###
-  _generate_redis_key: ->
-    @_redis_key = "#{@_identifier}-"
-    return
+  _generate_redis_key: (session_id) ->
+    return "#{@_identifier}-#{session_id}"
   ###
   # @method Get session id
   # @public
@@ -192,12 +207,40 @@ class Session
   set: (session, callback) ->
     # Check if session is enabled
     @_evaluate_session_enable()
-    # Set session and cookie
+    # Set session id
     session_id = @_generate_session_id(session)
+    # Set redis key
+    redis_key = @_generate_redis_key(session_id)
+    # Set session and cookie
     @_res.cookie(@_key, session_id, @_options)
-    # TODO: Move to redis
-    @_res.cookie('_tmp', session, @_options)
+    # Set to redis
+    redis = Redis.client()
+    redis.set(redis_key, JSON.stringify(session))
+    redis.expire(redis_key, 300)
+    # return callback
     callback(null, session_id)
+    return
+  ###
+  # @method Get redis Keys
+  # @private
+  # @return string redis_key
+  ###
+  _get_redis_key: ->
+    # Get session id
+    session_id = @get_session_id()
+    # Return redis key
+    return @_generate_redis_key(session_id)
+  ###
+  # @method Get session
+  # @public
+  # @return callback session
+  ###
+  get: (callback) ->
+    redis_key = @_get_redis_key()
+    redis = Redis.client()
+    redis.get redis_key, (err, reply) =>
+      callback(err, reply)
+      return
     return
   ###
   # @method Destroy session
@@ -206,10 +249,13 @@ class Session
   clear: ->
     # Check if session is enabled
     @_evaluate_session_enable()
+    # Get redis key
+    redis_key = @_get_redis_key()
     # Clear session and cookie
     @_res.clearCookie(@_key, @_option_domain)
-    # TODO: Move to redis
-    @_res.clearCookie('_tmp', @_option_domain)
+    # Clear redis key
+    redis = Redis.client()
+    redis.del(redis_key)
     return
 # Export module as new object
 module.exports = Session

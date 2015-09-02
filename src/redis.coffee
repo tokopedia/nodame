@@ -1,9 +1,18 @@
 redis       = require('redis')
-md5         = require('md5')
-jumphash    = require('jumphash')
-pool        = {}
+REDIS       = nodame.config('cache.db.redis')
+
 
 class RedisClient
+  constructor: ->
+    @_client = undefined
+    return
+
+  client: ->
+    unless @_client?
+      @_client = redis.createClient(REDIS.port, REDIS.host, {})
+      @_client.on('error', @_errorHandler)
+    return @_client
+
   getClient: (mapShard, replication = 'master', key = 1) ->
     config  = nodame.config 'cache.clients.redis'
     conn    = config.map[mapShard]
