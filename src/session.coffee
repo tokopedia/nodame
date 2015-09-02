@@ -177,6 +177,7 @@ class Session
   # @return string
   ###
   _generate_session_id: (session) ->
+    # TODO: Validate session_id
     session_id = Hash.sha384("#{session}:#{COOKIE.secret}:#{new Date()}")
     return session_id
   ###
