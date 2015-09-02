@@ -16,6 +16,7 @@ Redis = require('./redis')
 
 view = new View()
 
+APP     = nodame.config('app')
 COOKIE = nodame.config('cookie')
 
 HTML = {}
@@ -112,29 +113,31 @@ HTML.new = (req, res) =>
         expires: new Date(Date.now() + 600000)
         httpOnly: true
 
-    redisClient = Redis.getClient('session', 'master', 1)
-    keyFm = "flashMessages:#{fm}"
+    # redisClient = Redis.getClient('session', 'master', 1)
+    redis = Redis.client()
+    keyFm = "#{APP.name}:flashMessages:#{fm}"
 
-    redisClient.rpush(keyFm, JSON.stringify({type:type,text:text}))
-    redisClient.expire(keyFm, 600)
+    redis.rpush(keyFm, JSON.stringify({type:type,text:text}))
+    redis.expire(keyFm, 600)
 
   _init_flash_message = (cb) ->
     if req?.cookies?
       fm = req.cookies.fm
 
       if fm
-        redisClient = Redis.getClient('session', 'slave', 1)
+        redis = Redis.client()
+        # redisClient = Redis.getClient('session', 'slave', 1)
 
-        keyFm = "flashMessages:#{fm}"
+        keyFm = "#{APP.name}:flashMessages:#{fm}"
 
-        redisClient.lrange keyFm, 0, -1,
+        redis.lrange keyFm, 0, -1,
           (err, reply) ->
             if reply
               for reply_message in reply
                 msg = JSON.parse(reply_message)
                 setMessages(msg.type, msg.text)
 
-              redisClient.del(keyFm)
+              redis.del(keyFm)
 
               res.clearCookie 'fm',
                 domain: ".#{COOKIE.domain}"
@@ -158,7 +161,8 @@ HTML.new = (req, res) =>
           else
             if args.cache
               key = ''
-              redisClient = Redis.getClient('html', 'master', 1)
+              # redisClient = Redis.getClient('html', 'master', 1)
+              redis = Redis.client()
               hostname = nodame.config('url.hostname')
               uri = req.originaUrl
               url = Path.normalize("#{hostname}#{uri}")
@@ -166,13 +170,13 @@ HTML.new = (req, res) =>
               if args.key?
                 key = args.key
 
-              keyRedis = "html:#{md5(url + key)}"
-              redisClient.hset keyRedis, req.device.type, html,
+              keyRedis = "#{APP.name}:html:#{md5(url + key)}"
+              redis.hset keyRedis, req.device.type, html,
                 (err, reply) ->
                   if err?
                     console.log 'hset render err', err
                   else
-                    redisClient.expire(keyRedis, ParseDuration(args.cache) / 1000)
+                    redis.expire(keyRedis, ParseDuration(args.cache) / 1000)
             res.send(html)
             return
 
@@ -180,14 +184,15 @@ HTML.new = (req, res) =>
     return
 
   renderCache = (key, cb) ->
-    redisClient = Redis.getClient('html', 'slave', 1)
+    # redisClient = Redis.getClient('html', 'slave', 1)
+    redis = Redis.client()
     hostname = nodame.config('url.hostname')
     uri = req.originaUrl
     url = Path.normalize("#{hostname}#{uri}")
 
     key = '' unless key?
 
-    keyRedis = "html:#{md5(url + key)}"
+    keyRedis = "#{APP.name}:html:#{md5(url + key)}"
 
     build_time = nodame.settings.build.time
     time = Math.floor(Date.now() / 1000)
@@ -199,7 +204,7 @@ HTML.new = (req, res) =>
       if is_purge
         cb(false)
       else
-        redisClient.hget keyRedis, req.device.type,
+        redis.hget keyRedis, req.device.type,
           (err, reply) ->
             if reply?
               res.send(reply.toString())
