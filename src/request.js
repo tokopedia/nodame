@@ -16,9 +16,9 @@ if (nodame.config('session.request_token')) {
 var httpRequest = (function () {
     var querystring = require('query-string');
 
-    var init = function (url, userid, metricName) {
-        var options = getOptions(url, userid);
-        return prototype.__init(options, metricName);
+    var init = function (url) {
+        var options = getOptions(url);
+        return prototype.__init(options);
     };
 
     var parseUrl = function (url) {
@@ -45,7 +45,7 @@ var httpRequest = (function () {
         }
     };
 
-    var getOptions = function (url, userid) {
+    var getOptions = function (url) {
         var parsedUrl = parseUrl(url);
 
         var options = {
@@ -58,11 +58,6 @@ var httpRequest = (function () {
             }
         };
 
-        if (nodame.config('session.request_token')) {
-            var token = getToken(userid);
-            options.headers[token.key] = token.value;
-        }
-
         return options;
     };
 
@@ -71,6 +66,7 @@ var httpRequest = (function () {
         var POST    = 'POST';
         var PUT     = 'PUT';
         var DELETE  = 'DELETE';
+        
         var __request;
         var __options;
         var request = {
@@ -81,10 +77,7 @@ var httpRequest = (function () {
         var protocol = 'http';
         var __metricName = '';
 
-        var __init = function (options, metricName) {
-            if (metricName) {
-                __metricName = 'http.request.kai.' + metricName;
-            }
+        var __init = function (options) {
             protocol = options.protocol;
             __request = request[protocol];
             delete options.protocol;
@@ -99,6 +92,28 @@ var httpRequest = (function () {
 
             __options.headers[key] = val;
         };
+        
+        var base64_auth = function (key, userid) {
+            if (__options.headers['Authorization']) {
+                delete __options.headers['Authorization'];
+            }
+            
+            userid = userid | String(0);
+            var token = {
+                user_id: String(userid)
+            };
+
+            token = new Buffer(JSON.stringify(token)).toString('base64');
+            token = sprintf('%s %s', key, token);
+
+            __options.headers['Authorization'] = token;
+        }
+        
+        var set_metricname = function (key, metricName){
+            if (metricName) {
+                __metricName = key + metricName;
+            }
+        }
 
         var parse = function (contentType, data) {
             var result;
@@ -141,74 +156,20 @@ var httpRequest = (function () {
             });
         };
 
-        var postRaw = function (data, callback) {
-            post('raw', data, function (result) {
+        var post = function (content_type, data, callback) {
+            __post(POST, content_type, data, function (result) {
                 callback(result);
             });
         };
 
-        var postForm = function (data, callback) {
-            post('form', data, function (result) {
+        var put = function (content_type, data, callback) {
+            __post(PUT, content_type, data, function (result) {
                 callback(result);
             });
         };
 
-        var postXML = function (data, callback) {
-            post('xml', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var post = function (type, data, callback) {
-            __post(POST, type, data, function (result) {
-                callback(result);
-            });
-        };
-
-        var putRaw = function (data, callback) {
-            put('raw', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var putForm = function (data, callback) {
-            put('form', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var putXML = function (data, callback) {
-            put('xml', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var put = function (type, data, callback) {
-            __post(PUT, type, data, function (result) {
-                callback(result);
-            });
-        };
-
-        var delRaw = function (data, callback) {
-            del('raw', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var delForm = function (data, callback) {
-            del('form', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var delXML = function (data, callback) {
-            del('xml', data, function (result) {
-                callback(result);
-            });
-        };
-
-        var del = function (type, data, callback) {
-            __post(DELETE, type, data, function (result) {
+        var del = function (content_type, data, callback) {
+            __post(DELETE, content_type, data, function (result) {
                 callback(result);
             });
         };
@@ -217,19 +178,23 @@ var httpRequest = (function () {
             var __data = {
                 type: type
             };
-
-            switch (type) {
+ 
+            switch(type) {
                 case 'form':
+                    header('Content-Type', 'application/x-www-form-urlencoded');
                     __data.body = querystring.stringify(data);
                     break;
-                case 'raw':
+                case 'json':
+                    header('Content-Type', 'application/vnd.api+json');
                     __data.body = JSON.stringify(data);
                     break;
                 case 'xml':
                     header('Content-Type', 'application/xml');
-                default:
                     __data.body = data;
-
+                    break;
+                default:
+                    header('Content-Type', type);
+                    __data.body = data;
             }
 
             run(method, __data, function (result) {
@@ -252,13 +217,8 @@ var httpRequest = (function () {
             options.method = method;
 
             if (data !== '') {
-                var contentType = data.type == 'form' ? 'application/x-www-form-urlencoded' : 'application/vnd.api+json';
                 options.body = data.body;
                 options.headers['Content-Length'] = data.body.length;
-
-                if (options.headers['Content-Type'] === undefined) {
-                    options.headers['Content-Type'] = contentType;
-                }
             }
 
             return options;
@@ -284,12 +244,12 @@ var httpRequest = (function () {
                     if (done) {
                         log.stat.histogram(__metricName, done(), ['env:'+ nodame.env()]);
                     }
-
                     callback(parse(res.headers['content-type'], __data));
                 });
             });
 
             req.on('error', function (err) {
+                console.log(err)
                 var error = {
                     id: '110102',
                     title: 'Request timeout',
@@ -335,18 +295,11 @@ var httpRequest = (function () {
             setTimeout: setTimeout,
             get: get,
             post: post,
-            postForm: postForm,
-            postRaw: postRaw,
-            postXML: postXML,
             put: put,
-            putForm: putForm,
-            putRaw: putRaw,
-            putXML: putXML,
             del: del,
-            delForm: delForm,
-            delRaw: delRaw,
-            delXML: delXML,
             header: header,
+            base64_auth: base64_auth,
+            set_metricname: set_metricname,
             set: set,
             rejectUnauthorized: rejectUnauthorized
         };
@@ -358,4 +311,4 @@ var httpRequest = (function () {
 
 })();
 
-module.exports = httpRequest
+module.exports = httpRequest;
