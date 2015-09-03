@@ -13,7 +13,7 @@ if (nodame.config('session.request_token')) {
     var requestToken = nodame.require('module/' + requestTokenModule);
 }
 
-var httpRequest = module.exports = (function () {
+var httpRequest = (function () {
     var querystring = require('query-string');
 
     var init = function (url, userid, metricName) {
@@ -357,3 +357,5 @@ var httpRequest = module.exports = (function () {
     };
 
 })();
+
+module.exports = httpRequest
