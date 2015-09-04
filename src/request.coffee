@@ -165,7 +165,7 @@ httpRequest = do ->
     rebuild = (method, data) ->
       options = __options
       options.method = method
-      if data != ''
+      if data != '' && data?
         options.body = data.body
         options.headers['Content-Length'] = data.body.length
       return options
