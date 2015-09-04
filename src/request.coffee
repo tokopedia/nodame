@@ -1,13 +1,13 @@
 measure = require('measure')
+querystring = require('query-string')
 
-httpRequest = do ->
-  querystring = require('query-string')
+class httpRequest
   
-  init = (url) ->
-    options = getOptions(url)
-    return prototype.__init(options)
+  constructor: (@url) ->
+    options = this.getOptions(@url)
+    return this.proto().__init(options)
     
-  parseUrl = (url) ->
+  parseUrl: (url) ->
     re = /^(?:((http[s]{0,1}):\/\/))?([a-z0-9-_\.]+)(?:(:[0-9]+))?(.*)$/
     found = url.match(re)
     protocol = found[2] || 'http'
@@ -27,8 +27,8 @@ httpRequest = do ->
       path: found[5]
     return parsedUrl
       
-  getOptions = (url) ->
-    parsedUrl = parseUrl(url)  
+  getOptions: (url) ->
+    parsedUrl = this.parseUrl(url)  
     
     options = 
       protocol: parsedUrl.protocol
@@ -40,18 +40,16 @@ httpRequest = do ->
         
     return options
     
-  prototype = do ->
+  proto: () ->
     GET = 'GET'
     POST = 'POST'
     PUT = 'PUT'
     DELETE = 'DELETE'
-    
     __request = ''
     __options = ''
     request = 
       http: require('http')
       https: require('https')
-    
     timeout = 5
     protocol = 'http'
     __metricName = ''
@@ -229,8 +227,7 @@ httpRequest = do ->
       )
       
       req.end()
-      return
-      
+    
     return {
       __init: __init
       setTimeout: setTimeout
@@ -243,9 +240,5 @@ httpRequest = do ->
       set_metricname: set_metricname
       set: set
     }
-    
-  return {
-    new: init
-  }
     
 module.exports = httpRequest
