@@ -80,7 +80,13 @@ app.use(block_favicon) if CONFIG.server.block_favicon
 # static server setup
 if CONFIG.assets.enable_server
   ServeStatic = require('serve-static')
+  module_root = CONFIG.module.root
+  unless module_root[0] is '/'
+    module_root = "/#{module_root}"
   static_route = CONFIG.assets.route
+  if static_route[0] is '/'
+    static_route = static_route.substr(1)
+  static_route = "#{module_root}/#{static_route}"
   static_dir   = Path.safe("#{app_path}/#{CONFIG.assets.dir}")
   app.use(static_route, ServeStatic(static_dir))
 

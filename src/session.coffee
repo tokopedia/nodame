@@ -74,61 +74,70 @@ class Session
   # @param  object  response object
   # @param  object  optional  next object
   ###
-  middleware: (req, res, next) =>
+  middleware: (@req, @res, next) =>
     # Check if session is enabled
     unless @_is_enable()
       return next() if next?
       return
-
-    @_req = req
-    @_res = res
-
-    @_path = @_req.path
-    if @_path?
-      @_path = @_path.split('/')
-      if @_path[1]?
+    # Return if this wasn't requested from router
+    return unless next?
+    # Check if path exists
+    if @req.path?
+      @__paths = @req.path.split('/')
+      if @__paths[1]?
         # Set path depends on whether path is root
-        if "/#{@_path[1]}" is MODULES.root
-          @_path = if @_path[2]? then @_path[2] else ''
+        if "/#{@__paths[1]}" is MODULES.root
+          @__path = if @__paths[2]? then @__paths[2] else ''
         else
-          @_path = @_path[1]
+          @__path = @__paths[1]
+        # Return next if it's ajax request
+        return next() if @__path is 'ajax'
         # Set no path to default
-        @_path = MODULES.default if @_path is ''
+        @__path = MODULES.default if @__path is ''
         # Validate if path is module
-        if MODULES.items[@_path]?
-          @_mod = MODULES.items[@_path]
-          # Check if this was called from router
-          if next?
-            redis_key = @_get_redis_key()
-            redis = Redis.client()
-            redis.get redis_key, (err, reply) =>
-              unless err?
-                if reply?
-                  session = JSON.parse(reply)
-
-              @_evaluate_session(session)
-
-              unless @_evaluate_access()
-                switch MODULES.forbidden
-                  when 'redirect'
-                    @_res.redirect("#{URL.base}/#{MODULES.default}")
-                  else
-                    html = HTML.new(@_req, @_res)
-                    html.render
-                      module: 'errors'
-                      file: MODULES.forbidden
-                return
-              return next()
-    return
+        if MODULES.items[@__path]?
+          @_mod = MODULES.items[@__path]
+          # Get redis key
+          redis_key = @_get_redis_key()
+          # Get redis client
+          redis = Redis.client()
+          # Get redis value
+          redis.get redis_key, (err, reply) =>
+            # Validate error
+            unless err?
+              # Validate reply
+              if reply?
+                # Parse reply
+                session = JSON.parse(reply)
+            # Evaluate and register session
+            @_evaluate_session(session)
+            # Evaluate access
+            unless @_evaluate_access()
+              # Unauthorized access goes here
+              switch MODULES.forbidden
+                # Forbidden type is 'redirect'
+                when 'redirect'
+                  @res.redirect("#{URL.base}/#{MODULES.default}")
+                # Default, return error page
+                else
+                  html = HTML.new(@req, @res)
+                  html.render
+                    module: 'errors'
+                    file: MODULES.forbidden
+              return undefined
+    return next()
   ###
   # @method Evaluate existence of session
   # @private
   ###
   _evaluate_session: (session) ->
-    if @_is_live()
+    # Check if session is alive
+    if @_is_alive()
+      # Register session
       @_register_session(session)
       return
-
+    # Session isn't alive
+    # Unregister session
     @_register_session()
     return
   ###
@@ -136,16 +145,18 @@ class Session
   # @private
   ###
   _register_session: (session) ->
+    # Register session
     if session?
-      @_req.session         = session
-      @_res.locals.session  = session
-      @_req.is_auth         = true
-      @_res.locals.is_auth  = true
+      @req.session         = session
+      @res.locals.session  = session
+      @req.is_auth         = true
+      @res.locals.is_auth  = true
+    # Unregister session
     else
-      @_req.session         = undefined
-      @_res.locals.session  = undefined
-      @_req.is_auth         = false
-      @_res.locals.is_auth  = false
+      @req.session         = undefined
+      @res.locals.session  = undefined
+      @req.is_auth         = false
+      @res.locals.is_auth  = false
     return
   ###
   # @method Evaluate access
@@ -156,11 +167,11 @@ class Session
     # Validate access if it's set in config
     if @_mod.auth_only or @_mod.guest_only
       # Validate auth only access
-      if @_mod.auth_only and not @_req.is_auth
+      if @_mod.auth_only and not @req.is_auth
         # Return revoke access
         return false
       # Validate guest only access
-      if @_mod.guest_only and @_req.is_auth
+      if @_mod.guest_only and @req.is_auth
         # Return revoke access
         return false
     # Return permit access
@@ -170,9 +181,9 @@ class Session
   # @private
   # @return bool
   ###
-  _is_live: ->
+  _is_alive: ->
     # Return whether session cookie does exist
-    return @_req.signedCookies[@_key]?
+    return @req.signedCookies[@_key]?
   ###
   # @method Generate session id
   # @private
@@ -199,7 +210,7 @@ class Session
     # Check if session is enabled
     @_evaluate_session_enable()
     # Return session id
-    return @_req.signedCookies[@_key]
+    return @req.signedCookies[@_key]
   ###
   # @method Establish new session
   # @public
@@ -213,7 +224,7 @@ class Session
     # Set redis key
     redis_key = @_generate_redis_key(session_id)
     # Set session and cookie
-    @_res.cookie(@_key, session_id, @_options)
+    @res.cookie(@_key, session_id, @_options)
     # Set to redis
     redis = Redis.client()
     redis.set(redis_key, JSON.stringify(session))
@@ -241,6 +252,7 @@ class Session
     redis = Redis.client()
     redis.get redis_key, (err, reply) ->
       callback(err, reply)
+      return undefined
     return
   ###
   # @method Destroy session
@@ -252,7 +264,7 @@ class Session
     # Get redis key
     redis_key = @_get_redis_key()
     # Clear session and cookie
-    @_res.clearCookie(@_key, @_option_domain)
+    @res.clearCookie(@_key, @_option_domain)
     # Clear redis key
     redis = Redis.client()
     redis.del(redis_key)

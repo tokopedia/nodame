@@ -69,8 +69,7 @@ class Router
     return
 
   redirectNotFound: (req, res) ->
-    url = "#{@hostname}#{@root}"
-    res.redirect url
+    res.redirect("#{@hostname}#{@root}")
     res.end
     return
 

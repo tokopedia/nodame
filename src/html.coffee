@@ -143,10 +143,12 @@ HTML.new = (req, res) =>
                 domain: ".#{COOKIE.domain}"
 
             cb()
+            return undefined
       else
         cb()
     else
       cb()
+    return undefined
 
   render = (args) ->
     flash_message_cb = ->
@@ -177,21 +179,19 @@ HTML.new = (req, res) =>
                     console.log 'hset render err', err
                   else
                     redis.expire(keyRedis, ParseDuration(args.cache) / 1000)
+                  return undefined
             res.send(html)
-            return
+          return undefined
 
     _init_flash_message(flash_message_cb)
     return
 
   renderCache = (key, cb) ->
     # redisClient = Redis.getClient('html', 'slave', 1)
-    redis = Redis.client()
     hostname = nodame.config('url.hostname')
     uri = req.originaUrl
     url = Path.normalize("#{hostname}#{uri}")
-
     key = '' unless key?
-
     keyRedis = "#{APP.name}:html:#{md5(url + key)}"
 
     build_time = nodame.settings.build.time
@@ -203,15 +203,19 @@ HTML.new = (req, res) =>
     if nodame.config('view.cache')
       if is_purge
         cb(false)
+        return undefined
       else
+        redis = Redis.client()
         redis.hget keyRedis, req.device.type,
           (err, reply) ->
             if reply?
-              res.send(reply.toString())
               cb(true)
+              res.send(reply.toString())
+              res.end()
             else
               cb(false)
-    return
+            return undefined
+    return undefined
 
   locales = (locales) ->
     stash.set('locales', locales)

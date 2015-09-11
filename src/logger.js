@@ -348,8 +348,19 @@ var logger = (function () {
                     skip: function (req, res) {
                         // Skip assets
                         var _path = req.originalUrl;
+                        var module_root = nodame.config('module.root');
+
+                        if (module_root[0] != '/') {
+                            module_root = '/' + module_root;
+                        }
+
+                        if (_path.substr(0, module_root.length) == module_root) {
+                            _path = _path.substr(module_root.length);
+                        }
+
                         _path = _path.split('/');
                         _path = _path[1];
+
                         // Assets route
                         var assets_route = nodame.config('assets.route');
                         assets_route = assets_route.split('/');
