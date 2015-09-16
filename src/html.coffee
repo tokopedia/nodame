@@ -154,7 +154,6 @@ HTML.new = (req, res) =>
     flash_message_cb = ->
       _init_head()
       view_path = view.path(req, args.module, args.file)
-
       res.render view_path, stash._stash,
         (err, html) ->
           if err?
