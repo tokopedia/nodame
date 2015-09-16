@@ -57,7 +57,7 @@ class Session
     # Assign client configuration
     client = CACHE.db[db_server]
     # Check host and port configuration
-    unless client.host? or client.port?
+    if not client.host? or not client.port?
       throw new Error "Missing host or port config for #{db_server}"
     # Session is enable
     return true
