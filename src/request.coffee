@@ -257,8 +257,9 @@ class Request
       # Parse data
       res.on 'end', () =>
         # Log request stat
-        if done?
-          log.stat.histogram(@__metric, done(), ['env:' + nodame.env()])
+        # TODO: log is undefined
+        # if done?  
+        #   log.stat.histogram(@__metric, done(), ['env:' + nodame.env()])
         # return callback
         result = @__parse(res.headers['content-type'], data)
         return callback(null, result)
@@ -273,7 +274,9 @@ class Request
         detail: "Can't reach server at #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
 
       unless req.socket.destroyed
-        log.alert(error.id, "#{error.title}. #{error.detail}")
+        console.log { id: error.id, title: error.title, detail: error.detail }
+        # TODO: log is undefined
+        # log.alert(error.id, "#{error.title}. #{error.detail}")
       return
     # Write data
     write_methods = [POST, PUT, UPDATE, DELETE]
@@ -288,7 +291,9 @@ class Request
       result =
         errors: [error]
       # Send alert
-      log.alert(error.id, sprintf('%s. %s', error.title, error.detail))
+      console.log { id: error.id, title: error.title, detail: error.detail }
+      # TODO: log is undefined
+      # log.alert(error.id, sprintf('%s. %s', error.title, error.detail))
       # Destroy socket
       req.socket.destroy()
       # Abort socket
@@ -319,7 +324,9 @@ class Request
         detail: "Failed in fetching data from #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}.\n\nResponse Data:\n#{data}"
       result =
         errors: [error]
-      log.critical(error.id, "#{error.title}. #{error.detail}")
+      console.log { id: error.id, title: error.title, detail: error.detail }
+      # TODO: log is undefined
+      # log.critical(error.id, "#{error.title}. #{error.detail}")
     return result
 
 module.exports = Request

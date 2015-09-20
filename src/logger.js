@@ -359,14 +359,16 @@ var logger = (function () {
                         }
 
                         _path = _path.split('/');
-                        _path = _path[1];
+                        _path = module_root == '/' ? _path[0] : _path[1];
 
                         // Assets route
                         var assets_route = nodame.config('assets.route');
                         assets_route = assets_route.split('/');
                         assets_route = assets_route[1];
+                        
                         // Check if path is assets route
                         if (_path == assets_route) {
+                            console.log(_path)
                             return true;
                         }
                         // Skip status code 200
