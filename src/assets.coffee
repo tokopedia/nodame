@@ -21,7 +21,7 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = if nodame.config('view.mobile') then opt.device else 'desktop'
+    @_device  = if nodame.config('view.adaptive') then opt.device else 'desktop'
 
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
@@ -85,9 +85,9 @@ class Assets
 
     switch type
       when @_CSS
-        _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">\n"
+        _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">"
       when @_JS
-        _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>\n"
+        _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>"
 
     return _html
 
