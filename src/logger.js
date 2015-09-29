@@ -365,10 +365,9 @@ var logger = (function () {
                         var assets_route = nodame.config('assets.route');
                         assets_route = assets_route.split('/');
                         assets_route = assets_route[1];
-                        
+
                         // Check if path is assets route
                         if (_path == assets_route) {
-                            console.log(_path)
                             return true;
                         }
                         // Skip status code 200

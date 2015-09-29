@@ -119,7 +119,7 @@ class Render
   # @public
   # @param  string  path
   ###
-  view: (path) ->
+  path: (path) ->
     # Validate empty val
     throw new Error 'Missing path args' unless path?
     # Assign variables
@@ -149,6 +149,12 @@ class Render
     throw new Error 'View path is undefined' unless @__view_path?
     # Return callback if exists
     return @res.render(@__view_path, @__locals, callback)
-
+  ###
+  # @method Render 404
+  # @public
+  ###
+  error_404: ->
+    @view('errors/404')
+    return @send()
 
 module.exports = Render

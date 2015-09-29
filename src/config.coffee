@@ -3,12 +3,12 @@
 # @link    https://github.com/tokopedia/nodame
 # @license http://opensource.org/licenses/MIT
 #
-# @version 1.0.0
+# @version 2.0.0
 ###
 
 path    = require('./path')
-toml    = require('./toml')
-json    = require('./json')
+Parser  = require('./parser')
+YAMLParser = require('js-yaml')
 fs      = require('fs')
 
 class Config
@@ -16,55 +16,55 @@ class Config
   _MODULE : 0
   _MENU   : 1
   config  : {}
-  configPath : ''
+  config_path : ''
 
   constructor: (argv, appPath = '') ->
     @_argv = argv
     @_path = appPath
-    @configPath = @_getPath()
-    configFile = fs.readFileSync @configPath
-    @config = toml.parse configFile
-    @_assignDefault @config
-    toml.parseVar @config
+    @config_path = @_get_path()
+    config_file = fs.readFileSync(@config_path)
+    @config = YAMLParser.safeLoad(config_file)
+    @_assign_default(@config)
+    Parser.parse_var(@config)
     return
 
-  _getPath: ->
-    stream = path.safe "#{@_path}/configs/main.toml"
+  _get_path: ->
+    stream = path.safe("#{@_path}/configs/main.yaml")
 
     # Throw if argv is not set
     throw 'nodame/config requires nodame/argv to be ran first.' unless @_argv?
 
     if @_argv.config?
       unless @_argv.config.substring(0, 1) is '/'
-        stream = path.safe "#{@_path}/#{@_argv.config}"
+        stream = path.safe("#{@_path}/#{@_argv.config}")
       else
-        stream = path.safe @_argv.config
+        stream = path.safe(@_argv.config)
     return stream
 
-  _getDefaultConfig: ->
+  _get_default_config: ->
     cfgPath = path.join(__dirname, 'config.json')
     return require(cfgPath)
 
-  _assignDefault: ->
-    defCfg = @_getDefaultConfig()
-    @_pairConfigs defCfg, @config
-    @_assignDefaultMod defCfg, @config, @_MODULE
-    @_assignDefaultMod defCfg, @config, @_MENU
+  _assign_default: ->
+    defCfg = @_get_default_config()
+    @_pair_config(defCfg, @config)
+    @_assign_default_mod(defCfg, @config, @_MODULE)
+    @_assign_default_mod(defCfg, @config, @_MENU)
     return
 
-  _pairConfigs: (obj1, obj2) ->
+  _pair_config: (obj1, obj2) ->
     for prop of obj1
       if typeof obj1[prop] is 'object'
         unless prop is '__default'
           unless obj2[prop]?
             obj2[prop] = obj1[prop]
           else
-            @_pairConfigs obj1[prop], obj2[prop]
+            @_pair_config(obj1[prop], obj2[prop])
       else
         obj2[prop] = obj1[prop] unless obj2[prop]?
     return
 
-  _assignDefaultMod: (obj1, obj2, key) ->
+  _assign_default_mod: (obj1, obj2, key) ->
     key = @_keys[key]
     defObj = obj1[key].items.__default
 

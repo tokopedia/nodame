@@ -12,6 +12,8 @@ BodyParser      = require('body-parser')
 XMLBodyParser   = require('express-xml-bodyparser')
 MethodOverride  = require('method-override')
 ExpressDevice   = require('express-device')
+YAMLParser      = require('js-yaml')
+fs              = require('fs')
 # private modules
 Router  = require('./router')
 View    = require('./view')
@@ -44,9 +46,9 @@ app.set('trust proxy', 'uniquelocal')
 app.enable('trust proxy')
 
 # load and store assets config
-assets_file  = if is_dev then 'assets.toml' else '.assets'
+assets_file  = if is_dev then 'assets.yaml' else '.assets'
 assets_stream    = Path.safe("#{app_path}/configs/#{assets_file}")
-if is_dev then assets = File.readGRUNT(assets_stream)
+if is_dev then assets = YAMLParser.safeLoad(fs.readFileSync(assets_stream))
 else assets = File.readJSON(assets_stream)
 nodame.set('assets', assets)
 
