@@ -21,6 +21,7 @@ Locals  = require('./locals')
 Path    = require('./path')
 File    = require('./file')
 Logger  = require('./logger')
+Parser  = require('./parser')
 # expressjs initialization
 app     = nodame.express()
 app.env = nodame.env()
@@ -48,8 +49,12 @@ app.enable('trust proxy')
 # load and store assets config
 assets_file  = if is_dev then 'assets.yaml' else '.assets'
 assets_stream    = Path.safe("#{app_path}/configs/#{assets_file}")
-if is_dev then assets = YAMLParser.safeLoad(fs.readFileSync(assets_stream))
-else assets = File.readJSON(assets_stream)
+if is_dev
+  assets = fs.readFileSync(assets_stream)
+  assets = YAMLParser.safeLoad(assets)
+  assets = Parser.to_grunt(assets)
+else
+  assets = File.readJSON(assets_stream)
 nodame.set('assets', assets)
 
 # Load build data

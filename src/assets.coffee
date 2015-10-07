@@ -8,6 +8,9 @@
 
 Path         = require('./path')
 
+# TODO: Optimize the assets variable!
+# So pricey!
+
 class Assets
   constructor: (opt) ->
     @_DESKTOP = 'desktop'

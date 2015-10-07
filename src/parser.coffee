@@ -6,6 +6,8 @@
 # @version 1.0.0
 ###
 
+sha512  = require('js-sha512').sha512
+
 class Parser
   ###
   # @method Read json object by given path
@@ -88,5 +90,49 @@ class Parser
           _path = path.slice()
           _path.push(i)
           @parse_var(obj[i], _path, false)
+  ###
+  # @method Parse to grunt
+  # @public
+  # @param obj json
+  # @return obj json
+  ###
+  to_grunt: (json) ->
+    grunt = {}
+    for groups of json
+      for group of json[groups]
+        for type of json[groups][group]
+          grunt[type] = [] unless grunt[type]?
+
+          base_name = "#{groups}.#{group}"
+          hash = @__hash("#{base_name}#{type}", 8)
+          dest = "#{base_name}.min.#{hash}.#{type}"
+          dest_src = {}
+          dest_src[dest] = []
+          base_dir = ''
+
+          if json[groups]?[group]?[type]?.length > 0
+            for j of json[groups][group][type]
+              filename = json[groups][group][type][j]
+
+              if filename?
+                _filepath = "#{base_dir}#{json[groups][group][type][j]}"
+                dest_src[dest].push(_filepath)
+            grunt[type].push(dest_src)
+    return grunt
+  ###
+  # @method Hash grunt unique name
+  # @public
+  # @param str
+  # @param int
+  # @return hashed string
+  ###
+  __hash: (str, len) ->
+    hash = sha512("#{str}#{new Date()}")
+
+    if len? and len < hash.length
+      len_med = Math.floor(hash.length / 2)
+      start = if len < len_med then len_med - Math.floor(len / 2) else 0
+      hash = hash.substr(start, len)
+    return hash
 # Export module
 module.exports = new Parser()
