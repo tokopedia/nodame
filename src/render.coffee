@@ -150,6 +150,25 @@ class Render
     # Return callback if exists
     return @res.render(@__view_path, @__locals, callback)
   ###
+  # @method Pass interstitial view
+  # @public
+  # @param str key
+  # @param obj value
+  ###
+  interstitial: (key, val, url) ->
+    throw new Error 'Redirect url is undefined' unless url?
+    # Redirect page
+    @res.redirect(url)
+    return undefined
+  ###
+  # @method Pass message
+  # @public
+  # @param str key
+  # @param obj value
+  ###
+  message: (key, val) ->
+    return undefined
+  ###
   # @method Render 404
   # @public
   ###
