@@ -8,9 +8,12 @@
 ###
 
 Path        = require('./path')
+UUID        = require('node-uuid')
+Redis       = require('./redis')
 
 APP         = nodame.config('app')
 VIEW        = nodame.config('view')
+COOKIE      = nodame.config('cookie')
 
 class Render
   ###
@@ -23,6 +26,12 @@ class Render
     @__locals.locales = []
     # Set default page title
     @set('page_title', APP.title)
+    #TODO Check redis for flash message (RENDY)
+    message = @check_interstitial(@req.cookies)
+    if message != ''
+      @message(message.key, message.text)
+      @res.clearCookie 'fm',
+        domain: ".#{COOKIE.domain}"
     # Set default file name
     @__file = 'index'
     return
@@ -43,6 +52,7 @@ class Render
   ###
   title: (title, page_num) ->
     separator     = APP.title_separator
+    default_title = APP.title
     # TODO: change with i18n
     page_text     = 'Halaman'
     # Add separator
@@ -134,11 +144,8 @@ class Render
     # Set template to default when empty
     template = default_template unless template?
     # Set module and file
-    paths       = path.split('/')
-    module_name = paths[0]
-    file_name   = paths[1] || 'index'
     # Get view path
-    @__view_path = Path.join(device, template, module_name, file_name)
+    @__view_path = Path.join(device, template, path)
     return @
   ###
   # @method write response
@@ -156,10 +163,42 @@ class Render
   # @param obj value
   ###
   interstitial: (key, val, url) ->
-    throw new Error 'Redirect url is undefined' unless url?
-    # Redirect page
+    fm = @req.cookies.fm
+
+    unless fm
+      fm = UUID.v4()
+      @res.cookie 'fm', fm,
+        domain: ".#{COOKIE.domain}"
+        expires: new Date(Date.now() + 600000)
+        httpOnly: true
+
+    redis = Redis.client()
+    keyFm = "#{APP.name}:flashMessages:#{fm}"
+
+    redis.rpush(keyFm, JSON.stringify({type:key,text:val}))
+    redis.expire(keyFm, 600)
+
     @res.redirect(url)
     return undefined
+    
+  check_interstitial: (cookies) ->
+    message = ''
+
+    if cookies?
+      fm = cookies.fm
+      if fm
+        redis = Redis.client()
+        keyFm = "#{APP.name}:flashMessages:#{fm}"
+        redis.lrange keyFm, 0, -1,
+          (err, reply) ->
+            console.log('REPLY',reply)
+            if reply
+              for reply_message in reply
+                message = reply_message
+              redis.del(keyFm)
+            return message
+    return message
+
   ###
   # @method Pass message
   # @public
@@ -167,7 +206,10 @@ class Render
   # @param obj value
   ###
   message: (key, val) ->
-    return undefined
+    messages =
+      type: key
+      text: val
+    return @set('messages', messages)
   ###
   # @method Render 404
   # @public

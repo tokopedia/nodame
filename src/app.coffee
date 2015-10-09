@@ -93,7 +93,8 @@ if CONFIG.assets.enable_server
   static_route = CONFIG.assets.route
   if static_route[0] is '/'
     static_route = static_route.substr(1)
-  static_route = Path.normalize("#{module_root}/#{static_route}")
+  #TODO FIX THIS FOR WINDOW
+  static_route = "#{module_root}/#{static_route}"
   static_dir   = Path.safe("#{app_path}/#{CONFIG.assets.dir}")
   app.use(static_route, ServeStatic(static_dir))
 
