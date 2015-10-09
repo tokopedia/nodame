@@ -10,7 +10,6 @@ sha512  = require('js-sha512').sha512;
 fs      = require('fs')
 path    = require('./path')
 YAMLParser = require('js-yaml')
-toml    = require('./toml')
 
 class File
   readJSON: (filepath) ->

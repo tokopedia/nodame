@@ -12,5 +12,5 @@
     "./",
     "../../"
   ],
-  "ext": "js json toml"
+  "ext": "js json yaml"
 }
