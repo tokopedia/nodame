@@ -149,7 +149,7 @@ class Render
   ###
   send: (callback) -> 
     Async.parallel [
-      (cb) => @check_interstitial(@, @req.cookies, cb)
+      (cb) => @__check_interstitial(cb)
     ], (err, obj) =>     
       @res.clearCookie 'fm',
         domain: ".#{COOKIE.domain}"
@@ -182,16 +182,16 @@ class Render
     @res.redirect(url)
     return undefined
     
-  check_interstitial: (self, cookies, cb) ->
+  __check_interstitial: (cb) ->
     try
-      fm = cookies.fm
+      fm = @req.cookies.fm
       
       redis = Redis.client()
       keyFm = "#{APP.name}:flashMessages:#{fm}"
       redis.get keyFm, (err, reply) =>
         if reply
            redis.del(keyFm)
-        self.set('messages', JSON.parse(reply))
+        @set('messages', JSON.parse(reply))
         cb(null)
         return
     catch e
