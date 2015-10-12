@@ -36,7 +36,13 @@ class Locals
     thousands = (num) -> Numeral(num).format(0.0)
 
     locale = (data) ->
-      html = ''
+      __locale_html = (__content = '') ->
+        return """\
+          <script type="text/javascript">\
+          function __(a){#{__content}}\
+          </script>\
+        """
+        
       if data?
         if Array.isArray(data) and data.length > 0
           locales = {}
@@ -46,13 +52,9 @@ class Locals
             locales[key] = _res.locals.__(key)
 
           localesData = "b=#{JSON.stringify(locales)}"
+          script_content = "#{localesData};return b[a]"
 
-          html += """\
-            <script type="text/javascript">\
-            function __(a){#{localesData};return b[a]}\
-            </script>\
-          """
-      return html
+      return __locale_html(localesData)
 
     url = ->
       base: (uri, params) ->
