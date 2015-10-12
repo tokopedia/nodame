@@ -66,7 +66,7 @@ class Render
     # Validate empty val
     throw new Error 'Missing active_menu args' unless active_menu?
     # Assign val
-    return @set('menu', { active: active_menu })
+    return @set('active_menu', { active: active_menu })
   ###
   # @method Set assets name
   # @public
