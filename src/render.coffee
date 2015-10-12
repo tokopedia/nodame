@@ -10,6 +10,7 @@
 Path        = require('./path')
 UUID        = require('node-uuid')
 Redis       = require('./redis')
+Async       = require('async')
 
 APP         = nodame.config('app')
 VIEW        = nodame.config('view')
@@ -27,11 +28,6 @@ class Render
     # Set default page title
     @set('page_title', APP.title)
     #TODO Check redis for flash message (RENDY)
-    message = @check_interstitial(@req.cookies)
-    if message != ''
-      @message(message.key, message.text)
-      @res.clearCookie 'fm',
-        domain: ".#{COOKIE.domain}"
     # Set default file name
     @__file = 'index'
     return
@@ -151,11 +147,16 @@ class Render
   # @method write response
   # @public
   ###
-  send: (callback) ->
-    # Set view path
-    throw new Error 'View path is undefined' unless @__view_path?
-    # Return callback if exists
-    return @res.render(@__view_path, @__locals, callback)
+  send: (callback) -> 
+    Async.parallel [
+      (cb) => @__check_interstitial(cb)
+    ], (err, obj) =>     
+      @res.clearCookie 'fm',
+        domain: ".#{COOKIE.domain}"
+      throw new Error 'View path is undefined' unless @__view_path?
+      return @res.render(@__view_path, @__locals, callback)
+    return undefined
+    
   ###
   # @method Pass interstitial view
   # @public
@@ -175,29 +176,28 @@ class Render
     redis = Redis.client()
     keyFm = "#{APP.name}:flashMessages:#{fm}"
 
-    redis.rpush(keyFm, JSON.stringify({type:key,text:val}))
+    redis.set(keyFm, JSON.stringify({type:key,text:val}))
     redis.expire(keyFm, 600)
 
     @res.redirect(url)
     return undefined
     
-  check_interstitial: (cookies) ->
-    message = ''
-
-    if cookies?
-      fm = cookies.fm
-      if fm
-        redis = Redis.client()
-        keyFm = "#{APP.name}:flashMessages:#{fm}"
-        redis.lrange keyFm, 0, -1,
-          (err, reply) ->
-            console.log('REPLY',reply)
-            if reply
-              for reply_message in reply
-                message = reply_message
-              redis.del(keyFm)
-            return message
-    return message
+  __check_interstitial: (cb) ->
+    try
+      fm = @req.cookies.fm
+      
+      redis = Redis.client()
+      keyFm = "#{APP.name}:flashMessages:#{fm}"
+      redis.get keyFm, (err, reply) =>
+        if reply
+           redis.del(keyFm)
+        @set('messages', JSON.parse(reply))
+        cb(null)
+        return
+    catch e
+      cb(e)
+      console.log(e)
+    return
 
   ###
   # @method Pass message
