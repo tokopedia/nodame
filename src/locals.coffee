@@ -54,7 +54,7 @@ class Locals
           localesData = "b=#{JSON.stringify(locales)}"
           script_content = "#{localesData};return b[a]"
 
-      return __locale_html(localesData)
+      return __locale_html(script_content)
 
     url = ->
       base: (uri, params) ->
