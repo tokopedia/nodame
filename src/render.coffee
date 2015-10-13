@@ -27,7 +27,6 @@ class Render
     @__locals.locales = []
     # Set default page title
     @set('page_title', APP.title)
-    #TODO Check redis for flash message (RENDY)
     # Set default file name
     @__file = 'index'
     return
@@ -37,8 +36,12 @@ class Render
   # @param  string  key
   # @param  object  value
   ###
-  set: (key, val) ->
-    @__locals[key] = val
+  set: (key, val, is_array = false) ->
+    if is_array
+      @__locals[key] = @__locals[key] ? []
+      @__locals[key].push(val)
+    else
+      @__locals[key] = val
     return @
   ###
   # @method Set local variable
@@ -147,7 +150,7 @@ class Render
   # @method write response
   # @public
   ###
-  send: (callback) -> 
+  send: (callback) ->
     Async.parallel [
       (cb) => @__check_interstitial(cb)
     ], (err, obj) =>     
@@ -191,7 +194,8 @@ class Render
       redis.get keyFm, (err, reply) =>
         if reply
            redis.del(keyFm)
-        @set('messages', JSON.parse(reply))
+           reply = JSON.parse(reply)
+           @message(reply.type, reply.text)
         cb(null)
         return
     catch e
@@ -209,7 +213,8 @@ class Render
     messages =
       type: key
       text: val
-    return @set('messages', messages)
+    @set('messages', messages, true)
+    return undefined
   ###
   # @method Render 404
   # @public
