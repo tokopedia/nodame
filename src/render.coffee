@@ -36,8 +36,12 @@ class Render
   # @param  string  key
   # @param  object  value
   ###
-  set: (key, val) ->
-    @__locals[key] = val
+  set: (key, val, is_array = false) ->
+    if is_array
+      @__locals[key] = @__locals[key] ? []
+      @__locals[key].push(val)
+    else
+      @__locals[key] = val
     return @
   ###
   # @method Set local variable
@@ -206,11 +210,10 @@ class Render
   # @param obj value
   ###
   message: (key, val) ->
-    messages = @__locals['messages'] ? []
-    messages.push
+    messages =
       type: key
       text: val
-    @set('messages', messages)
+    @set('messages', messages, true)
     return undefined
   ###
   # @method Render 404
