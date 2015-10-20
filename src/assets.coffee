@@ -85,14 +85,14 @@ class Assets
     
     split_filename = name.split('.')
     device = split_filename[0]
-    page = split_filename[1]
+    module = split_filename[1]
 
     log.stat.histogram "kai.assets.load_time", end, [
       'env:' + nodame.env()
       'filename:' + name
       'type:' + @_type
       'device:' + device
-      'page:' + page
+      'module:' + module
     ]
     
     return _html.join('')
