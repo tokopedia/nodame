@@ -12,6 +12,7 @@ Path         = require('./path')
 # So pricey!
 
 class Assets
+  start = 0
   constructor: (opt) ->
     @_DESKTOP = 'desktop'
     @_MOBILE  = 'mobile'
@@ -30,6 +31,7 @@ class Assets
   js  : (mod) -> @_get_assets(@_JS, mod)
 
   _get_assets: (type, mod) ->
+    start = new Date()
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
@@ -78,7 +80,21 @@ class Assets
             _html.push @_html_tag(@_type, filepath)
     else
       _html.push @_html_tag(@_type, name)
+                 
+    end = new Date() - start
+    
+    split_filename = name.split('.')
+    device = split_filename[0]
+    page = split_filename[1]
 
+    log.stat.histogram "kai.assets.load_time", end, [
+      'env:' + nodame.env()
+      'filename:' + name
+      'type:' + @_type
+      'device:' + device
+      'page:' + page
+    ]
+    
     return _html.join('')
 
   _html_tag: (type, filepath) ->
@@ -91,7 +107,7 @@ class Assets
         _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">"
       when @_JS
         _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>"
-
+    
     return _html
 
 module.exports = Assets
