@@ -54,9 +54,10 @@ DEBUG     = {
 var logger = (function () {
     var self = this;
 
-    if (nodame.isDev()) {
-        var colors          = require('colors');
-    }
+    // TODO: Config
+    // if (nodame.isDev()) {
+    var colors          = require('colors');
+    // }
 
     if (LOGGER.enable) {
         if (CLIENT.datadog.enable) {
@@ -231,7 +232,9 @@ var logger = (function () {
                     if (LOGGER.enable) {
                         var message = errString(title, details);
 
-                        if (nodame.isDev() && title !== 404) {
+                        // TODO: Config
+                        if (title !== 404) {
+                        // if (nodame.isDev() && title !== 404) {
                             console.log('ERROR:'.bold.underline.red);
                             console.log(sprintf('%s %s', date, message));
                         }
@@ -254,8 +257,12 @@ var logger = (function () {
 
                 var errString = function (title, details) {
                     details = details || '-';
-                    title = nodame.isDev() ? title.red : title;
-                    details = nodame.isDev() ? details.red : details;
+                    // TODO: Config
+                    title = title.red;
+                    // title = nodame.isDev() ? title.red : title;
+                    // TODO: Config
+                    details = details.red;
+                    // details = nodame.isDev() ? details.red : details;
 
                     var string = sprintf('%s %s %s %s', req.ip, req.path, title, details);
                     return string;
@@ -337,12 +344,16 @@ var logger = (function () {
     var output = function () {
         if (LOGGER.enable && CLIENT.morgan.enable) {
             if (!nodame.isDev() && CLIENT.syslog.enable) {
-                return morgan(outputFile, {
-                    stream: outputStream,
-                    skip: function (req, res) {
-                        return res.statusCode < 400;
-                    }
-                });
+                var morgan_opt;
+                morgan_opt = {};
+                morgan_opt['stream'] = outputStream;
+
+                // TODO: Config
+                // morgan_opt['skip'] = function (req, res) {
+                //   return res.statusCode < 400;
+                // };
+
+                return morgan(outputFile, morgan_opt);
             } else {
                 return morgan(morganFormat, {
                     skip: function (req, res) {
