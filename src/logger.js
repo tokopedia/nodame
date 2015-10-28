@@ -343,17 +343,21 @@ var logger = (function () {
 
     var output = function () {
         if (LOGGER.enable && CLIENT.morgan.enable) {
-            if (!nodame.isDev() && CLIENT.syslog.enable) {
-                var morgan_opt;
-                morgan_opt = {};
+            if (!nodame.isDev()) {
+              var morgan_opt;
+              morgan_opt = {};
+
+              // TODO: Config
+              // morgan_opt['skip'] = function (req, res) {
+              //   return res.statusCode < 400;
+              // };
+
+              if (CLIENT.syslog.enable) {
                 morgan_opt['stream'] = outputStream;
-
-                // TODO: Config
-                // morgan_opt['skip'] = function (req, res) {
-                //   return res.statusCode < 400;
-                // };
-
                 return morgan(outputFile, morgan_opt);
+              } else {
+                return morgan(morganFormat, morgan_opt);
+              }
             } else {
                 return morgan(morganFormat, {
                     skip: function (req, res) {
