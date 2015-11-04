@@ -321,7 +321,7 @@ class Request
     # Validate content-type
     return data unless content_type?
     # Validate xml or html response
-    if content_type?.match(/xml|html/)? and data.substr(0, 1) isnt '{'
+    if content_type?.match(/xml|html/)? and data.substr(0, 1) isnt '{' and data.substr(0, 1) isnt '['
       return data
     # Parse JSON
     try
