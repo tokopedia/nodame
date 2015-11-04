@@ -15,6 +15,7 @@ querystring = require('query-string')
 `PUT    = 'PUT'`
 `DELETE = 'DELETE'`
 `UPDATE = 'UPDATE'`
+`PATCH = 'PATCH'`
 
 UA = 'curl/7.43.0'
 
@@ -198,6 +199,14 @@ class Request
   update: (callback) ->
     @__request(UPDATE, callback)
     return
+    ###
+  # @method PATCH method
+  # @public
+  # @param  callback
+  ###
+  patch: (callback) ->
+    @__request(PATCH, callback)
+    return
   ###
   # @method DELETE method
   # @public
@@ -279,7 +288,7 @@ class Request
         # log.alert(error.id, "#{error.title}. #{error.detail}")
       return
     # Write data
-    write_methods = [POST, PUT, UPDATE, DELETE]
+    write_methods = [POST, PUT, UPDATE, DELETE, 'PATCH']
     req.write(@__options.body) if write_methods.indexOf(@__options.method) isnt -1
     # Timeout handler
     req.setTimeout @__timeout * 1000, () =>
