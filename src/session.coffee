@@ -35,7 +35,7 @@ class Session
       signed  : true
     @_option_domain =
       domain  : @_domain
-
+    
     if req? and res?
       @middleware(req, res)
 
@@ -44,7 +44,7 @@ class Session
   # @method Check if session is enabled and ready
   # @throw  Error if not ready
   # @return bool
-  ###
+  ### 
   _is_enable: ->
     # Check if session is enable in configuration
     unless SESSION.enable
@@ -204,7 +204,7 @@ class Session
   ###
   _generate_session_id: (session) ->
     # TODO: Validate session_id
-    session_id = Hash.sha384("#{session}:#{COOKIE.secret}:#{new Date()}")
+    session_id = Hash.sha384("#{JSON.stringify(session)}:#{COOKIE.secret}:#{new Date()}")
     return session_id
   ###
   # @method Generate redis key
