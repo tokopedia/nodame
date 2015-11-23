@@ -146,6 +146,44 @@ class Render
     # Get view path
     @__view_path = Path.join(device, template, path)
     return @
+
+  ###
+  # @method Cache view
+  # @public
+  # @param str key
+  # @param obj value
+  ###
+  cache: (key = '', is_cache = true, callback) ->
+    build_time= nodame.settings.build.time
+    time      = Math.floor(Date.now() / 1000)
+    purge_time= nodame.config('view.purge_time')
+    time_diff = time - build_time
+    is_purge  = time_diff < purge_time
+
+    # Redis key
+    hostname  = nodame.config('url.hostname')
+    uri       = @req.originalUrl
+    url       = "#{hostname}#{uri}"
+    redis_key = "#{APP.name}:render_cache:#{key}:#{url}"
+
+    # Gatekeeper
+    if !is_cache or is_purge or !nodame.config('view.cache')
+      if is_purge and is_cache and nodame.config('view.cache')
+        @__cache_key = redis_key
+
+      return callback(null, false)
+
+    redis = Redis.client()
+    redis.hget redis_key, @req.device.type,
+      (err, reply) =>
+        if reply?
+          @res.send(reply.toString())
+          @res.end()
+          return callback(null, true)
+        else
+          return callback(null, false)
+    return undefined
+
   ###
   # @method write response
   # @public
@@ -153,13 +191,21 @@ class Render
   send: (callback) ->
     Async.parallel [
       (cb) => @__check_interstitial(cb)
-    ], (err, obj) =>     
+    ], (err, obj) =>
       @res.clearCookie 'fm',
         domain: ".#{COOKIE.domain}"
       throw new Error 'View path is undefined' unless @__view_path?
-      return @res.render(@__view_path, @__locals, callback)
+      return @res.render @__view_path, @__locals, (err, html) =>
+        if @__cache_key
+          # Set cache
+          redis = Redis.client()
+          redis.hmset(@__cache_key, @req.device.type, html)
+        if callback?
+          return callback(err, html)
+        else
+          return @res.send(html)
     return undefined
-    
+
   ###
   # @method Pass interstitial view
   # @public
@@ -184,11 +230,16 @@ class Render
 
     @res.redirect(url)
     return undefined
-    
+
+  ###
+  # @method Check interstitial
+  # @private
+  # @param callback
+  ###
   __check_interstitial: (cb) ->
     try
       fm = @req.cookies.fm
-      
+
       redis = Redis.client()
       keyFm = "#{APP.name}:flashMessages:#{fm}"
       redis.get keyFm, (err, reply) =>
