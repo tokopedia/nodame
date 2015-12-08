@@ -271,7 +271,7 @@ class Render
   # @public
   ###
   error_404: ->
-    @view('errors/404')
+    @path('errors/404')
     return @send()
 
 module.exports = Render
