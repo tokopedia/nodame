@@ -170,14 +170,12 @@ class Render
     purge_time= nodame.config('view.purge_time')
     time_diff = time - build_time
     is_purge  = time_diff < purge_time
-
     # Redis key
     # hostname  = nodame.config('url.hostname')
     # uri       = @req.originalUrl
     # url       = "#{hostname}#{uri}"
     # redis_key = "#{APP.name}:render_cache:#{key}:#{url}"
     redis_key = "#{APP.name}::render::#{key}"
-
     # Gatekeeper
     if !is_cache or is_purge or !nodame.config('view.cache')
       if is_purge and is_cache and nodame.config('view.cache')
@@ -209,10 +207,7 @@ class Render
     # Convert object to string
     obj = JSON.stringify(obj) unless typeof obj is 'string'
     # Cache to Redis
-    if @__cache_key
-      # Set cache
-      redis = Redis.client()
-      redis.hmset(@__cache_key, @req.device.type, obj)
+    @__cache(obj)
     # Set header
     @res.set('Content-Type: application/json')
     # Set header sent status to true
@@ -239,14 +234,27 @@ class Render
       # Set header sent status to true
       @__sent = true
       return @res.render @__view_path, @__locals, (err, html) =>
-        if @__cache_key
-          # Set cache
-          redis = Redis.client()
-          redis.hmset(@__cache_key, @req.device.type, html)
+        # Cache to redis
+        @__cache(html)
+
         if callback?
           return callback(err, html)
         else
           return @res.send(html)
+    return undefined
+
+  ###
+  # @method cache to redis
+  # @private
+  # @params obj Object
+  ###
+  __cache: (obj) ->
+    if @__cache_key
+      # Set cache
+      redis = Redis.client()
+      redis.hmset(@__cache_key, @req.device.type, obj)
+      # TODO: Get this works!
+      # redis.expire(@__cache_key, 900)
     return undefined
 
   ###
