@@ -104,6 +104,8 @@ class Core
   ###
   enforceMobile: ->
     config = @config('view')
+    # TODO: Try to load this on top
+    Render = require('./render')
     _enforce_mobile = (req, res, next) ->
       if config.mobile? and config.enforce_mobile?
         switch config.enforce_mobile_type
@@ -111,12 +113,12 @@ class Core
             req.device.type = 'phone'
           when 'hard'
             req.device.type = 'desktop'
-            html = require('./html').new(req, res)
-            html.headTitle(config.app.title)
-            html.headDescription(config.app.desc)
-            html.render
-              module: 'errors'
-              file: 'interrupt'
+            render = new Render(req, res)
+            render.cache "error:interrupt", true, (err, is_cache) ->
+              unless is_cache
+                render.path('errors/interrupt')
+                render.send()
+              return undefined
         return next() if next and config.enforce_mobile_type isnt 'hard'
       else
         return next()

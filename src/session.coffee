@@ -15,7 +15,7 @@ ASSETS  = nodame.config('assets')
 URL     = nodame.config('url')
 APP     = nodame.config('app')
 # MODULES
-HTML    = require('./html')
+Render  = require('./render')
 Hash    = require('js-sha512')
 Redis   = require('./redis')
 Async   = require('async')
@@ -35,7 +35,7 @@ class Session
       signed  : true
     @_option_domain =
       domain  : @_domain
-    
+
     if req? and res?
       @middleware(req, res)
 
@@ -44,7 +44,7 @@ class Session
   # @method Check if session is enabled and ready
   # @throw  Error if not ready
   # @return bool
-  ### 
+  ###
   _is_enable: ->
     # Check if session is enable in configuration
     unless SESSION.enable
@@ -131,12 +131,14 @@ class Session
             @res.redirect("#{URL.base}/#{MODULES.default}")
           # Default, return error page
           else
-            html = HTML.new(@req, @res)
-            html.render
-              module: 'errors'
-              file: MODULES.forbidden
+            render = new Render(@req, @res)
+            render.cache "error:403_#{MODULES.forbidden}", true, (err, is_cache) ->
+              unless is_cache
+                render.path("errors/#{MODULES.forbidden}")
+                render.send()
         return undefined
-      return next()
+      else
+        return next()
     return
   ###
   # @method Evaluate existence of session

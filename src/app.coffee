@@ -145,11 +145,14 @@ app.use(local_path_helper)
 
 # maintenance setup
 server_maintenance = (req, res, next) ->
-  html = require('./html').new(req, res)
-  html.headTitle(CONFIG.app.title)
-  html.headDescription(CONFIG.app.desc)
-  res.status(503)
-  html.render({ module: 'errors', file: '503' })
+  Render = require('./render')
+  render = new Render(req, res)
+  render.cache "error:maintenance", true, (err, is_cache) ->
+    unless is_cache
+      render.path('errors/503')
+      render.code(503)
+      render.send()
+    return undefined
   return
 app.use(server_maintenance) if CONFIG.server.maintenance
 

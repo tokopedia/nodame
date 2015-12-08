@@ -29,6 +29,8 @@ class Render
     @set('page_title', APP.title)
     # Set default file name
     @__file = 'index'
+    # Header sent
+    @__sent = false
     return
   ###
   # @method Set local variable
@@ -148,6 +150,15 @@ class Render
     return @
 
   ###
+  # @method set status code
+  # @public
+  # @param int status code
+  ###
+  code: (status_code) ->
+    @res.status(status_code)
+    return @
+
+  ###
   # @method Cache view
   # @public
   # @param str key
@@ -185,16 +196,45 @@ class Render
     return undefined
 
   ###
+  # @method write JSON response
+  # @public
+  # @param  str JSON
+  ###
+  json: (json_obj) ->
+    # Block if header is sent
+    if @__sent
+      @res.end()
+      return undefined
+    # Cache to Redis
+    if @__cache_key
+      # Set cache
+      redis = Redis.client()
+      redis.hmset(@__cache_key, @req.device.type, JSON.stringify(json_obj))
+    # Set header
+    @res.set('Content-Type: application/json')
+    # Set header sent status to true
+    @__sent = true
+    @res.json(json_obj)
+    return undefined
+
+  ###
   # @method write response
   # @public
   ###
   send: (callback) ->
+    # Block if header is sent
+    if @__sent
+      @res.end()
+      return undefined
+    # Asynchronously check interstitial
     Async.parallel [
       (cb) => @__check_interstitial(cb)
     ], (err, obj) =>
       @res.clearCookie 'fm',
         domain: ".#{COOKIE.domain}"
       throw new Error 'View path is undefined' unless @__view_path?
+      # Set header sent status to true
+      @__sent = true
       return @res.render @__view_path, @__locals, (err, html) =>
         if @__cache_key
           # Set cache
