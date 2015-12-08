@@ -201,21 +201,23 @@ class Render
   # @public
   # @param  str JSON
   ###
-  json: (json_obj) ->
+  json: (obj) ->
     # Block if header is sent
     if @__sent
       @res.end()
       return undefined
+    # Convert object to string
+    obj = JSON.stringify(obj) unless typeof obj is 'string'
     # Cache to Redis
     if @__cache_key
       # Set cache
       redis = Redis.client()
-      redis.hmset(@__cache_key, @req.device.type, JSON.stringify(json_obj))
+      redis.hmset(@__cache_key, @req.device.type, obj)
     # Set header
     @res.set('Content-Type: application/json')
     # Set header sent status to true
     @__sent = true
-    @res.json(json_obj)
+    @res.send(obj)
     return undefined
 
   ###
