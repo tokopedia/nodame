@@ -172,10 +172,11 @@ class Render
     is_purge  = time_diff < purge_time
 
     # Redis key
-    hostname  = nodame.config('url.hostname')
-    uri       = @req.originalUrl
-    url       = "#{hostname}#{uri}"
-    redis_key = "#{APP.name}:render_cache:#{key}:#{url}"
+    # hostname  = nodame.config('url.hostname')
+    # uri       = @req.originalUrl
+    # url       = "#{hostname}#{uri}"
+    # redis_key = "#{APP.name}:render_cache:#{key}:#{url}"
+    redis_key = "#{APP.name}::render::#{key}"
 
     # Gatekeeper
     if !is_cache or is_purge or !nodame.config('view.cache')
