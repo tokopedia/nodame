@@ -80,21 +80,21 @@ class Assets
             _html.push @_html_tag(@_type, filepath)
     else
       _html.push @_html_tag(@_type, name)
-                 
+
     end = new Date() - start
-    
+
     split_filename = name.split('.')
     device = split_filename[0]
     module = split_filename[1]
-
-    log.stat.histogram "kai.assets.load_time", end, [
+    app_name = nodame.config('logger.clients.datadog.app_name')
+    log.stat.histogram "#{app_name}.assets.load_time", end, [
       'env:' + nodame.env()
       'filename:' + name
       'type:' + @_type
       'device:' + device
       'module:' + module
     ]
-    
+
     return _html.join('')
 
   _html_tag: (type, filepath) ->
@@ -107,7 +107,7 @@ class Assets
         _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">"
       when @_JS
         _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>"
-    
+
     return _html
 
 module.exports = Assets

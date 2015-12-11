@@ -48,8 +48,8 @@ error_handler = (err, req, res, next) ->
     log.info(err_code, data.message)
 
   # datadog
-  datadog_key = config.clients.datadog.key.error
-  log.stat.increment(datadog_key, ["env:#{nodame.env()}", "status:#{err_code}"])
+  app_name = nodame.config('logger.clients.datadog.app_name')
+  log.stat.increment("#{app_name}.errors", ["env:#{nodame.env()}", "status:#{err_code}"])
 
   render = new Render(req, res)
   render.cache "error:#{err_view}", true, (err, is_cache) ->
