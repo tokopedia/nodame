@@ -125,6 +125,17 @@ class Core
     return _enforce_mobile
 
   ###
+  # Validate whitelist
+  # @public
+  # @param array req.ips
+  # @return bool
+  ###
+  is_whitelist: (ips) ->
+    if ips[0]? and @config('server.whitelist_ips').indexOf(ips[0]) isnt -1
+      return true
+    return false
+
+  ###
   #  View's variables setter
   #
   #  Set variable to view's locals. This is a middleware.

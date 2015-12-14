@@ -146,8 +146,7 @@ app.use(local_path_helper)
 # maintenance setup
 server_maintenance = (req, res, next) ->
   # Bypass whitelist_ips
-  if req.ips[0]? and CONFIG.server.whitelist_ips.indexOf(req.ips[0]) isnt -1
-      return next() if next
+  return next() if next and nodame.is_whitelist(req.ips)
   # Set maintenance
   Render = require('./render')
   render = new Render(req, res)
