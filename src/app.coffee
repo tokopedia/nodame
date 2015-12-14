@@ -145,6 +145,10 @@ app.use(local_path_helper)
 
 # maintenance setup
 server_maintenance = (req, res, next) ->
+  # Bypass whitelist_ips
+  if req.ips[0]? and CONFIG.server.whitelist_ips.indexOf(req.ips[0]) isnt -1
+      return next() if next
+  # Set maintenance
   Render = require('./render')
   render = new Render(req, res)
   render.cache "error:maintenance", true, (err, is_cache) ->
