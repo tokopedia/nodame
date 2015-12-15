@@ -26,6 +26,8 @@ class Locals
     _res = {}
     _req = {}
 
+    now = () -> new Date()
+
     time = (num) ->
       return String(num).replace(/([0-9]{2})([0-9]{2})/, '$1:$2 WIB')
 
@@ -42,7 +44,7 @@ class Locals
           function __(a){#{__content}}\
           </script>\
         """
-        
+
       if data?
         if Array.isArray(data) and data.length > 0
           locales = {}
@@ -106,6 +108,7 @@ class Locals
       _req = { device: req.device }
 
       app.locals.nodame =
+        now: now
         config: _config
         time: time
         leadZero: lead_zero

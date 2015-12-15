@@ -179,10 +179,10 @@ class Render
     # Gatekeeper
     if !is_cache or is_purge or !nodame.config('view.cache')
       if is_purge and is_cache and nodame.config('view.cache')
+        # Send cache key for re-caching
         @__cache_key = redis_key
 
       return callback(null, false)
-
     redis = Redis.client()
     redis.hget redis_key, @req.device.type,
       (err, reply) =>
@@ -191,6 +191,8 @@ class Render
           @res.end()
           return callback(null, true)
         else
+          # Send cache key for re-caching
+          @__cache_key = redis_key
           return callback(null, false)
     return undefined
 
@@ -233,6 +235,7 @@ class Render
       throw new Error 'View path is undefined' unless @__view_path?
       # Set header sent status to true
       @__sent = true
+      # Render cache
       return @res.render @__view_path, @__locals, (err, html) =>
         # Cache to redis
         @__cache(html)
@@ -240,7 +243,9 @@ class Render
         if callback?
           return callback(err, html)
         else
-          return @res.send(html)
+          @res.send(html)
+          @res.end()
+          return undefined
     return undefined
 
   ###
@@ -254,7 +259,7 @@ class Render
       redis = Redis.client()
       redis.hmset(@__cache_key, @req.device.type, obj)
       # TODO: Get this works!
-      # redis.expire(@__cache_key, 900)
+      redis.expire(@__cache_key, nodame.config('view.cache_time'))
     return undefined
 
   ###
