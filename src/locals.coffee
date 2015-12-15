@@ -25,8 +25,22 @@ class Locals
   nodame: (app, config, assets) ->
     _res = {}
     _req = {}
+    _cookies = {}
 
-    now = () -> new Date()
+    now = -> new Date()
+
+    _device = (req) ->
+      # Get default device
+      DEVICES = nodame.config('devices')
+      # Check if cookie exists
+      if req.cookies[DEVICES.cookie]?
+        src = req.cookies[DEVICES.cookie]
+        # TODO: Optimize this
+        for item in DEVICES.types
+          # Return device
+          return req.__device = item if item.id is src
+      # Return default device
+      return req.__device = DEVICES._default
 
     time = (num) ->
       return String(num).replace(/([0-9]{2})([0-9]{2})/, '$1:$2 WIB')
@@ -106,9 +120,10 @@ class Locals
     _locals = (req, res, next) ->
       _res = { locals: res.locals }
       _req = { device: req.device }
+      _device(req)
 
       app.locals.nodame =
-        now: now
+        now: now()
         config: _config
         time: time
         leadZero: lead_zero
@@ -117,6 +132,7 @@ class Locals
         locale: locale
         url: url
         assets: assets()
+        device: req.__device
 
       return next() if next
 

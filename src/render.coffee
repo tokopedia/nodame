@@ -184,7 +184,7 @@ class Render
 
       return callback(null, false)
     redis = Redis.client()
-    redis.hget redis_key, @req.device.type,
+    redis.hget redis_key, "#{@req.device.type},#{@req.__device.type}",
       (err, reply) =>
         if reply?
           @res.send(reply.toString())
@@ -257,7 +257,7 @@ class Render
     if @__cache_key
       # Set cache
       redis = Redis.client()
-      redis.hmset(@__cache_key, @req.device.type, obj)
+      redis.hmset(@__cache_key, "#{@req.device.type},#{@req.__device.type}", obj)
       # TODO: Get this works!
       redis.expire(@__cache_key, nodame.config('view.cache_time'))
     return undefined

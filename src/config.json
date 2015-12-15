@@ -21,6 +21,14 @@
     "url": {
         "hostname": "http://localhost:3000"
     },
+    "devices": {
+        "cookie": "_src",
+        "_default": { "id": "_default", "name": "default", "type": "default" },
+        "types": [
+            { "id": "1", "name": "android", "type": "app" },
+            { "id": "2", "name": "ios", "type": "app" }
+        ]
+    },
     "view": {
         "template": "default",
         "device_capture": true,
@@ -127,7 +135,8 @@
                 "url": "#",
                 "font_icon": "",
                 "guest_only": false,
-                "auth_only": false
+                "auth_only": false,
+                "hide_app": false
             }
         }
     }
