@@ -102,26 +102,30 @@ class Core
   #  Load mobile's view. This is a middleware
   #  @return {object} middleware
   ###
-  enforceMobile: ->
+  enforce_mobile: ->
     config = @config('view')
     # TODO: Try to load this on top
     Render = require('./render')
-    _enforce_mobile = (req, res, next) ->
-      if config.mobile? and config.enforce_mobile?
-        switch config.enforce_mobile_type
-          when 'soft'
-            req.device.type = 'phone'
-          when 'hard'
-            req.device.type = 'desktop'
-            render = new Render(req, res)
-            render.cache "error:interrupt", true, (err, is_cache) ->
-              unless is_cache
-                render.path('errors/interrupt')
-                render.send()
-              return undefined
-        return next() if next and config.enforce_mobile_type isnt 'hard'
-      else
+    _enforce_mobile = (req, res, next) =>
+      # Check config
+      unless config.mobile? and config.enforce_mobile?
         return next()
+      # Enforce whitelist; no enforcing for IP in whitelist
+      if config.enforce_whitelist
+        return next() if @is_whitelist(req.ips)
+      # Do enforce
+      switch config.enforce_mobile_type
+        when 'soft'
+          req.device.type = 'phone'
+        when 'hard'
+          req.device.type = 'desktop'
+          render = new Render(req, res)
+          render.cache "error:interrupt", true, (err, is_cache) ->
+            unless is_cache
+              render.path('errors/interrupt')
+              render.send()
+            return undefined
+      return next() if next and config.enforce_mobile_type isnt 'hard'
     return _enforce_mobile
 
   ###

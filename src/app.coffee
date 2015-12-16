@@ -128,8 +128,8 @@ require('./locale')(app)
 require('./numeral')(app)
 
 # enforce mobile setup
-enfore_mobile = CONFIG.view.device_capture and CONFIG.view.enforce_mobile
-app.use(nodame.enforceMobile()) if enfore_mobile
+enforce_mobile = CONFIG.view.device_capture and CONFIG.view.enforce_mobile
+app.use(nodame.enforce_mobile()) if enforce_mobile
 
 # locals helper setup
 local_path_helper = (req, res, next) ->
