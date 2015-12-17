@@ -43,36 +43,50 @@ module.exports = function (basepath, encoding) {
    */
   ret.load = function (identifier, cb) {
     // Argi Karunia: for temporary data
-    var data;
+    var data, is_cache;
+    is_cache = nodame.settings.config.view.cache_template;
+
 
     if (!fs || (cb && !fs.readFile) || !fs.readFileSync) {
       throw new Error('Unable to find file ' + identifier + ' because there is no filesystem to read from.');
     }
 
-    // Argi Karunia: Try reading from memory
-    // Argi Karunia: Check if the templates object exists
-    if (nodame.settings.templates === undefined) {
-        nodame.settings.templates = {};
+    // Argi Karunia: Cache template to memory on true
+    if (is_cache) {
+      // Argi Karunia: Try reading from memory
+      // Argi Karunia: Check if the templates object exists
+      if (nodame.settings.templates === undefined) {
+          nodame.settings.templates = {};
+      }
+      // Argi Karunia: Check if template exists
+      if (nodame.settings.templates[identifier] !== undefined) {
+          data = nodame.settings.templates[identifier];
+          // Argi Karunia: Return callback if called
+          if (cb) {
+            cb(null, data);
+            return;
+          }
+          // Argi Karunia: Return data
+          return data;
+      }
     }
-    // Argi Karunia: Check if template exists
-    if (nodame.settings.templates[identifier]) {
-        data = nodame.settings.templates[identifier];
-        // Argi Karunia: Return callback if called
-        if (cb) {
-          cb(null, data);
-          return;
-        }
-        // Argi Karunia: Return data
-        return data;
+
+    // Argi Karunia: Cache template to memory on true
+    if (is_cache) {
+        // Argi Karunia: Set object so empty or missing files are stored as well
+        nodame.settings.templates[identifier] = "";
     }
 
     identifier = ret.resolve(identifier);
     // Argi Karunia: We don't use this for callback
     if (cb) {
       fs.readFile(identifier, encoding, function(err, data) {
-          // Argi Karunia: Store to memory so we don't need to read from file again
-          // Argi Karunia: Add empty space to avoid empty file being skipped
-          nodame.settings.templates[identifier] = data + " ";
+          // Argi Karunia: Cache template to memory on true
+          if (is_cache) {
+            // Argi Karunia: Store to memory so we don't need to read from file again
+            // Argi Karunia: Add empty space to avoid empty file being skipped
+            nodame.settings.templates[identifier] = data;
+          }
           // Argi Karunia: Return callback
           cb(err, data);
       });
@@ -81,9 +95,12 @@ module.exports = function (basepath, encoding) {
 
     // Argi Karunia: Read file sync-ly
     data = fs.readFileSync(identifier, encoding);
-    // Argi Karunia: Store to memory so we don't need to read from file again
-    // Argi Karunia: Add empty space to avoid empty file being skipped
-    nodame.settings.templates[identifier] = data + " ";
+    // Argi Karunia: Cache template to memory on true
+    if (is_cache) {
+      // Argi Karunia: Store to memory so we don't need to read from file again
+      // Argi Karunia: Add empty space to avoid empty file being skipped
+      nodame.settings.templates[identifier] = data;
+    }
     // Argi Karunia: Return the template
     return data;
   };

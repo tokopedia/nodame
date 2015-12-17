@@ -37,6 +37,7 @@
         "enforce_mobile_type": "soft",
         "enforce_whitelist": false,
         "cache": false,
+        "cache_template": true,
         "purge_time": 60,
         "cache_time": 900,
         "redirect_404": false
