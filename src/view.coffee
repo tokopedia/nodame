@@ -1,5 +1,5 @@
 Path = require('./path')
-Swig = require('swig')
+Swig = require('./swig')
 
 class View
   constructor: (app) ->

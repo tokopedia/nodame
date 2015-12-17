@@ -1,6 +1,6 @@
 {
   "name": "nodame",
-  "version": "1.2.30",
+  "version": "1.2.31",
   "homepage": "https://github.com/tokopedia/nodame",
   "authors": "Argi Karunia <argi.karunia@yahoo.co.jp> (https://github.com/hKyo89)",
   "license": "MIT",
@@ -43,7 +43,6 @@
     "serve-static": "~1.9.2",
     "slack-client": "~1.4.1",
     "sprintf-js": "~1.0.2",
-    "swig": "~1.4.2",
     "validate.js": "~0.6.1",
     "grunt": "^0.4.5",
     "grunt-contrib-concat": "^0.5.1",

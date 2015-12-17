@@ -67,6 +67,22 @@ done
 echo -e "${green}>> $count files copied.${reset}"
 echo ""
 
+echo -e "${cyan}TASK: [Copy directories] ***********${rep}${reset}"
+srcdir=(
+    $src
+)
+count=0
+for dir in ${srcdir[@]}; do
+    directories=`ls -l $src | grep "^d" | awk '{ print $9 }'`
+    for directory in ${directories[@]}; do
+        destination=$lib
+        cp -rf $src/$directory $destination/ || failed
+        count=$((count+1))
+    done
+done
+echo -e "${green}>> $count directories copied.${reset}"
+echo ""
+
 echo -e "${cyan}TASK: [Clean up tmp files] *********${rep}${reset}"
 files=($TEMP/*.js)
 rm -rf $TEMP || failed
