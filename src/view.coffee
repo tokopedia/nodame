@@ -33,7 +33,7 @@ class View
     device = 'desktop'
     mobile = nodame.config('view.adaptive')
 
-    if req?.device?.type? and req.device.type is 'phone' and mobile
+    if req?.device?.type? and req.device.type isnt 'desktop' and mobile
       device = 'mobile'
 
     Path.join device, template, moduleName, file

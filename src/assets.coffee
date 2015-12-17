@@ -26,7 +26,7 @@ class Assets
     @_assets  = opt.assets
     @_dir     = opt.dir
     @_device  = if nodame.config('view.adaptive') then opt.device else 'desktop'
-
+    
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
 

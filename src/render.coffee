@@ -138,9 +138,9 @@ class Render
     template          = VIEW.template
     device            = VIEW.default_device
     adaptive          = VIEW.adaptive
-    # Set 'phone' as 'mobile'
+    # Set 'phone' and 'tablet' as 'mobile'
     # TODO: Set to switchable
-    if @req.device?.type? and @req.device.type is 'phone' and adaptive
+    if @req.device?.type? and @req.device.type isnt 'desktop' and adaptive
       device = 'mobile'
     # Set template to default when empty
     template = default_template unless template?
