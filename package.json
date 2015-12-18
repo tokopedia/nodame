@@ -1,6 +1,6 @@
 {
   "name": "nodame",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "homepage": "https://github.com/tokopedia/nodame",
   "authors": "Argi Karunia <argi.karunia@yahoo.co.jp> (https://github.com/hKyo89)",
   "license": "MIT",
@@ -35,6 +35,8 @@
     "morgan": "~1.5.2",
     "node-dogstatsd": "0.0.6",
     "node-uuid": "~1.4.3",
+    "nodemailer": "^1.10.0",
+    "nodemailer-smtp-transport": "^1.0.4",
     "numeral": "~1.5.3",
     "parse-duration": "^0.1.1",
     "query-string": "~1.0.0",
