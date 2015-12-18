@@ -218,7 +218,12 @@ var logger = (function () {
                     browser = browser[0].split('/');
 
                     re = /(0-9)+/g;
-                    var ver = browser[1].split('.');
+                    // Default version
+                    var ver = [0, 0];
+                    // Set version if exists
+                    if (browser.length > 1) {
+                        ver = browser[1].split('.');
+                    }
 
                     browser = browser[0] + ' ' + ver[0] + '.' + ver[1];
 
