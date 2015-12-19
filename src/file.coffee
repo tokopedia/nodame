@@ -9,7 +9,7 @@
 sha512  = require('js-sha512').sha512;
 fs      = require('fs')
 path    = require('./path')
-toml    = require('./toml')
+YAMLParser = require('js-yaml')
 
 class File
   readJSON: (filepath) ->
@@ -17,9 +17,9 @@ class File
     JSON.parse fs.readFileSync(filepath)
 
   readGRUNT: (filepath) ->
-    json      = @readTOML filepath
+    json      = @readYAML filepath
     confDir   = path.dirname filepath
-    config    = @readTOML "#{confDir}/main.toml"
+    config    = @readYAML "#{confDir}/main.yaml"
     assetsDir = path.safe "#{path.app}/assets"
 
     if config.assets.dir?
@@ -63,8 +63,8 @@ class File
       hash = hash.substr start, len
     hash
 
-  readTOML: (filepath) ->
+  readYAML: (filepath) ->
     return unless fs.statSync filepath
-    toml.parse(fs.readFileSync(filepath))
+    YAMLParser.safeLoad(fs.readFileSync(filepath))
 
 module.exports = new File()

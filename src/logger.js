@@ -54,9 +54,10 @@ DEBUG     = {
 var logger = (function () {
     var self = this;
 
-    if (nodame.isDev()) {
-        var colors          = require('colors');
-    }
+    // TODO: Config
+    // if (nodame.isDev()) {
+    var colors          = require('colors');
+    // }
 
     if (LOGGER.enable) {
         if (CLIENT.datadog.enable) {
@@ -86,13 +87,13 @@ var logger = (function () {
             var morganFormat = ':date[clf] :method :status :url <- :referrer :remote-addr :response-time ms - :res[content-length]';
         }
     }
-     
+
     _register_errors = function() {
 
         var filename = nodame.appPath() + '/locales/errors.json';
-        
+
         var buff = FS.readFileSync(filename, "utf8");
-        error_codes = JSON.parse(buff)
+        error_codes = JSON.parse(buff);
 
         return nodame.set('errors', error_codes);
     }();
@@ -100,7 +101,7 @@ var logger = (function () {
     var error = function () {
         return function (req, res, next) {
             log = (function () {
-                
+
                 var date = new Date();
 
                 var emergency = function (title, details) {
@@ -217,7 +218,12 @@ var logger = (function () {
                     browser = browser[0].split('/');
 
                     re = /(0-9)+/g;
-                    var ver = browser[1].split('.');
+                    // Default version
+                    var ver = [0, 0];
+                    // Set version if exists
+                    if (browser.length > 1) {
+                        ver = browser[1].split('.');
+                    }
 
                     browser = browser[0] + ' ' + ver[0] + '.' + ver[1];
 
@@ -231,7 +237,9 @@ var logger = (function () {
                     if (LOGGER.enable) {
                         var message = errString(title, details);
 
-                        if (nodame.isDev() && title !== 404) {
+                        // TODO: Config
+                        if (title !== 404) {
+                        // if (nodame.isDev() && title !== 404) {
                             console.log('ERROR:'.bold.underline.red);
                             console.log(sprintf('%s %s', date, message));
                         }
@@ -254,8 +262,12 @@ var logger = (function () {
 
                 var errString = function (title, details) {
                     details = details || '-';
-                    title = nodame.isDev() ? title.red : title;
-                    details = nodame.isDev() ? details.red : details;
+                    // TODO: Config
+                    title = title.red;
+                    // title = nodame.isDev() ? title.red : title;
+                    // TODO: Config
+                    details = details.red;
+                    // details = nodame.isDev() ? details.red : details;
 
                     var string = sprintf('%s %s %s %s', req.ip, req.path, title, details);
                     return string;
@@ -277,10 +289,10 @@ var logger = (function () {
                     return FakeDatadogClient;
                 })();
 
-                var error_code = function (code_str, level_obj) {
+                var code = function (code_str, level_obj) {
                     var use_english = true;
                     if(use_english){
-                        err_message = nodame.settings.errors[code_str].en                        
+                        err_message = nodame.settings.errors[code_str].en
                     } else {
                         err_message = nodame.settings.errors[code_str].id
                     }
@@ -291,28 +303,28 @@ var logger = (function () {
                     switch(level_obj.level) {
                         case 0:
                             emergency(err_code, err_message)
-                            break; 
-                        case 1: 
+                            break;
+                        case 1:
                             alert(err_code, err_message)
-                            break; 
-                        case 2: 
+                            break;
+                        case 2:
                             critical(err_code, err_message)
-                            break; 
-                        case 3: 
+                            break;
+                        case 3:
                             error(err_code, err_message)
-                            break; 
-                        case 4: 
+                            break;
+                        case 4:
                             warning(err_code, err_message)
-                            break; 
-                        case 5: 
+                            break;
+                        case 5:
                             notice(err_code, err_message)
-                            break; 
-                        case 6: 
+                            break;
+                        case 6:
                             info(err_code, err_message)
-                            break; 
-                        case 7: 
+                            break;
+                        case 7:
                             debug(err_code, err_message)
-                            break; 
+                            break;
                     }
                 }
 
@@ -326,7 +338,7 @@ var logger = (function () {
                     info: info,
                     debug: debug,
                     stat: stat,
-                    error_code: error_code
+                    code: code
                 };
             })();
 
@@ -336,15 +348,56 @@ var logger = (function () {
 
     var output = function () {
         if (LOGGER.enable && CLIENT.morgan.enable) {
-            if (!nodame.isDev() && CLIENT.syslog.enable) {
-                return morgan(outputFile, {
-                    stream: outputStream,
+            if (!nodame.isDev()) {
+              var morgan_opt;
+              morgan_opt = {};
+
+              // TODO: Config
+              // morgan_opt['skip'] = function (req, res) {
+              //   return res.statusCode < 400;
+              // };
+
+              if (CLIENT.syslog.enable) {
+                morgan_opt['stream'] = outputStream;
+                return morgan(outputFile, morgan_opt);
+              } else {
+                return morgan(morganFormat, morgan_opt);
+              }
+            } else {
+                return morgan(morganFormat, {
                     skip: function (req, res) {
-                        return res.StatusCode < 400;
+                        // Skip assets
+                        var _path = req.originalUrl;
+                        var module_root = nodame.config('module.root');
+
+                        if (module_root[0] != '/') {
+                            module_root = '/' + module_root;
+                        }
+
+                        if (_path.substr(0, module_root.length) == module_root) {
+                            _path = _path.substr(module_root.length);
+                        }
+
+                        _path = _path.split('/');
+                        _path = module_root == '/' ? _path[0] : _path[1];
+
+                        // Assets route
+                        var assets_route = nodame.config('assets.route');
+                        assets_route = assets_route.split('/');
+                        assets_route = assets_route[1];
+
+                        // Check if path is assets route
+                        if (_path == assets_route) {
+                            return true;
+                        }
+                        // Skip status code 200
+                        if (res.statusCode === 200) {
+                            return true;
+                        }
+
+                        return false;
                     }
                 });
-            } else {
-                return morgan(morganFormat);
             }
         } else {
             return function (req, res, next) {

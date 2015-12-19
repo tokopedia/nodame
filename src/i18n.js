@@ -252,7 +252,7 @@ i18n.prototype = {
 
             this.initLocale(locale, {});
         }
-        // ORIGINAL 
+        // ORIGINAL
         // if (!this.locales[locale][singular]) {
         //     this.locales[locale][singular] = plural ?
         //         { one: singular, other: plural } :
@@ -265,7 +265,7 @@ i18n.prototype = {
 
         // Tirta Wening Rachman - tirtawening@gmail.com
         // August 5, 2015
-        
+
         if (!this.locales[locale][singular]) {
             if(this.locales[this.defaultLocale][singular]){
                 return this.locales[this.defaultLocale][singular];
@@ -287,12 +287,18 @@ i18n.prototype = {
         }
 
         //End Tirta
-        
+
         return this.locales[locale][singular];
     },
 
     // try reading a file
     readFile: function (locale) {
+        // Argi Karunia: Read from memory when locales exists
+        if (nodame.settings.locales && nodame.settings.locales[locale]) {
+            this.initLocale(locale, nodame.settings.locales[locale]);
+            return;
+        }
+
         // ORIGINAL
         // var file = this.locateFile(locale);
         // Argi Karunia
@@ -390,15 +396,25 @@ i18n.prototype = {
 
     initLocale: function (locale, data) {
         if (!this.locales[locale]) {
+            // Argi Karunia: Create locales object if not exists
+            if (nodame.settings.locales === undefined) {
+                nodame.settings.locales = {};
+            }
+            // Argi Karunia: Cache locale data
+            if (nodame.settings.locales[locale] === undefined) {
+                nodame.settings.locales[locale] = data;
+            }
+            // Store locale data to class
             this.locales[locale] = data;
 
+            // Argi Karunia: We don't need this anymore
             // Only cache the files when we're not in dev mode
-            if (!this.devMode) {
-                var file = this.locateFile(locale);
-                if ( !i18n.localeCache[file] ) {
-                    i18n.localeCache[file] = data;
-                }
-            }
+            // if (!this.devMode) {
+            //     var file = this.locateFile(locale);
+            //     if ( !i18n.localeCache[file] ) {
+            //         i18n.localeCache[file] = data;
+            //     }
+            // }
         }
     }
 };

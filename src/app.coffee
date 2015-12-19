@@ -12,6 +12,9 @@ BodyParser      = require('body-parser')
 XMLBodyParser   = require('express-xml-bodyparser')
 MethodOverride  = require('method-override')
 ExpressDevice   = require('express-device')
+YAMLParser      = require('js-yaml')
+fs              = require('fs')
+Async           = require('async')
 # private modules
 Router  = require('./router')
 View    = require('./view')
@@ -19,6 +22,7 @@ Locals  = require('./locals')
 Path    = require('./path')
 File    = require('./file')
 Logger  = require('./logger')
+Parser  = require('./parser')
 # expressjs initialization
 app     = nodame.express()
 app.env = nodame.env()
@@ -44,10 +48,14 @@ app.set('trust proxy', 'uniquelocal')
 app.enable('trust proxy')
 
 # load and store assets config
-assets_file  = if is_dev then 'assets.toml' else '.assets'
+assets_file  = if is_dev then 'assets.yaml' else '.assets'
 assets_stream    = Path.safe("#{app_path}/configs/#{assets_file}")
-if is_dev then assets = File.readGRUNT(assets_stream)
-else assets = File.readJSON(assets_stream)
+if is_dev
+  assets = fs.readFileSync(assets_stream)
+  assets = YAMLParser.safeLoad(assets)
+  assets = Parser.to_grunt(assets)
+else
+  assets = File.readJSON(assets_stream)
 nodame.set('assets', assets)
 
 # Load build data
@@ -80,7 +88,14 @@ app.use(block_favicon) if CONFIG.server.block_favicon
 # static server setup
 if CONFIG.assets.enable_server
   ServeStatic = require('serve-static')
+  module_root = CONFIG.module.root
+  unless module_root[0] is '/'
+    module_root = "/#{module_root}"
   static_route = CONFIG.assets.route
+  if static_route[0] is '/'
+    static_route = static_route.substr(1)
+  #TODO FIX THIS FOR WINDOW
+  static_route = "#{module_root}/#{static_route}"
   static_dir   = Path.safe("#{app_path}/#{CONFIG.assets.dir}")
   app.use(static_route, ServeStatic(static_dir))
 
@@ -100,7 +115,7 @@ app.use(enforce_secure) if not is_dev and CONFIG.server.enforce_secure
 app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: false }))
 app.use(XMLBodyParser())
-app.use(CookieParser())
+app.use(CookieParser(nodame.config('cookie.secret')))
 app.use(MethodOverride())
 
 # Locals setup
@@ -114,8 +129,8 @@ require('./locale')(app)
 require('./numeral')(app)
 
 # enforce mobile setup
-enfore_mobile = CONFIG.view.device_capture and CONFIG.view.enforce_mobile
-app.use(nodame.enforceMobile()) if enfore_mobile
+enforce_mobile = CONFIG.view.device_capture and CONFIG.view.enforce_mobile
+app.use(nodame.enforce_mobile()) if enforce_mobile
 
 # locals helper setup
 local_path_helper = (req, res, next) ->
@@ -131,22 +146,31 @@ app.use(local_path_helper)
 
 # maintenance setup
 server_maintenance = (req, res, next) ->
-  html = require('./html').new(req, res)
-  html.headTitle(CONFIG.app.title)
-  html.headDescription(CONFIG.app.desc)
-  res.status(503)
-  html.render({ module: 'errors', file: '503' })
+  # Bypass whitelist_ips
+  return next() if next and nodame.is_whitelist(req.ips)
+  # Set maintenance
+  Render = require('./render')
+  render = new Render(req, res)
+
+  Async.waterfall [
+    (cb) => render.cache("error:maintenance", true, cb)
+  ], (err, is_cache) =>
+    unless is_cache
+      render.path('errors/503')
+      render.code(503)
+    render.send()
+    return undefined
   return
 app.use(server_maintenance) if CONFIG.server.maintenance
 
 # routes setup
 new Router(app)
 
-# errors setup
-require('./error')(app)
-
 # hooks setup
 if CONFIG.server.hooks.length > 0
   nodame.require("hook/#{hook}") for hook in CONFIG.server.hooks
+
+# errors setup
+require('./error')(app)
 
 module.exports = app

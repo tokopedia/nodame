@@ -15,10 +15,19 @@
     },
     "cookie": {
         "domain": "localhost",
-        "session": "_NODAME_"
+        "session": "_NODAME_",
+        "secret": "$uSm~a!yGi6zqj+7_K%Crvk0wxstO2Ae"
     },
     "url": {
         "hostname": "http://localhost:3000"
+    },
+    "devices": {
+        "cookie": "_src",
+        "_default": { "id": "_default", "name": "default", "type": "default" },
+        "types": [
+            { "id": "1", "name": "android", "type": "app" },
+            { "id": "2", "name": "ios", "type": "app" }
+        ]
     },
     "view": {
         "template": "default",
@@ -26,7 +35,9 @@
         "mobile": false,
         "enforce_mobile": false,
         "enforce_mobile_type": "soft",
+        "enforce_whitelist": false,
         "cache": false,
+        "cache_template": true,
         "purge_time": 60,
         "cache_time": 900,
         "redirect_404": false
@@ -42,15 +53,33 @@
     },
     "cache": {
         "enable": false,
-        "client": "redis"
+        "db_server": "redis",
+        "db": {
+            "redis": {
+                "enable": false
+            }
+        }
     },
     "email": {
         "enable": false,
         "client": "mandrill"
     },
     "session": {
+        "enable": false,
+        "key": "_sid",
+        "expires": 3600,
         "request_token": false,
         "request_token_module": "request_token"
+    },
+    "notification": {
+        "enable": false,
+        "clients": {
+            "slack": {
+                "enable": false,
+                "auto_reconnect": true,
+                "auto_mark": true
+            }
+        }
     },
     "logger": {
         "enable": false,
@@ -85,12 +114,15 @@
     "module": {
         "root": "/",
         "default": "home",
+        "forbidden": "404",
         "items": {
             "__default": {
                 "enable": true,
                 "ajax": true,
                 "xhr_only": false,
                 "dev_only": false,
+                "auth_only": false,
+                "guest_only": false,
                 "middleware": false
             }
         }
@@ -105,7 +137,8 @@
                 "url": "#",
                 "font_icon": "",
                 "guest_only": false,
-                "auth_only": false
+                "auth_only": false,
+                "hide_app": false
             }
         }
     }

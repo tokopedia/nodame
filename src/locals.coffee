@@ -25,6 +25,22 @@ class Locals
   nodame: (app, config, assets) ->
     _res = {}
     _req = {}
+    _cookies = {}
+
+    now = -> new Date()
+
+    _device = (req) ->
+      # Get default device
+      DEVICES = nodame.config('devices')
+      # Check if cookie exists
+      if req.cookies[DEVICES.cookie]?
+        src = req.cookies[DEVICES.cookie]
+        # TODO: Optimize this
+        for item in DEVICES.types
+          # Return device
+          return req.__device = item if item.id is src
+      # Return default device
+      return req.__device = DEVICES._default
 
     time = (num) ->
       return String(num).replace(/([0-9]{2})([0-9]{2})/, '$1:$2 WIB')
@@ -36,7 +52,13 @@ class Locals
     thousands = (num) -> Numeral(num).format(0.0)
 
     locale = (data) ->
-      html = ''
+      __locale_html = (__content = '') ->
+        return """\
+          <script type="text/javascript">\
+          function __(a){#{__content}}\
+          </script>\
+        """
+
       if data?
         if Array.isArray(data) and data.length > 0
           locales = {}
@@ -46,13 +68,9 @@ class Locals
             locales[key] = _res.locals.__(key)
 
           localesData = "b=#{JSON.stringify(locales)}"
+          script_content = "#{localesData};return b[a]"
 
-          html += """\
-            <script type="text/javascript">\
-            function __(a){#{localesData};return b[a]}\
-            </script>\
-          """
-      return html
+      return __locale_html(script_content)
 
     url = ->
       base: (uri, params) ->
@@ -77,13 +95,15 @@ class Locals
         return queries
 
     assets = ->
+      device = if _req.device.type is 'desktop' then 'desktop' else 'mobile'
+
       return new Assets
         appPath: nodame.appPath()
         isDev: nodame.isDev()
         url: nodame.config('url.assets')
         assets: nodame.settings.assets
         dir: nodame.config('assets.dir')
-        device: _req.device.type
+        device: device
     _config = (key) ->
       return nodame.settings.config unless key?
 
@@ -102,8 +122,10 @@ class Locals
     _locals = (req, res, next) ->
       _res = { locals: res.locals }
       _req = { device: req.device }
+      _device(req)
 
       app.locals.nodame =
+        now: now()
         config: _config
         time: time
         leadZero: lead_zero
@@ -112,6 +134,7 @@ class Locals
         locale: locale
         url: url
         assets: assets()
+        device: req.__device
 
       return next() if next
 

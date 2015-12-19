@@ -12,9 +12,12 @@ Locals  = require('./locals')
 Argv    = require('./argv')
 Env     = require('./env')
 QueryString = require('query-string')
+Async   = require('async')
 
 class Core
   settings: {}
+  hooks: {}
+  clients: {}
   sysPath: -> Path.sys
   appPath: -> Path.app
 
@@ -33,9 +36,29 @@ class Core
 
   argv: -> @settings.__systems.argv
 
+  client: (key, obj) ->
+    @_set('clients', key, obj)
+    return
+
+  hook: (key, obj) ->
+    @_set('hooks', key, obj)
+    return
+
   set: (key, obj) ->
-    throw new Errors 'Invalid settings parameters.' unless key? and obj?
-    @settings[key] = obj
+    @_set('settings', key, obj)
+    return
+
+  _set: (mod, key, obj) ->
+    throw new Error 'Invalid settings parameters.' unless key? and obj?
+
+    mods = ['settings', 'hooks', 'clients']
+
+    if mods.indexOf(mod) is -1
+      throw new Error 'Invalid module of Nodame.'
+      return
+
+    @[mod][key] = obj
+    return
 
   express: require('express')
   router: -> @express.Router()
@@ -68,36 +91,56 @@ class Core
   require: (name) ->
     vars = name.split('/')
     tags = ['module', 'hook', 'service', 'middleware', 'handler']
+
     if tags.indexOf(vars[0]) isnt -1
       return require(@_getFilePath("#{vars[0]}s", vars[1]))
-    else
-      name = "./#{vars[1]}" if vars[0] is 'nodame'
-      return require(name)
+
+    name = "./#{vars[1]}" if vars[0] is 'nodame'
+    return require(name)
 
   ###
   #  Enforce mobile views
   #  Load mobile's view. This is a middleware
   #  @return {object} middleware
   ###
-  enforceMobile: ->
+  enforce_mobile: ->
     config = @config('view')
-    _enforce_mobile = (req, res, next) ->
-      if config.mobile? and config.enforce_mobile?
-        switch config.enforce_mobile_type
-          when 'soft'
-            req.device.type = 'phone'
-          when 'hard'
-            req.device.type = 'desktop'
-            html = require('./html').new(req, res)
-            html.headTitle(config.app.title)
-            html.headDescription(config.app.desc)
-            html.render
-              module: 'errors'
-              file: 'interrupt'
-        return next() if next and config.enforce_mobile_type isnt 'hard'
-      else
+    # TODO: Try to load this on top
+    Render = require('./render')
+    _enforce_mobile = (req, res, next) =>
+      # Check config
+      unless config.mobile? and config.enforce_mobile?
         return next()
+      # Enforce whitelist; no enforcing for IP in whitelist
+      if config.enforce_whitelist
+        return next() if @is_whitelist(req.ips)
+      # Do enforce
+      switch config.enforce_mobile_type
+        when 'soft'
+          req.device.type = 'phone'
+        when 'hard'
+          req.device.type = 'desktop'
+          render = new Render(req, res)
+
+          Async.waterfall [
+            (cb) => render.cache("error:interrupt", true, cb)
+          ], (err, is_cache) =>
+            render.path('errors/interrupt') unless is_cache
+            render.send()
+            return undefined
+      return next() if next and config.enforce_mobile_type isnt 'hard'
     return _enforce_mobile
+
+  ###
+  # Validate whitelist
+  # @public
+  # @param array req.ips
+  # @return bool
+  ###
+  is_whitelist: (ips) ->
+    if ips[0]? and @config('server.whitelist_ips').indexOf(ips[0]) isnt -1
+      return true
+    return false
 
   ###
   #  View's variables setter

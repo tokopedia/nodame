@@ -7,6 +7,10 @@
 # @version 1.0.0
 ###
 
+MODULES = nodame.config('module')
+
+Session = require('./session')
+
 class Router
   locals: (req, res, next) ->
     if req.query.refback?
@@ -15,8 +19,9 @@ class Router
     return
 
   constructor: (app) ->
-    @default_module  = nodame.config('module.default')
-    @modules  = nodame.config('module.items')
+    @default_module  = MODULES.default
+    @forbidden = MODULES.forbidden
+    @modules  = MODULES.items
     @hostname = nodame.config('url.hostname')
     @root = "#{nodame.config('module.root')}"
     # normalize root path
@@ -28,19 +33,20 @@ class Router
     else
       if @root[0] is '/'
         @root = ''
-
-    Session   = require('./session')
-    app.use(Session.initSession)
-
+    # Run session evaluation middleware
+    app.use((new Session()).middleware)
+    # Register modules
     for mod of @modules
+      # Assign config
       config = @modules[mod]
-
+      # Check if module is enabled and not default module
       if config.enable and module isnt '__default'
         # Check whether it's development only module
         continue if config.dev_only and !nodame.isDev()
-
+        # Load handler
         handler = nodame.require "handler/#{mod}"
         route   = "#{@root}"
+        # Check access restriction
 
         if mod isnt @default_module then route += "/#{mod}"
         else default_route = "#{route}/#{mod}"
@@ -63,8 +69,7 @@ class Router
     return
 
   redirectNotFound: (req, res) ->
-    url = "#{@hostname}#{@root}"
-    res.redirect url
+    res.redirect("#{@hostname}#{@root}")
     res.end
     return
 

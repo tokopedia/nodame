@@ -1,13 +1,16 @@
-var file    = require(__dirname + '/lib/file');
-var path    = require(__dirname + '/lib/path');
-var fs      = require('fs');
+var Parser      = require(__dirname + '/lib/parser');
+var Path        = require(__dirname + '/lib/path');
+var fs          = require('fs');
+var YAMLParser  = require('js-yaml');
 
 module.exports = function (grunt) {
     // Project Configuration
     process.stdout.write('Reading config ... ');
-
-    var configPath  = path.safe(path.app + '/configs');
-    var config      = file.readGRUNT(configPath + '/assets.toml');
+    var config;
+    var configPath  = Path.safe(Path.app + '/configs');
+    config = fs.readFileSync(configPath + '/assets.yaml');
+    config = YAMLParser.safeLoad(config)
+    config = Parser.to_grunt(config);
 
     process.stdout.write('Done\n\n');
 
@@ -58,13 +61,13 @@ module.exports = function (grunt) {
 
 var rename = function (filepath, min) {
     var name;
-    var typeDir = path.extname(filepath).substr(1);
+    var typeDir = Path.extname(filepath).substr(1);
 
     if (min) {
         var re = /^.+[/]/;
-        name = path.safe(path.app + '/assets/min/' + filepath.replace(re, ''));
+        name = Path.safe(Path.app + '/assets/min/' + filepath.replace(re, ''));
     } else {
-        name = path.safe(path.app + '/assets/' + typeDir + '/' + filepath);
+        name = Path.safe(Path.app + '/assets/' + typeDir + '/' + filepath);
     }
 
     return name;

@@ -1,5 +1,5 @@
 Path = require('./path')
-Swig = require('swig')
+Swig = require('./swig')
 
 class View
   constructor: (app) ->
@@ -29,11 +29,11 @@ class View
     menu: nodame.config('menu')
 
   path: (req, moduleName, file) ->
-    template = nodame.config('view.template')
+    template = nodame.config('view.default_template')
     device = 'desktop'
-    mobile = nodame.config('view.mobile')
+    mobile = nodame.config('view.adaptive')
 
-    if req?.device?.type? and req.device.type is 'phone' and mobile
+    if req?.device?.type? and req.device.type isnt 'desktop' and mobile
       device = 'mobile'
 
     Path.join device, template, moduleName, file

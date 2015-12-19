@@ -115,6 +115,12 @@ debug_name      = "{{ app.name }}:server"
 #
 # session         = "_NODAME_"
 
+# Set cookie secret
+#
+# DO NOT USE DEFAULT
+#
+# secret          = "~!@O*uq+riWmaj#snS$tobyzvCDTXE6e"
+
 
 #####################
 # URL configuration #
@@ -357,6 +363,47 @@ user            = "123456"
 #
 # request_token_module = "request_token"
 
+################
+# Notification #
+################
+[notification]
+
+# Set to enable notification
+#
+# default false
+#
+# enable          = false
+
+    # Notification clients
+    [notification.clients]
+
+        # Slack configuration
+        [notification.clients.slack]
+
+        # Set to enable slack
+        #
+        # default false
+        #
+        # enable          = false
+
+        # Set slack token
+        token           = ""
+
+        # Set slack channel id
+        channel_id      = ""
+
+        # Set notification name
+        #
+        # default {{ app.name }}
+        #
+        # name           = "{{ app.name }}"
+
+        # Set notification url
+        #
+        # default "{{ url.base }}"
+        #
+        # url             = "{{ url.base }}"
+
 
 ##########
 # Logger #
@@ -377,7 +424,7 @@ user            = "123456"
 
         # Set to enable morgan
         #
-        # enable true
+        # default true
         #
         # enable          = true
 

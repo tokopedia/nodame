@@ -8,7 +8,11 @@
 
 Path         = require('./path')
 
+# TODO: Optimize the assets variable!
+# So pricey!
+
 class Assets
+  start = 0
   constructor: (opt) ->
     @_DESKTOP = 'desktop'
     @_MOBILE  = 'mobile'
@@ -21,12 +25,13 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = opt.device
-
+    @_device  = if nodame.config('view.adaptive') then opt.device else 'desktop'
+    
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
 
   _get_assets: (type, mod) ->
+    start = new Date()
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
@@ -76,6 +81,20 @@ class Assets
     else
       _html.push @_html_tag(@_type, name)
 
+    end = new Date() - start
+
+    split_filename = name.split('.')
+    device = split_filename[0]
+    module = split_filename[1]
+    app_name = nodame.config('logger.clients.datadog.app_name')
+    log.stat.histogram "#{app_name}.assets.load_time", end, [
+      'env:' + nodame.env()
+      'filename:' + name
+      'type:' + @_type
+      'device:' + device
+      'module:' + module
+    ]
+
     return _html.join('')
 
   _html_tag: (type, filepath) ->
@@ -85,9 +104,9 @@ class Assets
 
     switch type
       when @_CSS
-        _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">\n"
+        _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">"
       when @_JS
-        _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>\n"
+        _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>"
 
     return _html
 
