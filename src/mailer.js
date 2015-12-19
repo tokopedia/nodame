@@ -5,7 +5,8 @@ var LOGGER = nodame.config('logger.clients.email');
 
 var transporter  = nodemailer.createTransport(smtpTransport({
   host: "mail.tokopedia.local",
-  port: 587
+  port: 587,
+  ignoreTLS: true
 }));
 
 var mailer = (function() {
