@@ -12,6 +12,7 @@ Locals  = require('./locals')
 Argv    = require('./argv')
 Env     = require('./env')
 QueryString = require('query-string')
+Async   = require('async')
 
 class Core
   settings: {}
@@ -120,10 +121,12 @@ class Core
         when 'hard'
           req.device.type = 'desktop'
           render = new Render(req, res)
-          render.cache "error:interrupt", true, (err, is_cache) ->
-            unless is_cache
-              render.path('errors/interrupt')
-              render.send()
+
+          Async.waterfall [
+            (cb) => render.cache("error:interrupt", true, cb)
+          ], (err, is_cache) =>
+            render.path('errors/interrupt') unless is_cache
+            render.send()
             return undefined
       return next() if next and config.enforce_mobile_type isnt 'hard'
     return _enforce_mobile

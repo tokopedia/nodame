@@ -54,11 +54,13 @@ error_handler = (err, req, res, next) ->
   log.stat.increment("#{app_name}.errors", ["env:#{nodame.env()}", "status:#{err_code}"])
 
   render = new Render(req, res)
-  render.cache "error:#{err_view}", true, (err, is_cache) ->
+  Async.waterfall [
+    (cb) => render.cache("error:#{err_view}", true, cb)
+  ], (err, is_cache) =>
     unless is_cache
       render.set('data', data)
       render.path("errors/#{err_view}")
-      render.send()
+    render.send()
     return undefined
   return undefined
 

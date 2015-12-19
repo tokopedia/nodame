@@ -14,6 +14,7 @@ MethodOverride  = require('method-override')
 ExpressDevice   = require('express-device')
 YAMLParser      = require('js-yaml')
 fs              = require('fs')
+Async           = require('async')
 # private modules
 Router  = require('./router')
 View    = require('./view')
@@ -150,11 +151,14 @@ server_maintenance = (req, res, next) ->
   # Set maintenance
   Render = require('./render')
   render = new Render(req, res)
-  render.cache "error:maintenance", true, (err, is_cache) ->
+
+  Async.waterfall [
+    (cb) => render.cache("error:maintenance", true, cb)
+  ], (err, is_cache) =>
     unless is_cache
       render.path('errors/503')
       render.code(503)
-      render.send()
+    render.send()
     return undefined
   return
 app.use(server_maintenance) if CONFIG.server.maintenance

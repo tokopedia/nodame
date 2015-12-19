@@ -29,6 +29,8 @@ class Render
     @set('page_title', APP.title)
     # Set default file name
     @__file = 'index'
+    # Cache data
+    @__cache_data = false
     # Header sent
     @__sent = false
     return
@@ -171,10 +173,6 @@ class Render
     time_diff = time - build_time
     is_purge  = time_diff < purge_time
     # Redis key
-    # hostname  = nodame.config('url.hostname')
-    # uri       = @req.originalUrl
-    # url       = "#{hostname}#{uri}"
-    # redis_key = "#{APP.name}:render_cache:#{key}:#{url}"
     redis_key = "#{APP.name}::render::#{key}"
     # Gatekeeper
     if !is_cache or is_purge or !nodame.config('view.cache')
@@ -184,17 +182,18 @@ class Render
 
       return callback(null, false)
     redis = Redis.client()
-    redis.hget redis_key, "#{@req.device.type},#{@req.__device.type}",
-      (err, reply) =>
-        if reply?
-          @res.send(reply.toString())
-          @res.end()
-          return callback(null, true)
-        else
-          # Send cache key for re-caching
-          @__cache_key = redis_key
-          return callback(null, false)
-    return undefined
+    redis_hash_key = "#{@req.device.type},#{@req.__device.type}"
+
+    Async.waterfall [
+      (cb) => redis.hget(redis_key, redis_hash_key, cb)
+    ], (err, data) =>
+      if data?
+        @__cache_data = data.toString()
+        return callback(null, true)
+      # Send cache key for re-caching
+      @__cache_key = redis_key
+      return callback(null, false)
+    return
 
   ###
   # @method write JSON response
@@ -223,30 +222,36 @@ class Render
   ###
   send: (callback) ->
     # Block if header is sent
-    if @__sent
-      @res.end()
-      return undefined
+    return @res.end() if @__sent
     # Asynchronously check interstitial
-    Async.parallel [
+    Async.series [
       (cb) => @__check_interstitial(cb)
-    ], (err, obj) =>
+    ], (err, data) =>
       @res.clearCookie 'fm',
         domain: ".#{COOKIE.domain}"
-      throw new Error 'View path is undefined' unless @__view_path?
+      # Check if cache
+      if @__cache_data
+        @res.send(@__cache_data)
+        return @res.end()
+      # Throw error if path is not found
+      unless @__view_path?
+        @res.send('View path is undefined. Please report to us.')
+        return @res.end()
       # Set header sent status to true
       @__sent = true
       # Render cache
-      return @res.render @__view_path, @__locals, (err, html) =>
+      Async.waterfall [
+        (cb) => @res.render(@__view_path, @__locals, cb)
+      ], (__err, html) =>
         # Cache to redis
         @__cache(html)
-
-        if callback?
-          return callback(err, html)
-        else
-          @res.send(html)
-          @res.end()
-          return undefined
-    return undefined
+        # Check if callback
+        return callback(__err, html) if callback?
+        # Otherwise just send the html to client
+        @res.send(html)
+        return @res.end()
+      return
+    return
 
   ###
   # @method cache to redis

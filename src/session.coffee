@@ -112,8 +112,10 @@ class Session
     redis_key = @_get_redis_key()
     # Get redis client
     redis = Redis.client()
-    # Get redis value
-    redis.get redis_key, (err, reply) =>
+
+    Async.waterfall [
+      (cb) => redis.get(redis_key, cb)
+    ], (err, reply) =>
       # Validate error
       unless err?
         # Validate reply
@@ -129,13 +131,16 @@ class Session
           # Forbidden type is 'redirect'
           when 'redirect'
             @res.redirect("#{URL.base}/#{MODULES.default}")
+            return undefined
           # Default, return error page
           else
             render = new Render(@req, @res)
-            render.cache "error:403_#{MODULES.forbidden}", true, (err, is_cache) ->
-              unless is_cache
-                render.path("errors/#{MODULES.forbidden}")
-                render.send()
+            Async.waterfall [
+              (cb) => render.cache("error:403_#{MODULES.forbidden}", true, cb)
+            ], (__err, is_cache) =>
+              render.path("errors/#{MODULES.forbidden}") unless is_cache
+              render.send()
+              return undefined
         return undefined
       else
         return next()
