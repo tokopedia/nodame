@@ -7,9 +7,10 @@
 ###
 
 # -------------- MODULE -------------- #
-Render = require('./render')
+Render  = require('./render')
+Async   = require('async')
 # -------------- CONFIG -------------- #
-config = nodame.config('logger')
+config  = nodame.config('logger')
 
 errors = (app) ->
   # catch 404 and forward to error handler
@@ -26,6 +27,7 @@ errors = (app) ->
 error_handler = (err, req, res, next) ->
   err_code = err.status || 500
   err_view = get_err_view(err_code)
+  res.locals.is_error = true
   res.status(err_code)
 
   # development error handler

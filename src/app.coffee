@@ -162,11 +162,11 @@ app.use(server_maintenance) if CONFIG.server.maintenance
 # routes setup
 new Router(app)
 
-# errors setup
-require('./error')(app)
-
 # hooks setup
 if CONFIG.server.hooks.length > 0
   nodame.require("hook/#{hook}") for hook in CONFIG.server.hooks
+
+# errors setup
+require('./error')(app)
 
 module.exports = app
