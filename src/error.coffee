@@ -74,7 +74,7 @@ getStackTrace = () ->
   return obj.stack
 
 get_err_view = (err_code) ->
-    errors = [404, 500, 503]
+    errors = [403, 404, 500, 503]
     return if errors.indexOf(err_code) < 0 then '500' else String(err_code)
 
 module.exports = errors

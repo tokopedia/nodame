@@ -126,25 +126,12 @@ class Session
       @_evaluate_session(session)
       # Evaluate access
       unless @_evaluate_access()
-        # Unauthorized access goes here
-        switch MODULES.forbidden
-          # Forbidden type is 'redirect'
-          when 'redirect'
-            @res.redirect("#{URL.base}/#{MODULES.default}")
-            return undefined
-          # Default, return error page
-          else
-            render = new Render(@req, @res)
-            Async.waterfall [
-              (cb) => render.cache("error:403_#{MODULES.forbidden}", true, cb)
-            ], (__err, is_cache) =>
-              render.path("errors/#{MODULES.forbidden}") unless is_cache
-              render.send()
-              return undefined
-        return undefined
+        err = new Error('Unauthorized access.')
+        err.status = 404
+        return next(err)
       else
         return next()
-    return
+    return undefined
   ###
   # @method Evaluate existence of session
   # @private
@@ -153,12 +140,10 @@ class Session
     # Check if session is alive
     if @_is_alive()
       # Register session
-      @_register_session(session)
-      return
+      return @_register_session(session)
     # Session isn't alive
     # Unregister session
-    @_register_session()
-    return
+    return @_register_session()
   ###
   # @method Register session to environment
   # @private
