@@ -25,8 +25,15 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = if nodame.config('view.adaptive') then opt.device else 'desktop'
-    
+    @_device  = if nodame.config('view.adaptive') then opt.device else @_DESKTOP
+
+    unless nodame.settings.assets_groups?
+      __assets = { css: {}, js: {} }
+      __assets_groups =
+        "#{@_DESKTOP}": __assets
+        "#{@_MOBILE}": __assets
+      nodame.set('assets_groups', __assets_groups)
+
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
 
@@ -35,6 +42,11 @@ class Assets
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
+    # Get assets_groups cache
+    cache = nodame.settings.assets_groups[@_device][@_type][@_module]
+    # Return cache if exists
+    return cache if cache?
+
     assets = []
     # global assets
     assetsName = @_get_valid_name('global')
@@ -42,8 +54,12 @@ class Assets
     # local assets
     assetsName = @_get_valid_name(@_module)
     assets.push @_html(assetsName) if assetsName?
-
-    return assets.join('')
+    # Set assets_group
+    assets_group = assets.join('')
+    # Cache assets_group
+    nodame.settings.assets_groups[@_device][@_type][@_module] = assets_group
+    # Return assets_group
+    return assets_group
 
   _get_valid_name: (mod) ->
     type = @_type
