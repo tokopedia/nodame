@@ -33,7 +33,6 @@ class Assets
   js  : (mod) -> @_get_assets(@_JS, mod)
 
   _get_assets: (type, mod) ->
-    start = new Date()
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
@@ -42,7 +41,7 @@ class Assets
     cache = nodame.settings.assets_groups[cache_key]
     # Return cache if exists
     return cache if cache?
-    
+
     assets = []
     # global assets
     assetsName = @_get_valid_name('global')
@@ -91,19 +90,11 @@ class Assets
     else
       _html.push @_html_tag(@_type, name)
 
-    end = new Date() - start
+
 
     split_filename = name.split('.')
     device = split_filename[0]
     module = split_filename[1]
-    app_name = nodame.config('logger.clients.datadog.app_name')
-    log.stat.histogram "#{app_name}.assets.load_time", end, [
-      'env:' + nodame.env()
-      'filename:' + name
-      'type:' + @_type
-      'device:' + device
-      'module:' + module
-    ]
 
     return _html.join('')
 
