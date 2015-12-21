@@ -6,6 +6,14 @@
 # @version 1.0.0
 ###
 
+# Global handler
+process.on 'uncaughtException', (err) ->
+  console.log 'Caught exception: ', err
+
+timeout_func = () -> console.log 'Caught something'
+setTimeout timeout_func, 500
+# Intentionally cause an exception, but don't catch it.
+
 # third-party modules
 CookieParser    = require('cookie-parser')
 BodyParser      = require('body-parser')
