@@ -107,6 +107,10 @@ if CONFIG.assets.enable_server
   static_dir   = Path.safe("#{app_path}/#{CONFIG.assets.dir}")
   app.use(static_route, ServeStatic(static_dir))
 
+setHeaders = (res, path) ->
+  if path.match(/.svgz$/)
+    res.setHeader('Content-Encoding', 'gzip');
+
 # view engine setup
 new View(app)
 
