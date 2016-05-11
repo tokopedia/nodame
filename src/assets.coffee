@@ -25,7 +25,7 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = if nodame.config('view.adaptive') then opt.device else @_DESKTOP
+    @_device  = if opt.device then opt.device else @_DESKTOP
 
     nodame.set('assets_groups', {}) unless nodame.settings.assets_groups?
 
