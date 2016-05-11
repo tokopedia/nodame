@@ -95,8 +95,12 @@ class Locals
         return queries
 
     assets = ->
-      device = if _req.device.type is 'desktop' then 'desktop' else 'mobile'
-
+      device = 'desktop'
+      mobile = nodame.config('view.adaptive')
+      
+      if _req?.device?.type? and _req.device.type isnt 'desktop' and mobile
+        device = 'mobile'
+      
       return new Assets
         appPath: nodame.appPath()
         isDev: nodame.isDev()
@@ -104,6 +108,7 @@ class Locals
         assets: nodame.settings.assets
         dir: nodame.config('assets.dir')
         device: device
+        
     _config = (key) ->
       return nodame.settings.config unless key?
 
