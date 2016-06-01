@@ -11,6 +11,7 @@ Render  = require('./render')
 Async   = require('async')
 # -------------- CONFIG -------------- #
 config  = nodame.config('logger')
+url     = nodame.config('url')
 
 errors = (app) ->
   # catch 404 and forward to error handler
@@ -46,6 +47,9 @@ error_handler = (err, req, res, next) ->
   # log critical
   if err_code >= 500
     log.critical(err_code, data.message)
+  else if err_code == 403
+    res.redirect(url.base)
+    return
   else
     log.info(err_code, data.message)
 
