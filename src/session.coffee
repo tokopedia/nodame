@@ -127,7 +127,7 @@ class Session
       # Evaluate access
       unless @_evaluate_access()
         err = new Error('Unauthorized access.')
-        err.status = 404
+        err.status = 403
         return next(err)
       else
         return next()
