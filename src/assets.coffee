@@ -29,13 +29,14 @@ class Assets
 
     nodame.set('assets_groups', {}) unless nodame.settings.assets_groups?
 
-  css : (mod) -> @_get_assets(@_CSS, mod)
-  js  : (mod) -> @_get_assets(@_JS, mod)
+  css : (mod, loadType) -> @_get_assets(@_CSS, mod, loadType)
+  js  : (mod, loadType) -> @_get_assets(@_JS, mod, loadType)
 
-  _get_assets: (type, mod) ->
+  _get_assets: (type, mod, loadType) ->
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
+
     cache_key = "#{@_device}.#{@_type}.#{@_module}"
     # Get assets_groups cache
     cache = nodame.settings.assets_groups[cache_key]
@@ -45,10 +46,10 @@ class Assets
     assets = []
     # global assets
     assetsName = @_get_valid_name('global')
-    assets.push @_html(assetsName)
+    assets.push @_html(assetsName, loadType)
     # local assets
     assetsName = @_get_valid_name(@_module)
-    assets.push @_html(assetsName) if assetsName?
+    assets.push @_html(assetsName, loadType) if assetsName?
     # Cache assets_group
 
     # Return assets_group
@@ -77,7 +78,7 @@ class Assets
 
   _get_name: (mod) -> "#{@_device}.#{mod}.min.#{@_type}"
 
-  _html: (name) ->
+  _html: (name, loadType) ->
     data = @_assets[@_type]
     _html = []
 
@@ -86,9 +87,9 @@ class Assets
         if data[i][name]?
           for j of data[i][name]
             filepath = data[i][name][j]
-            _html.push @_html_tag(@_type, filepath)
+            _html.push @_html_tag(@_type, filepath, loadType)
     else
-      _html.push @_html_tag(@_type, name)
+      _html.push @_html_tag(@_type, name, loadType)
 
 
 
@@ -98,16 +99,17 @@ class Assets
 
     return _html.join('')
 
-  _html_tag: (type, filepath) ->
+  _html_tag: (type, filepath, loadType) ->
     configDir = @_get_config_dir()
     typeDir   = if @_isDev then @_type else 'min'
     filepath  = "#{@_url}/#{typeDir}/#{filepath}"
+    loadType = if loadType then loadType else ''
 
     switch type
       when @_CSS
         _html = "<link href=\"#{filepath}\" type=\"text/css\" rel=\"stylesheet\">"
       when @_JS
-        _html = "<script src=\"#{filepath}\" type=\"text/javascript\"></script>"
+        _html = "<script src=\"#{filepath}\" type=\"text/javascript\" #{loadType}></script>"
 
     return _html
 
