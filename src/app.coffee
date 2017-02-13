@@ -160,6 +160,13 @@ app.use(local_path_helper)
 server_maintenance = (req, res, next) ->
   # Bypass whitelist_ips
   return next() if next and nodame.is_whitelist(req.ips)
+  # Partial maintenance
+  if CONFIG.server.partial_maintenance
+    for module, i in CONFIG.server.module_maintenance
+      if req.url.indexOf(CONFIG.app.name + '/' + module) >= 0
+        break
+      if i + 1 == CONFIG.server.module_maintenance.length
+        return next()
   # Set maintenance
   Render = require('./render')
   render = new Render(req, res)

@@ -67,6 +67,7 @@
     "session": {
         "enable": false,
         "key": "_sid",
+        "domain": "localhost",
         "expires": 3600,
         "request_token": false,
         "request_token_module": "request_token"
