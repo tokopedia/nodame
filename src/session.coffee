@@ -27,7 +27,7 @@ class Session
   constructor: (req, res) ->
     @_key = SESSION.key
     @_identifier = "#{APP.name}/session"
-    @_domain = ".#{COOKIE.domain}"
+    @_domain = ".#{SESSION.domain}"
     @_options =
       domain  : @_domain
       httpOnly: true
