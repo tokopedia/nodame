@@ -9,6 +9,7 @@
 
 measure = require('measure')
 querystring = require('query-string')
+DATADOG       = nodame.config('logger.clients.datadog')
 
 `GET    = 'GET'`
 `POST   = 'POST'`
@@ -256,7 +257,6 @@ class Request
     # Response handler
     response_handler = (res) =>
       # Measure httpRequest response time
-      done = measure.measure('httpRequest') if @__metric?
       # Initialize data
       data = ''
       # Append chunked data
@@ -267,16 +267,19 @@ class Request
       res.on 'end', () =>
         # Log request stat
         # TODO: log is undefined
-        # if done?  
-        #   log.stat.histogram(@__metric, done(), ['env:' + nodame.env()])
-        # return callback
+        if done? && @__metric?
+          log.stat.histogram("#{DATADOG.app_name}.request.#{@__metric}", done(), ['env:' + nodame.env()])
         result = @__parse(res.headers['content-type'], data)
         return callback(null, result)
       return
+    done = measure.measure(@__metric) if @__metric?
     # Execute request
     req = @__client.request(@__options, response_handler)
     # Error handler
     req.on 'error', (err) =>
+      if @__metric?
+        log.stat.increment("#{DATADOG.app_name}.request.#{@__metric}.failed", ['env:' + nodame.env()])
+
       error =
         id: '110102'
         title: 'Request timeout'
@@ -292,6 +295,8 @@ class Request
     req.write(@__options.body) if write_methods.indexOf(@__options.method) isnt -1
     # Timeout handler
     req.setTimeout @__timeout * 1000, () =>
+      if @__metric?
+        log.stat.increment("#{DATADOG.app_name}.request.#{@__metric}.timeout", ['env:' + nodame.env()])
       error =
         id: '110102'
         title: 'Request timeout'
