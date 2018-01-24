@@ -84,7 +84,8 @@ var logger = (function () {
 
         if (CLIENT.morgan.enable) {
             var morgan       = require('morgan');
-            var morganFormat = ':date[clf] :method :status :url <- :referrer :remote-addr :response-time ms - :res[content-length]';
+            morgan.token('device-type', function getDeviceType (req) { return req.device.type; });
+            var morganFormat = ':date[clf] :method :status :url <- :referrer :remote-addr :response-time ms - :res[content-length] ":user-agent" - :device-type ';
         }
     }
 

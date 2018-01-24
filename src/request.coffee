@@ -270,10 +270,23 @@ class Request
         if done? && @__metric?
           log.stat.histogram("#{DATADOG.app_name}.request.#{@__metric}", done(), ['env:' + nodame.env()])
         result = @__parse(res.headers['content-type'], data)
+        console.log "Got response #{method}  #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
+        console.log('res.statusCode:', res.statusCode, res.statusCode >= 400)
+#        if res.statusCode >= 400 # got error response
+#          error =
+#            id: '110102'
+#            title: 'Error'
+#            detail: error
+#
+#          result =
+#            errors: [error]
+#          return callback(true, result)
+
         return callback(null, result)
       return
     done = measure.measure(@__metric) if @__metric?
     # Execute request
+    console.log "Execute #{method}  #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
     req = @__client.request(@__options, response_handler)
     # Error handler
     req.on 'error', (err) =>
@@ -283,7 +296,7 @@ class Request
 
       error =
         id: '110102'
-        title: 'Request timeout'
+        title: 'Error'
         detail: "Can't reach server at #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
 
       result =

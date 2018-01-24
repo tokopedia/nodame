@@ -46,6 +46,7 @@ class Assets
     # global assets
     assetsName = @_get_valid_name('global')
     assets.push @_html(assetsName)
+    console.log('assets._get_assets: ', @_device, @_type, assetsName)
     # local assets
     assetsName = @_get_valid_name(@_module)
     assets.push @_html(assetsName) if assetsName?
