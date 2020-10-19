@@ -32,7 +32,7 @@
     "md5": "^2.0.0",
     "measure": "^0.1.1",
     "method-override": "~2.3.2",
-    "morgan": "~1.5.2",
+    "morgan": "~1.10.0",
     "node-dogstatsd": "0.0.6",
     "node-uuid": "~1.4.3",
     "nodemailer": "^1.10.0",
