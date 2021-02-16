@@ -8,7 +8,7 @@ name: "CodeQL"
 on:
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [master,main]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -56,5 +56,4 @@ jobs:
     #   make release
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v
-1
+      uses: github/codeql-action/analyze@v1
