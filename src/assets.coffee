@@ -25,16 +25,23 @@ class Assets
     @_url     = opt.url
     @_assets  = opt.assets
     @_dir     = opt.dir
-    @_device  = if nodame.config('view.adaptive') then opt.device else 'desktop'
-    
+    @_device  = if nodame.config('view.adaptive') then opt.device else @_DESKTOP
+
+    nodame.set('assets_groups', {}) unless nodame.settings.assets_groups?
+
   css : (mod) -> @_get_assets(@_CSS, mod)
   js  : (mod) -> @_get_assets(@_JS, mod)
 
   _get_assets: (type, mod) ->
-    start = new Date()
     @_device = @_MOBILE unless @_device is @_DESKTOP
     @_type = type
     @_module = mod
+    cache_key = "#{@_device}.#{@_type}.#{@_module}"
+    # Get assets_groups cache
+    cache = nodame.settings.assets_groups[cache_key]
+    # Return cache if exists
+    return cache if cache?
+
     assets = []
     # global assets
     assetsName = @_get_valid_name('global')
@@ -42,8 +49,10 @@ class Assets
     # local assets
     assetsName = @_get_valid_name(@_module)
     assets.push @_html(assetsName) if assetsName?
+    # Cache assets_group
 
-    return assets.join('')
+    # Return assets_group
+    return nodame.settings.assets_groups[cache_key] = assets.join('')
 
   _get_valid_name: (mod) ->
     type = @_type
@@ -81,19 +90,11 @@ class Assets
     else
       _html.push @_html_tag(@_type, name)
 
-    end = new Date() - start
+
 
     split_filename = name.split('.')
     device = split_filename[0]
     module = split_filename[1]
-    app_name = nodame.config('logger.clients.datadog.app_name')
-    log.stat.histogram "#{app_name}.assets.load_time", end, [
-      'env:' + nodame.env()
-      'filename:' + name
-      'type:' + @_type
-      'device:' + device
-      'module:' + module
-    ]
 
     return _html.join('')
 

@@ -6,6 +6,14 @@
 # @version 1.0.0
 ###
 
+# Global handler
+process.on 'uncaughtException', (err) ->
+  console.log 'Caught exception: ', err
+
+timeout_func = () -> console.log 'Caught something'
+setTimeout timeout_func, 500
+# Intentionally cause an exception, but don't catch it.
+
 # third-party modules
 CookieParser    = require('cookie-parser')
 BodyParser      = require('body-parser')
@@ -98,6 +106,10 @@ if CONFIG.assets.enable_server
   static_route = "#{module_root}/#{static_route}"
   static_dir   = Path.safe("#{app_path}/#{CONFIG.assets.dir}")
   app.use(static_route, ServeStatic(static_dir))
+
+setHeaders = (res, path) ->
+  if path.match(/.svgz$/)
+    res.setHeader('Content-Encoding', 'gzip');
 
 # view engine setup
 new View(app)
