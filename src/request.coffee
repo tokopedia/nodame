@@ -9,6 +9,7 @@
 
 measure = require('measure')
 querystring = require('query-string')
+DATADOG       = nodame.config('logger.clients.datadog')
 
 `GET    = 'GET'`
 `POST   = 'POST'`
@@ -36,6 +37,7 @@ class Request
     # Set client
     @__set_client()
     @__timeout = 5
+    @__err_timeout = false
     return
   ###
   # @method Parse URL and assign the results to options
@@ -256,7 +258,6 @@ class Request
     # Response handler
     response_handler = (res) =>
       # Measure httpRequest response time
-      done = measure.measure('httpRequest') if @__metric?
       # Initialize data
       data = ''
       # Append chunked data
@@ -266,32 +267,59 @@ class Request
       # Parse data
       res.on 'end', () =>
         # Log request stat
-        # TODO: log is undefined
-        # if done?  
-        #   log.stat.histogram(@__metric, done(), ['env:' + nodame.env()])
-        # return callback
+        if done? && @__metric?
+          log.stat.histogram("#{DATADOG.app_name}.request.#{@__metric}", done(), ['env:' + nodame.env()])
         result = @__parse(res.headers['content-type'], data)
+        console.log "Got response #{method}  #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
+        console.log('res.statusCode:', res.statusCode, res.statusCode >= 400)
+#        if res.statusCode >= 400 # got error response
+#          error =
+#            id: '110102'
+#            title: 'Error'
+#            detail: error
+#
+#          result =
+#            errors: [error]
+#          return callback(true, result)
+
         return callback(null, result)
       return
+    done = measure.measure(@__metric) if @__metric?
     # Execute request
+    console.log "Execute #{method}  #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
     req = @__client.request(@__options, response_handler)
     # Error handler
     req.on 'error', (err) =>
+      @__err_timeout = true
+      if @__metric?
+        log.stat.increment("#{DATADOG.app_name}.request.#{@__metric}.failed", ['env:' + nodame.env()])
+
       error =
         id: '110102'
-        title: 'Request timeout'
+        title: 'Error'
         detail: "Can't reach server at #{@__options.protocol}//#{@__options.host}:#{@__options.port}#{@__options.path}"
+
+      result =
+        errors: [error]
 
       unless req.socket.destroyed
         console.log { id: error.id, title: error.title, detail: error.detail }
         # TODO: log is undefined
         # log.alert(error.id, "#{error.title}. #{error.detail}")
+        # Destroy socket
+        req.socket.destroy()
+        # Abort socket
+        req.abort()
+        return callback(true, result)
       return
     # Write data
     write_methods = [POST, PUT, UPDATE, DELETE, 'PATCH']
     req.write(@__options.body) if write_methods.indexOf(@__options.method) isnt -1
     # Timeout handler
     req.setTimeout @__timeout * 1000, () =>
+      @__err_timeout = true
+      if @__metric?
+        log.stat.increment("#{DATADOG.app_name}.request.#{@__metric}.timeout", ['env:' + nodame.env()])
       error =
         id: '110102'
         title: 'Request timeout'

@@ -221,6 +221,8 @@ class Render
   # @public
   ###
   send: (callback) ->
+    app = require('./app')
+    app.locals.nodame.assets._device = @req.device.type
     # Block if header is sent
     return @res.end() if @__sent
     # Asynchronously check interstitial
